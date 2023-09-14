@@ -1,9 +1,9 @@
-import Hero from "./Components/Hero/Hero"
+import Body from "./Components/Body/Body"
 
 function App() {
   return (
-    <div className="text-blue-400 text-4xl font-bold">
-      <Hero />
+    <div className="flex-center h-screen">
+      <Body />
     </div>
   )
 }

@@ -17,3 +17,9 @@
 .show-bg {
   @apply bg-cyan-500;
 }
+
+@layer components {
+  .wrapper {
+    @apply max-w-[75rem] mx-auto w-[90%];
+  }
+}
