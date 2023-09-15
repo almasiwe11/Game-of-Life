@@ -1,12 +1,15 @@
 import { Dispatch } from "react"
+import { TabTypes } from "./TabTypes"
 
 type DateStateType = {
   today: Date
+  tabs: TabTypes[]
 }
 
 const enum Commands {
   NEXTMONTH,
   PREVMONTH,
+  NEWTAB,
 }
 
 type ActionType = {
