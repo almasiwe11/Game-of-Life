@@ -22,6 +22,11 @@ export default function Input({
       <Field
         type={`${type}`}
         value={formik.values[name]}
+        min={
+          name === "minRating" && formik.values.type === "goal-number"
+            ? 0
+            : undefined
+        }
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         name={name}

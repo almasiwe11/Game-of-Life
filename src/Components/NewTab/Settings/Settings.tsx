@@ -37,15 +37,20 @@ export default function Settings({ formik }: PropTypes) {
                 </label>
                 <Field
                   value={
-                    (formik.values as MoodCheckerForm | GoalNumberForm)
-                      .settings[key as keyof TabSettings]
+                    key === "perfect" && formik.values.type === "moodchecker"
+                      ? formik.values.maxRating
+                      : (formik.values as MoodCheckerForm | GoalNumberForm)
+                          .settings[key as keyof TabSettings]
+                  }
+                  disabled={
+                    key === "perfect" && formik.values.type === "moodchecker"
                   }
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name={`settings.${key}`}
                   placeholder="40"
                   type="number"
-                  className="p-2 border-2 border-zinc-500 rounded-xl focus:outline-blue "
+                  className="p-2 border-2 border-zinc-500 rounded-xl focus:outline-blue disabled:bg-zinc-400"
                 />
               </div>
             ))}

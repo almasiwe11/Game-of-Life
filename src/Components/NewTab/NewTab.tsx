@@ -1,5 +1,5 @@
 import { Formik, Form } from "formik"
-import { initialValues, settingsSchema } from "./FormikLogic/FormikLogic"
+import { initialValues, correctSchema } from "./FormikLogic/FormikLogic"
 import FormMain from "./FormMain/FormMain"
 import Settings from "./Settings/Settings"
 
@@ -11,9 +11,9 @@ export default function NewTab() {
   return (
     <div className="fixed bg-white max-w-5xl w-[90%] mx-auto rounded-xl p-8">
       <Formik
-        initialValues={initialValues("goal-number")}
+        initialValues={initialValues("moodchecker")}
         onSubmit={onSubmit}
-        validationSchema={settingsSchema}
+        validationSchema={correctSchema}
       >
         {(formik) => (
           <Form>

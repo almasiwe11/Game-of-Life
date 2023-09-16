@@ -58,9 +58,9 @@ export default function FormMain({ formik, initialValues }: PropTypes) {
               value={formik.values["goal"]}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              name="angry"
+              name="goal"
               placeholder="40"
-              type="text"
+              type="number"
               className="p-2 border-2 border-zinc-500 rounded-xl focus:outline-blue "
             />
           </div>
