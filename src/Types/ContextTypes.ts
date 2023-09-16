@@ -4,6 +4,8 @@ import { TabTypes } from "./TabTypes"
 type DateStateType = {
   today: Date
   tabs: TabTypes[]
+  overlay: boolean
+  newTab: boolean
 }
 
 const enum Commands {

@@ -9,13 +9,19 @@ const enum Mood {
   PERFECT,
 }
 
-type TabTypes = {
+type FormTypes = {
+  name: string
   maxRating: number
   minRating: number
   avgRating: number
   timesPerWeek: number
   maxDayOff: number
-} & (MoodChecker | GoalNumber | YesNo)
+}
+
+type TabVariations = "moodchecker" | "goal-number" | "yes-no"
+
+type TabTypes = FormTypes & (MoodChecker | GoalNumber | YesNo)
+type TabTypesForm = FormTypes & (MoodCheckerForm | GoalNumberForm | YesNoForm)
 
 type TabSettings = {
   angry: number
@@ -32,6 +38,11 @@ type MoodChecker = {
   markedDays: MarkedMoodChecker[]
 }
 
+type MoodCheckerForm = {
+  type: "moodchecker"
+  settings: TabSettings
+}
+
 type GoalNumber = {
   type: "goal-number"
   settings: TabSettings
@@ -39,9 +50,19 @@ type GoalNumber = {
   markedDays: MarkedGoalNumber[]
 }
 
+type GoalNumberForm = {
+  type: "goal-number"
+  settings: TabSettings
+  goal: number
+}
+
 type YesNo = {
   type: "yes-no"
   markedDays: MarkedYesNo[]
+}
+
+type YesNoForm = {
+  type: "yes-no"
 }
 
 type MarkedDays = {
@@ -62,5 +83,13 @@ type MarkedYesNo = MarkedDays & {
   result: boolean | "day-off"
 }
 
-export type { TabTypes }
+export type {
+  TabTypes,
+  FormTypes,
+  TabTypesForm,
+  TabVariations,
+  TabSettings,
+  MoodCheckerForm,
+  GoalNumberForm,
+}
 export { Mood }

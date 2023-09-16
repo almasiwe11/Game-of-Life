@@ -4,13 +4,16 @@ import {
   ActionType,
   DateContextType,
   Commands,
-} from "./ContextTypes"
+} from "../Types/ContextTypes"
 import { add, sub } from "date-fns"
 
 const DateContext = createContext<DateContextType | null>(null)
 
 const initalState: DateStateType = {
   today: new Date(),
+  tabs: [],
+  overlay: false,
+  newTab: false,
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -20,6 +23,9 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
     }
     case Commands.PREVMONTH: {
       return { ...state, today: sub(state.today, { months: 1 }) }
+    }
+    case Commands.NEWTAB: {
+      return { ...state, overlay: true, newTab: true }
     }
     default:
       throw new Error("action type not found it should be one of Command enum")

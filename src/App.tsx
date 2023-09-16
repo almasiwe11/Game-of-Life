@@ -1,11 +1,16 @@
 import Body from "./Components/Body/Body"
+import NewTab from "./Components/NewTab/NewTab"
 import Overlay from "./Components/Overlay/Overlay"
+import { useDate } from "./Context/DateContextProvider"
 
 function App() {
+  const { dateState } = useDate()
+  const { overlay, newTab } = dateState
   return (
     <div className="flex-center h-screen">
       <Body />
-      {/*  <Overlay /> */}
+      {overlay && <Overlay />}
+      {newTab && <NewTab />}
     </div>
   )
 }
