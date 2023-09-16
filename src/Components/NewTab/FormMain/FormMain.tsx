@@ -10,9 +10,14 @@ const dayOff = [1, 2, 3]
 type PropTypes = {
   formik: FormikTypes
   initialValues?: (val: TabVariations) => TabTypesForm
+  setType: React.Dispatch<React.SetStateAction<TabVariations>>
 }
 
-export default function FormMain({ formik, initialValues }: PropTypes) {
+export default function FormMain({
+  formik,
+  initialValues,
+  setType,
+}: PropTypes) {
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex w-full gap-5">
@@ -29,6 +34,7 @@ export default function FormMain({ formik, initialValues }: PropTypes) {
           formik={formik}
           options={tabOptions}
           initialValues={initialValues}
+          setType={setType}
         />
       </div>
       <div className="flex w-full gap-2">

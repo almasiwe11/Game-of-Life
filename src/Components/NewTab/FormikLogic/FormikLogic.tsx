@@ -21,7 +21,7 @@ const settingsSchema = Yup.object().shape({
         message: "Angry should be more than minRating",
         test: function (value) {
           const { type, minRating } = this.options.context!
-          if (type === "mood-checker") {
+          if (type === "moodchecker") {
             return value >= minRating
           }
           return true
@@ -45,7 +45,7 @@ const settingsSchema = Yup.object().shape({
       .min(Yup.ref("fantastic"), "Perfect must be greater than Fantastic")
       .test({
         name: "fantasticConditional",
-        message: "Perfect must be at leat equal to 100% bro",
+        message: "Perfect must be at least equal to 100% bro",
         test: function (value) {
           const { type, maxRating } = this.options.context!
           if (type === "goal-number") {
@@ -68,27 +68,27 @@ const commonPropertiesSchema = Yup.object().shape({
   maxRating: Yup.number()
     .required("Max Rating is required")
     .test({
-      message: "Max Rating should be higher that avgRating and minRating",
+      message: "Max Rating should be higher than avgRating and minRating",
       test: function (value) {
-        const { minRating, avgRating } = this.parent
+        const { minRating, avgRating } = this.parent!
         return value > (minRating || avgRating)
       },
     }),
   minRating: Yup.number()
     .required("Min Rating is required")
     .test({
-      message: "Max Rating should be higher that avgRating and minRating",
+      message: "Max Rating should be higher than avgRating and minRating",
       test: function (value) {
-        const { maxRating, avgRating } = this.parent
+        const { maxRating, avgRating } = this.parent!
         return value < (maxRating || avgRating)
       },
     }),
   avgRating: Yup.number()
     .required("Avg Rating is required")
     .test({
-      message: "Avg Ratnig should be between Min and Max rating",
+      message: "Avg Rating should be between Min and Max rating",
       test: function (value) {
-        const { minRating, maxRating } = this.parent
+        const { minRating, maxRating } = this.parent!
         return value < maxRating && value > minRating
       },
     }),
@@ -114,8 +114,7 @@ const settings = {
   },
 }
 
-function initialValues(type: TabVariations): TabTypesForm {
-  const validationSchema = conditionalSchema(type)
+function getInitialValues(type: TabVariations): TabTypesForm {
   switch (type) {
     case "moodchecker":
       return {
@@ -145,7 +144,7 @@ function initialValues(type: TabVariations): TabTypesForm {
   }
 }
 
-function conditionalSchema(type: TabVariations) {
+function getValidationSchema(type: TabVariations) {
   switch (type) {
     case "moodchecker":
       return commonPropertiesSchema.concat(settingsSchema)
@@ -158,4 +157,4 @@ function conditionalSchema(type: TabVariations) {
   }
 }
 
-export { initialValues, correctSchema }
+export { getInitialValues, getValidationSchema }

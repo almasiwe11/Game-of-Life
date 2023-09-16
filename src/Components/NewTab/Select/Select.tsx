@@ -7,6 +7,7 @@ type PropTypes = {
   formik: FormikTypes
   initialValues?: (val: TabVariations) => TabTypesForm
   options: string[] | number[]
+  setType?: React.Dispatch<React.SetStateAction<TabVariations>>
 }
 
 export default function Select({
@@ -15,10 +16,12 @@ export default function Select({
   formik,
   options,
   initialValues,
+  setType,
 }: PropTypes) {
   function handleChange(e: ChangeEvent<HTMLSelectElement>) {
     formik.handleChange
     if (name === "type") {
+      setType!(e.target.value as TabVariations)
       handleTypeChange(e.target.value as TabVariations)
     }
   }
