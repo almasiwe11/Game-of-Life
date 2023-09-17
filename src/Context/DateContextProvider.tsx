@@ -14,6 +14,7 @@ const initalState: DateStateType = {
   tabs: JSON.parse(localStorage.getItem("tabs") || "[]"),
   overlay: false,
   newTab: false,
+  currentTab: "",
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -28,6 +29,7 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
       return { ...state, overlay: true, newTab: true }
     }
     case Commands.TABINFO: {
+      if (action.details === undefined) throw new Error("Tab details expected")
       localStorage.setItem(
         "tabs",
         JSON.stringify([...state.tabs, action.details])
@@ -39,6 +41,10 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
         newTab: false,
         tabs: [...state.tabs, action.details],
       }
+    }
+    case Commands.SWITCHTAB: {
+      if (action.tabName === undefined) throw new Error("Tab Name expected")
+      return { ...state, currentTab: action.tabName }
     }
     default:
       throw new Error("action type not found it should be one of Command enum")

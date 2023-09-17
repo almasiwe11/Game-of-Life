@@ -6,6 +6,7 @@ type DateStateType = {
   tabs: TabTypes[]
   overlay: boolean
   newTab: boolean
+  currentTab: string
 }
 
 const enum Commands {
@@ -13,11 +14,13 @@ const enum Commands {
   PREVMONTH,
   NEWTAB,
   TABINFO,
+  SWITCHTAB,
 }
 
 type ActionType = {
   type: Commands
-  details: TabTypes
+  details?: TabTypes
+  tabName?: string
 }
 
 type DispatchType = Dispatch<ActionType>
