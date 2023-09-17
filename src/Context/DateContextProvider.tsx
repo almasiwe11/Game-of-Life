@@ -9,12 +9,14 @@ import { add, sub } from "date-fns"
 
 const DateContext = createContext<DateContextType | null>(null)
 
+const tabFromStorage = JSON.parse(localStorage.getItem("tabs") || "[]")
+
 const initalState: DateStateType = {
   today: new Date(),
-  tabs: JSON.parse(localStorage.getItem("tabs") || "[]"),
+  tabs: tabFromStorage,
   overlay: false,
   newTab: false,
-  currentTab: "",
+  currentTab: tabFromStorage.length > 0 ? tabFromStorage[0].name : "",
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -39,6 +41,7 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
         ...state,
         overlay: false,
         newTab: false,
+        currentTab: action.details.name,
         tabs: [...state.tabs, action.details],
       }
     }

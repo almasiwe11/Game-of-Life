@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { format, isSameDay } from "date-fns"
 import { useDate } from "../../../Context/DateContextProvider"
 import { icons } from "../../../Icons/Icons"
@@ -18,8 +18,6 @@ type PropTypes = {
 }
 
 export default function Cell({ date }: PropTypes) {
-  const [rating, setRating] = useState(0)
-
   const formattedDay = format(date, "d")
   const isToday = isSameDay(new Date(), date)
 
@@ -27,21 +25,39 @@ export default function Cell({ date }: PropTypes) {
   const { currentTab } = dateState
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
 
-  let Icon: IconType = icons[0]
-
   const marked = thisTab?.markedDays.find((marked) =>
     isSameDay(parseJSON(marked.day), date)
   )
+
+  const [rating, setRating] = useState(getInitialRating())
+
+  let Icon: IconType = icons[0]
+
+  function getInitialRating() {
+    if (thisTab?.type === "moodchecker") {
+      if (marked) {
+        const markedMood = marked as MarkedMoodChecker
+        return markedMood.mood
+      } else {
+        return 0
+      }
+    } else {
+      return 0
+    }
+  }
 
   function getIcons() {
     if (thisTab?.type === "moodchecker") {
       const markedMood = marked as MarkedMoodChecker
       if (markedMood) {
-        console.log(icons[markedMood!.mood])
         Icon = icons[markedMood!.mood]
       }
     }
   }
+
+  useEffect(() => {
+    setRating(getInitialRating())
+  }, [currentTab, setRating, getInitialRating])
 
   getIcons()
 
@@ -96,13 +112,13 @@ export default function Cell({ date }: PropTypes) {
     }
     const oldTab: FormTypes & MoodChecker = thisTab as FormTypes & MoodChecker
     const update = oldTab.markedDays.some((marked) =>
-      isSameDay(marked.day, cellInfo.day)
+      isSameDay(parseJSON(marked.day), cellInfo.day)
     )
     let newMarkedDays: MarkedMoodChecker[]
 
     if (update) {
       newMarkedDays = oldTab.markedDays.map((marked) =>
-        isSameDay(marked.day, cellInfo.day) ? cellInfo : marked
+        isSameDay(parseJSON(marked.day), cellInfo.day) ? cellInfo : marked
       )
     } else {
       newMarkedDays = [...oldTab.markedDays, cellInfo]
@@ -165,7 +181,7 @@ export default function Cell({ date }: PropTypes) {
       {Icon && (
         <Icon
           className={`${rating === 8 ? "w-2/3 h-2/3" : "w-1/2 h-1/2"} ${
-            rating === -1 && "opacity-0 group-hover:opacity-100"
+            rating === 0 && "opacity-0 group-hover:opacity-100"
           } ${rating === 2 && "text-blue"} `}
         />
       )}
