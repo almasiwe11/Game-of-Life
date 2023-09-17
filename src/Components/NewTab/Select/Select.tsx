@@ -19,7 +19,7 @@ export default function Select({
   setType,
 }: PropTypes) {
   function handleChange(e: ChangeEvent<HTMLSelectElement>) {
-    formik.handleChange
+    formik.handleChange(e)
     if (name === "type") {
       setType!(e.target.value as TabVariations)
       handleTypeChange(e.target.value as TabVariations)

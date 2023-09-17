@@ -27,6 +27,14 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
     case Commands.NEWTAB: {
       return { ...state, overlay: true, newTab: true }
     }
+    case Commands.TABINFO: {
+      return {
+        ...state,
+        overlay: false,
+        newTab: false,
+        tabs: [...state.tabs, action.details],
+      }
+    }
     default:
       throw new Error("action type not found it should be one of Command enum")
   }

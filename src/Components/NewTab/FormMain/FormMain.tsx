@@ -81,7 +81,7 @@ export default function FormMain({
           options={weekDays}
         />
         <Select
-          name="timesPerWeek"
+          name="maxDayOff"
           label="Day off Max"
           formik={formik}
           options={dayOff}

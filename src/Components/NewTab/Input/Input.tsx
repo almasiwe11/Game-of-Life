@@ -22,16 +22,11 @@ export default function Input({
       <Field
         type={`${type}`}
         value={formik.values[name]}
-        min={
-          name === "minRating" && formik.values.type === "goal-number"
-            ? 0
-            : undefined
-        }
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         name={name}
         placeholder={placeholder}
-        className="p-2 border-2 border-zinc-500 rounded-xl focus:outline-blue "
+        className="p-2 border-2 border-zinc-500 rounded-xl focus:outline-blue text-base"
       />
     </div>
   )

@@ -1,20 +1,26 @@
 import { useState } from "react"
 import { Formik, Form } from "formik"
-import { TabVariations } from "../../Types/TabTypes"
+import { TabVariations, TabTypes, TabTypesForm } from "../../Types/TabTypes"
 import {
   getInitialValues,
   getValidationSchema,
-} from "./FormikLogic/FormikLogic" // Import getValidationSchema
+} from "./FormikLogic/FormikLogic"
+import { Commands } from "../../Types/ContextTypes"
 import FormMain from "./FormMain/FormMain"
 import Settings from "./Settings/Settings"
+import { useDate } from "../../Context/DateContextProvider"
+import Errors from "./Errors/Errors"
 
 export default function NewTab() {
-  function onSubmit() {
-    console.log("heehe")
+  const { dispatch, dateState } = useDate()
+  function onSubmit(values: TabTypesForm) {
+    const withMarkedDays: TabTypes = { ...values, markedDays: [] }
+    dispatch({ type: Commands.TABINFO, details: withMarkedDays })
   }
 
   // Determine the initial type
   const [type, setType] = useState<TabVariations>("moodchecker")
+  console.log(dateState)
 
   return (
     <div className="fixed bg-white max-w-5xl w-[90%] mx-auto rounded-xl p-8">
@@ -32,6 +38,13 @@ export default function NewTab() {
                 setType={setType}
               />
               <Settings formik={formik} />
+              {formik.errors && <Errors errors={formik.errors}></Errors>}
+              <button
+                type="submit"
+                className=" p-2.5 px-5 border border-blue text-white bg-blue text-lg mt-8 self-center duration-300 ease-in-out hover:bg-transparent hover:text-blue"
+              >
+                Create Habit
+              </button>
             </div>
           </Form>
         )}

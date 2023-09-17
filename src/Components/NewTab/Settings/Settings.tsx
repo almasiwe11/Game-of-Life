@@ -21,8 +21,6 @@ export default function Settings({ formik }: PropTypes) {
     keysArray = Object.keys(settings)
   }
 
-  console.log(formik.errors)
-
   return (
     <>
       {formik.values.type === "goal-number" ||

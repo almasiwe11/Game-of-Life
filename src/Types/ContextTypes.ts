@@ -12,10 +12,12 @@ const enum Commands {
   NEXTMONTH,
   PREVMONTH,
   NEWTAB,
+  TABINFO,
 }
 
 type ActionType = {
   type: Commands
+  details: TabTypes
 }
 
 type DispatchType = Dispatch<ActionType>
