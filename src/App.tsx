@@ -6,6 +6,7 @@ import { useDate } from "./Context/DateContextProvider"
 function App() {
   const { dateState } = useDate()
   const { overlay, newTab } = dateState
+  console.log(dateState)
   return (
     <div className="flex-center h-screen">
       <Body />

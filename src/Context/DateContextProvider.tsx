@@ -11,7 +11,7 @@ const DateContext = createContext<DateContextType | null>(null)
 
 const initalState: DateStateType = {
   today: new Date(),
-  tabs: [],
+  tabs: JSON.parse(localStorage.getItem("tabs") || "[]"),
   overlay: false,
   newTab: false,
 }
@@ -28,6 +28,11 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
       return { ...state, overlay: true, newTab: true }
     }
     case Commands.TABINFO: {
+      localStorage.setItem(
+        "tabs",
+        JSON.stringify([...state.tabs, action.details])
+      )
+
       return {
         ...state,
         overlay: false,

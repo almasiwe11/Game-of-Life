@@ -1,33 +1,32 @@
 import { useState } from "react"
 import { Formik, Form } from "formik"
 import { TabVariations, TabTypes, TabTypesForm } from "../../Types/TabTypes"
-import {
-  getInitialValues,
-  getValidationSchema,
-} from "./FormikLogic/FormikLogic"
 import { Commands } from "../../Types/ContextTypes"
 import FormMain from "./FormMain/FormMain"
 import Settings from "./Settings/Settings"
 import { useDate } from "../../Context/DateContextProvider"
 import Errors from "./Errors/Errors"
-
+import useFormikLogic from "./FormikLogic/useFormikLogic"
 export default function NewTab() {
   const { dispatch, dateState } = useDate()
+
   function onSubmit(values: TabTypesForm) {
-    const withMarkedDays: TabTypes = { ...values, markedDays: [] }
-    dispatch({ type: Commands.TABINFO, details: withMarkedDays })
+    const isUniqeName = !dateState.tabs.some((tab) => tab.name === values.name)
+    if (isUniqeName) {
+      const withMarkedDays: TabTypes = { ...values, markedDays: [] }
+      dispatch({ type: Commands.TABINFO, details: withMarkedDays })
+    }
   }
 
-  // Determine the initial type
   const [type, setType] = useState<TabVariations>("moodchecker")
-  console.log(dateState)
+  const { getInitialValues, getValidationSchema } = useFormikLogic()
 
   return (
     <div className="fixed bg-white max-w-5xl w-[90%] mx-auto rounded-xl p-8">
       <Formik
         initialValues={getInitialValues(type)}
         onSubmit={onSubmit}
-        validationSchema={getValidationSchema(type)} // Use the function to get the validation schema
+        validationSchema={getValidationSchema(type)}
       >
         {(formik) => (
           <Form>

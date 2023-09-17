@@ -5,7 +5,7 @@ import { FormikTypes } from "../../../Types/FormTypes"
 
 const tabOptions: TabVariations[] = ["moodchecker", "goal-number", "yes-no"]
 const weekDays = [1, 2, 3, 4, 5, 6, 7]
-const dayOff = [1, 2, 3]
+const dayOff = [0, 1, 2, 3]
 
 type PropTypes = {
   formik: FormikTypes
