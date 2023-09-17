@@ -1,5 +1,5 @@
 import { Dispatch } from "react"
-import { TabTypes } from "./TabTypes"
+import { TabTypes, TabVariations } from "./TabTypes"
 
 type DateStateType = {
   today: Date
@@ -15,12 +15,15 @@ const enum Commands {
   NEWTAB,
   TABINFO,
   SWITCHTAB,
+  SAVECHANGE,
 }
 
 type ActionType = {
   type: Commands
   details?: TabTypes
   tabName?: string
+  tabType?: TabVariations
+  allNewTabs?: TabTypes[]
 }
 
 type DispatchType = Dispatch<ActionType>

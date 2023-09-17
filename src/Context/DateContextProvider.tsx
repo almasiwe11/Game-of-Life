@@ -46,6 +46,13 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
       if (action.tabName === undefined) throw new Error("Tab Name expected")
       return { ...state, currentTab: action.tabName }
     }
+
+    case Commands.SAVECHANGE: {
+      if (action.allNewTabs === undefined)
+        throw new Error("All new Tabs expected")
+      return { ...state, tabs: action.allNewTabs }
+    }
+
     default:
       throw new Error("action type not found it should be one of Command enum")
   }

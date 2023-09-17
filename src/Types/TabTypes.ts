@@ -75,6 +75,7 @@ type MarkedMoodChecker = MarkedDays & {
   mood: Mood
   rating: number
   settings: TabSettings
+  skippedRating: number
 }
 
 type MarkedGoalNumber = MarkedDays & {
