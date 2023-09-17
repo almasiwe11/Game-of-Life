@@ -1,4 +1,5 @@
 const enum Mood {
+  QUESTION,
   SKIPPED,
   DAYOFF,
   ANGRY,
@@ -72,6 +73,8 @@ type MarkedDays = {
 
 type MarkedMoodChecker = MarkedDays & {
   mood: Mood
+  rating: number
+  settings: TabSettings
 }
 
 type MarkedGoalNumber = MarkedDays & {
@@ -93,3 +96,4 @@ export type {
   GoalNumberForm,
 }
 export { Mood }
+export type { MarkedMoodChecker, MoodChecker }
