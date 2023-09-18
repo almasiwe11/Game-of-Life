@@ -26,9 +26,9 @@ export default function Cell({ date }: PropTypes) {
   const isToday = isSameDay(new Date(), date)
 
   const { dateState, dispatch } = useDate()
-  const { currentTab, addGoal, currentGoal, selectedDate } = dateState
+  const { currentTab, goalInfo, selectedDate } = dateState
+  const { currentGoal, addGoal, skipped, dayOff } = goalInfo
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
-  console.log(dateState.tabs)
 
   const marked = thisTab?.markedDays.find((marked) =>
     isSameDay(parseJSON(marked.day), date)
@@ -49,34 +49,32 @@ export default function Cell({ date }: PropTypes) {
     } else {
       const markedGoal = marked as MarkedGoalNumber
       if (markedGoal) {
-        if (typeof markedGoal.numberResult === "number") {
-          const goal = markedGoal.goal
-          const result = markedGoal.numberResult
-          const { sad, meh, great, fantastic, perfect } = markedGoal.settings
-          if (result <= (sad * goal) / 100) {
-            return Mood.ANGRY
-          }
-          if (result <= (meh * goal) / 100 && result >= (sad * goal) / 100) {
-            return Mood.SAD
-          }
-          if (result <= (great * goal) / 100 && result >= (meh * goal) / 100) {
-            return Mood.MEH
-          }
-          if (
-            result <= (fantastic * goal) / 100 &&
-            result >= (great * goal) / 100
-          ) {
-            return Mood.GREAT
-          }
-          if (
-            result < (perfect * goal) / 100 &&
-            result >= (fantastic * goal) / 100
-          ) {
-            return Mood.FANTASTIC
-          }
-          if (result >= (perfect * goal) / 100) {
-            return Mood.PERFECT
-          }
+        const goal = markedGoal.goal
+        const result = markedGoal.numberResult
+        const { sad, meh, great, fantastic, perfect } = markedGoal.settings
+        if (result <= (sad * goal) / 100) {
+          return Mood.ANGRY
+        }
+        if (result <= (meh * goal) / 100 && result >= (sad * goal) / 100) {
+          return Mood.SAD
+        }
+        if (result <= (great * goal) / 100 && result >= (meh * goal) / 100) {
+          return Mood.MEH
+        }
+        if (
+          result <= (fantastic * goal) / 100 &&
+          result >= (great * goal) / 100
+        ) {
+          return Mood.GREAT
+        }
+        if (
+          result < (perfect * goal) / 100 &&
+          result >= (fantastic * goal) / 100
+        ) {
+          return Mood.FANTASTIC
+        }
+        if (result >= (perfect * goal) / 100) {
+          return Mood.PERFECT
         }
       } else {
         return 0
@@ -137,6 +135,18 @@ export default function Cell({ date }: PropTypes) {
     }
   }
 
+  function calcGoalRating(
+    goal: number,
+    result: number,
+    minRating: number,
+    maxRating: number
+  ) {
+    if (skipped) return minRating
+    if (dayOff) return 0
+    const rating = (result / goal) * maxRating
+    return rating
+  }
+
   function getModifiedRating() {
     if (thisTab!.type === "moodchecker") {
       return rating === 8 ? 1 : rating! + 1
@@ -164,20 +174,31 @@ export default function Cell({ date }: PropTypes) {
         streak: 0,
       }
     } else if (thisTab?.type === "yes-no") {
+      let rating: number
+      if (rightRating === 0) rating = 0
+      if (rightRating === 3) rating = thisTab.minRating
+      else rating = thisTab.maxRating
       info = {
         day: date,
         streak: 0,
         mood: rightRating,
-        rating: 2,
+        rating: rating,
       }
     } else if (thisTab?.type === "goal-number") {
       info = {
         day: selectedDate,
         streak: 0,
-        rating: 2,
+        rating: calcGoalRating(
+          thisTab.goal,
+          currentGoal,
+          thisTab.minRating,
+          thisTab.maxRating
+        ),
         settings: set,
         numberResult: currentGoal,
         goal: thisTab.goal,
+        skipped: false,
+        dayOff: false,
       }
     }
     return info
@@ -260,7 +281,11 @@ export default function Cell({ date }: PropTypes) {
 
   return (
     <div
-      className={`text-center text-white h-20 border select-none border-border relative cursor-pointer flex-center  group`}
+      className={`text-center text-white h-20 border select-none ${
+        isSameDay(selectedDate, date) && !marked
+          ? "border-red-600"
+          : "border-border"
+      } relative cursor-pointer flex-center  group`}
       onClick={handleClick}
       style={bgCell}
     >

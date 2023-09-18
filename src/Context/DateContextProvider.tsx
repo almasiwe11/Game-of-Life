@@ -11,15 +11,21 @@ const DateContext = createContext<DateContextType | null>(null)
 
 const tabFromStorage = JSON.parse(localStorage.getItem("tabs") || "[]")
 
+const initialGoalInfo = {
+  addGoal: false,
+  currentGoal: 0,
+  dayOff: false,
+  skipped: false,
+}
+
 const initalState: DateStateType = {
   today: new Date(),
   tabs: tabFromStorage,
   overlay: false,
   newTab: false,
   currentTab: tabFromStorage.length > 0 ? tabFromStorage[0].name : "",
-  addGoal: false,
   selectedDate: new Date(),
-  currentGoal: 0,
+  goalInfo: initialGoalInfo,
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -66,13 +72,25 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
 
     case Commands.SUBMITGOAL: {
       if (action.goal === undefined) throw new Error("Goal expected")
-      return { ...state, currentGoal: action.goal, addGoal: true }
+      return {
+        ...state,
+        goalInfo: {
+          ...state.goalInfo,
+          currentGoal: action.goal,
+          addGoal: true,
+        },
+      }
     }
-
     case Commands.GOALSUBMITTED: {
-      return { ...state, currentGoal: 0, addGoal: false }
+      return {
+        ...state,
+        goalInfo: {
+          ...state.goalInfo,
+          currentGoal: 0,
+          addGoal: false,
+        },
+      }
     }
-
     default:
       throw new Error("action type not found it should be one of Command enum")
   }

@@ -7,9 +7,15 @@ type DateStateType = {
   overlay: boolean
   newTab: boolean
   currentTab: string
-  addGoal: boolean
   selectedDate: Date
+  goalInfo: GoalInfo
+}
+
+type GoalInfo = {
+  addGoal: boolean
   currentGoal: number
+  dayOff: boolean
+  skipped: boolean
 }
 
 const enum Commands {
