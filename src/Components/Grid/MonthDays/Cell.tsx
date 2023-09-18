@@ -10,6 +10,10 @@ import {
   MoodChecker,
   TabSettings,
   FormTypes,
+  TabTypes,
+  MarkedYesNo,
+  MarkedDaysAny,
+  CellInfoAny,
 } from "../../../Types/TabTypes"
 import { parseJSON } from "date-fns"
 
@@ -24,6 +28,7 @@ export default function Cell({ date }: PropTypes) {
   const { dateState, dispatch } = useDate()
   const { currentTab } = dateState
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
+  console.log(dateState.tabs)
 
   const marked = thisTab?.markedDays.find((marked) =>
     isSameDay(parseJSON(marked.day), date)
@@ -34,7 +39,7 @@ export default function Cell({ date }: PropTypes) {
   let Icon: IconType = icons[0]
 
   function getInitialRating() {
-    if (thisTab?.type === "moodchecker") {
+    if (thisTab?.type === "moodchecker" || thisTab?.type === "yes-no") {
       if (marked) {
         const markedMood = marked as MarkedMoodChecker
         return markedMood.mood
@@ -47,11 +52,8 @@ export default function Cell({ date }: PropTypes) {
   }
 
   function getIcons() {
-    if (thisTab?.type === "moodchecker") {
-      const markedMood = marked as MarkedMoodChecker
-      if (markedMood) {
-        Icon = icons[markedMood!.mood]
-      }
+    if (marked) {
+      Icon = icons[rating!]
     }
   }
 
@@ -62,77 +64,121 @@ export default function Cell({ date }: PropTypes) {
   getIcons()
 
   function handleClick() {
-    if (thisTab?.type === "moodchecker") {
-      handleMoodChecker()
-    }
+    handleRating()
+    handleMoodChecker()
   }
 
   function calcRating(settings: TabSettings, mood: Mood, minRating: number) {
-    switch (mood) {
-      case Mood.QUESTION:
-        return 0
-      case Mood.DAYOFF:
-        return 0
-      case Mood.SKIPPED:
-        return minRating
-      case Mood.ANGRY:
-        return settings.angry
-      case Mood.MEH:
-        return settings.meh
-      case Mood.SAD:
-        return settings.sad
-      case Mood.GREAT:
-        return settings.great
-      case Mood.FANTASTIC:
-        return settings.fantastic
-      case Mood.PERFECT:
-        return settings.perfect
+    if (thisTab!.type === "moodchecker") {
+      switch (mood) {
+        case Mood.QUESTION:
+          return 0
+        case Mood.DAYOFF:
+          return 0
+        case Mood.SKIPPED:
+          return minRating
+        case Mood.ANGRY:
+          return settings.angry
+        case Mood.MEH:
+          return settings.meh
+        case Mood.SAD:
+          return settings.sad
+        case Mood.GREAT:
+          return settings.great
+        case Mood.FANTASTIC:
+          return settings.fantastic
+        case Mood.PERFECT:
+          return settings.perfect
+      }
     }
+  }
+
+  function getModifiedRating() {
+    if (thisTab!.type === "moodchecker") {
+      return rating === 8 ? 1 : rating! + 1
+    } else if (thisTab!.type === "yes-no") {
+      let right
+      if (rating === 0) right = 3
+      if (rating === 3) right = 7
+      if (rating === 7) right = 2
+      if (rating === 2) right = 3
+      return right
+    }
+  }
+
+  function getCellInfo() {
+    const rightRating = getModifiedRating()!
+    const set = (thisTab as FormTypes & MoodChecker)!.settings
+    let info
+    if (thisTab?.type === "moodchecker") {
+      info = {
+        day: date,
+        mood: rightRating,
+        skippedRating: thisTab!.minRating,
+        settings: set,
+        rating: calcRating(set, rightRating, thisTab!.minRating)!,
+        streak: 0,
+      }
+    } else if (thisTab?.type === "yes-no") {
+      info = {
+        day: date,
+        streak: 0,
+        mood: rightRating,
+        rating: 2,
+      }
+    } else if (thisTab?.type === "goal-number") {
+      info = {
+        day: date,
+        streak: 0,
+        rating: 2,
+        numberResult: 3,
+        goal: 6,
+      }
+    }
+    return info
   }
 
   function handleMoodChecker() {
-    handleMoodRating()
-    updateStorage()
+    const cellInfo: CellInfoAny = getCellInfo()!
+    updateStorage(cellInfo)
   }
 
-  function handleMoodRating() {
-    rating === 8 ? setRating(1) : setRating((prev) => prev + 1)
-  }
-
-  function updateStorage() {
-    const rightRating = rating === 8 ? 1 : rating + 1
-    const set = (thisTab as FormTypes & MoodChecker)!.settings
-    const cellInfo: MarkedMoodChecker = {
-      day: date,
-      mood: rightRating,
-      skippedRating: thisTab!.minRating,
-      settings: set,
-      rating: calcRating(set, rightRating, thisTab!.minRating),
-      streak: 0,
-    }
-    const oldTab: FormTypes & MoodChecker = thisTab as FormTypes & MoodChecker
+  function updateStorage(cellInfo: CellInfoAny) {
+    const oldTab: TabTypes = thisTab as TabTypes
     const update = oldTab.markedDays.some((marked) =>
       isSameDay(parseJSON(marked.day), cellInfo.day)
     )
-    let newMarkedDays: MarkedMoodChecker[]
+    let newMarkedDays: MarkedDaysAny
 
     if (update) {
       newMarkedDays = oldTab.markedDays.map((marked) =>
         isSameDay(parseJSON(marked.day), cellInfo.day) ? cellInfo : marked
-      )
+      ) as MarkedDaysAny
     } else {
-      newMarkedDays = [...oldTab.markedDays, cellInfo]
+      newMarkedDays = [...oldTab.markedDays, cellInfo!] as MarkedDaysAny
     }
 
-    const newTab: FormTypes & MoodChecker = {
+    const newTab: TabTypes = {
       ...oldTab,
       markedDays: newMarkedDays,
-    }
+    } as TabTypes
+
     const allNewTabs = dateState.tabs.map((tab) =>
       tab.name === currentTab ? newTab : tab
     )
     localStorage.setItem("tabs", JSON.stringify(allNewTabs))
     dispatch({ type: Commands.SAVECHANGE, allNewTabs: allNewTabs })
+  }
+
+  function handleRating() {
+    if (thisTab?.type === "moodchecker") {
+      rating === 8 ? setRating(1) : setRating((prev) => prev! + 1)
+    } else if (thisTab?.type === "yes-no") {
+      rating === 0 && setRating(3)
+      rating === 3 && setRating(7)
+      rating === 7 && setRating(2)
+      rating === 2 && setRating(3)
+    }
   }
 
   function getBgColor() {

@@ -23,6 +23,8 @@ type TabVariations = "moodchecker" | "goal-number" | "yes-no"
 
 type TabTypes = FormTypes & (MoodChecker | GoalNumber | YesNo)
 type TabTypesForm = FormTypes & (MoodCheckerForm | GoalNumberForm | YesNoForm)
+type MarkedDaysAny = MarkedGoalNumber[] | MarkedMoodChecker[] | MarkedYesNo[]
+type CellInfoAny = MarkedMoodChecker | MarkedGoalNumber | MarkedYesNo
 
 type TabSettings = {
   angry: number
@@ -69,22 +71,22 @@ type YesNoForm = {
 type MarkedDays = {
   day: Date
   streak: number
+  rating: number
 }
 
 type MarkedMoodChecker = MarkedDays & {
   mood: Mood
-  rating: number
   settings: TabSettings
   skippedRating: number
 }
 
 type MarkedGoalNumber = MarkedDays & {
-  numberResult: number | "day-off"
+  numberResult: number | "day-off" | null
   goal: number
 }
 
 type MarkedYesNo = MarkedDays & {
-  result: boolean | "day-off"
+  mood: Mood
 }
 
 export type {
@@ -97,4 +99,12 @@ export type {
   GoalNumberForm,
 }
 export { Mood }
-export type { MarkedMoodChecker, MoodChecker }
+export type {
+  MarkedMoodChecker,
+  MoodChecker,
+  MarkedYesNo,
+  YesNo,
+  MarkedDaysAny,
+  CellInfoAny,
+  MarkedGoalNumber,
+}

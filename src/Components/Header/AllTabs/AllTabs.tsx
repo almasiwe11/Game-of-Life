@@ -10,7 +10,11 @@ export default function AllTabs() {
       {tabs.map((tab) => (
         <button
           key={tab.name}
-          className="bg-gray-dark text-white py-2 cursor-pointer px-5 rounded-xl"
+          className={`${
+            dateState.currentTab === tab.name
+              ? "border-blue text-blue bg-white"
+              : "border-gray-dark text-white bg-gray-dark"
+          }   border-2   py-2 cursor-pointer px-5 rounded-xl`}
           onClick={() =>
             dispatch({ type: Commands.SWITCHTAB, tabName: tab.name })
           }
