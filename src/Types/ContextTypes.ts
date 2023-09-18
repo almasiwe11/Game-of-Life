@@ -7,6 +7,9 @@ type DateStateType = {
   overlay: boolean
   newTab: boolean
   currentTab: string
+  addGoal: boolean
+  selectedDate: Date
+  currentGoal: number
 }
 
 const enum Commands {
@@ -16,6 +19,9 @@ const enum Commands {
   TABINFO,
   SWITCHTAB,
   SAVECHANGE,
+  SELECTDAY,
+  SUBMITGOAL,
+  GOALSUBMITTED,
 }
 
 type ActionType = {
@@ -24,6 +30,8 @@ type ActionType = {
   tabName?: string
   tabType?: TabVariations
   allNewTabs?: TabTypes[]
+  day?: Date
+  goal?: number
 }
 
 type DispatchType = Dispatch<ActionType>

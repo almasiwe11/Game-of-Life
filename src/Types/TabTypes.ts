@@ -82,6 +82,7 @@ type MarkedMoodChecker = MarkedDays & {
 
 type MarkedGoalNumber = MarkedDays & {
   numberResult: number | "day-off" | null
+  settings: TabSettings
   goal: number
 }
 

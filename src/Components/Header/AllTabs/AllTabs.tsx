@@ -7,22 +7,23 @@ export default function AllTabs() {
   const { tabs } = dateState
   return (
     <div className="absolute flex gap-2 left-[50%] translate-x-[-50%]">
-      {tabs.map((tab) => (
-        <button
-          key={tab.name}
-          className={`${
-            dateState.currentTab === tab.name
-              ? "border-blue text-blue bg-white"
-              : "border-gray-dark text-white bg-gray-dark"
-          }   border-2   py-2 cursor-pointer px-5 rounded-xl`}
-          onClick={() =>
-            dispatch({ type: Commands.SWITCHTAB, tabName: tab.name })
-          }
-        >
-          {tab.name}
-        </button>
-      ))}
-
+      <div className="flex gap-1  ">
+        {tabs.map((tab) => (
+          <button
+            key={tab.name}
+            className={`${
+              dateState.currentTab === tab.name
+                ? "border-blue text-blue bg-white"
+                : "border-gray-dark text-white bg-gray-dark"
+            }   border-2   py-2 cursor-pointer px-5 rounded-xl`}
+            onClick={() =>
+              dispatch({ type: Commands.SWITCHTAB, tabName: tab.name })
+            }
+          >
+            {tab.name}
+          </button>
+        ))}
+      </div>
       <button
         className=" text-white self-center h-6 flex-center w-6 cursor-pointer  rounded-full"
         onClick={() => dispatch({ type: Commands.NEWTAB })}

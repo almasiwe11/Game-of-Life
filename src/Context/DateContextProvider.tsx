@@ -17,6 +17,9 @@ const initalState: DateStateType = {
   overlay: false,
   newTab: false,
   currentTab: tabFromStorage.length > 0 ? tabFromStorage[0].name : "",
+  addGoal: false,
+  selectedDate: new Date(),
+  currentGoal: 0,
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -54,6 +57,20 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
       if (action.allNewTabs === undefined)
         throw new Error("All new Tabs expected")
       return { ...state, tabs: action.allNewTabs }
+    }
+
+    case Commands.SELECTDAY: {
+      if (action.day === undefined) throw new Error("Date expected")
+      return { ...state, selectedDate: action.day }
+    }
+
+    case Commands.SUBMITGOAL: {
+      if (action.goal === undefined) throw new Error("Goal expected")
+      return { ...state, currentGoal: action.goal, addGoal: true }
+    }
+
+    case Commands.GOALSUBMITTED: {
+      return { ...state, currentGoal: 0, addGoal: false }
     }
 
     default:

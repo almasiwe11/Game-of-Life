@@ -11,8 +11,8 @@ import {
   TabSettings,
   FormTypes,
   TabTypes,
-  MarkedYesNo,
   MarkedDaysAny,
+  MarkedGoalNumber,
   CellInfoAny,
 } from "../../../Types/TabTypes"
 import { parseJSON } from "date-fns"
@@ -26,7 +26,7 @@ export default function Cell({ date }: PropTypes) {
   const isToday = isSameDay(new Date(), date)
 
   const { dateState, dispatch } = useDate()
-  const { currentTab } = dateState
+  const { currentTab, addGoal, currentGoal, selectedDate } = dateState
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
   console.log(dateState.tabs)
 
@@ -47,6 +47,40 @@ export default function Cell({ date }: PropTypes) {
         return 0
       }
     } else {
+      const markedGoal = marked as MarkedGoalNumber
+      if (markedGoal) {
+        if (typeof markedGoal.numberResult === "number") {
+          const goal = markedGoal.goal
+          const result = markedGoal.numberResult
+          const { sad, meh, great, fantastic, perfect } = markedGoal.settings
+          if (result <= (sad * goal) / 100) {
+            return Mood.ANGRY
+          }
+          if (result <= (meh * goal) / 100 && result >= (sad * goal) / 100) {
+            return Mood.SAD
+          }
+          if (result <= (great * goal) / 100 && result >= (meh * goal) / 100) {
+            return Mood.MEH
+          }
+          if (
+            result <= (fantastic * goal) / 100 &&
+            result >= (great * goal) / 100
+          ) {
+            return Mood.GREAT
+          }
+          if (
+            result < (perfect * goal) / 100 &&
+            result >= (fantastic * goal) / 100
+          ) {
+            return Mood.FANTASTIC
+          }
+          if (result >= (perfect * goal) / 100) {
+            return Mood.PERFECT
+          }
+        }
+      } else {
+        return 0
+      }
       return 0
     }
   }
@@ -61,11 +95,21 @@ export default function Cell({ date }: PropTypes) {
     setRating(getInitialRating())
   }, [currentTab, setRating, getInitialRating])
 
+  useEffect(() => {
+    if (addGoal) {
+      handleRating()
+      handleTab()
+    }
+  }, [addGoal])
+
   getIcons()
 
   function handleClick() {
-    handleRating()
-    handleMoodChecker()
+    dispatch({ type: Commands.SELECTDAY, day: date })
+    if (thisTab?.type !== "goal-number") {
+      handleRating()
+      handleTab()
+    }
   }
 
   function calcRating(settings: TabSettings, mood: Mood, minRating: number) {
@@ -128,19 +172,23 @@ export default function Cell({ date }: PropTypes) {
       }
     } else if (thisTab?.type === "goal-number") {
       info = {
-        day: date,
+        day: selectedDate,
         streak: 0,
         rating: 2,
-        numberResult: 3,
-        goal: 6,
+        settings: set,
+        numberResult: currentGoal,
+        goal: thisTab.goal,
       }
     }
     return info
   }
 
-  function handleMoodChecker() {
+  function handleTab() {
     const cellInfo: CellInfoAny = getCellInfo()!
     updateStorage(cellInfo)
+    if (thisTab?.type === "goal-number") {
+      dispatch({ type: Commands.GOALSUBMITTED })
+    }
   }
 
   function updateStorage(cellInfo: CellInfoAny) {
