@@ -12,7 +12,6 @@ import {
   DateStateType,
 } from "../../../../Types/ContextTypes"
 import { calcRating, calcGoalRating } from "./CalcRating"
-
 function getModifiedRating({
   thisTab,
   rating,

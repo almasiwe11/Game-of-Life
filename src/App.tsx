@@ -7,7 +7,6 @@ import { useDate } from "./Context/DateContextProvider"
 function App() {
   const { dateState } = useDate()
   const { overlay, newTab } = dateState
-  console.log(dateState)
   return (
     <div className="flex justify-center items-start pt-24 h-screen">
       <div className="flex  w-[90%] mx-auto">

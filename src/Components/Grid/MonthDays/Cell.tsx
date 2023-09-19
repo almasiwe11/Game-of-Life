@@ -51,6 +51,7 @@ export default function Cell({ date }: PropTypes) {
   getIcons()
 
   function handleClick() {
+    console.log(date)
     dispatch({ type: Commands.SELECTDAY, day: date })
     if (thisTab?.type !== "goal-number") {
       handleRating()
