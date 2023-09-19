@@ -1,28 +1,14 @@
 import { useState, useEffect } from "react"
-import {
-  format,
-  isSameDay,
-  isSameMonth,
-  add,
-  isSameISOWeek,
-  sub,
-} from "date-fns"
+import { format, isSameDay } from "date-fns"
 import { useDate } from "../../../Context/DateContextProvider"
 import { icons } from "../../../Icons/Icons"
-import { Mood } from "../../../Types/TabTypes"
 import { IconType } from "react-icons"
 import { Commands } from "../../../Types/ContextTypes"
-import {
-  MarkedMoodChecker,
-  MoodChecker,
-  TabSettings,
-  FormTypes,
-  TabTypes,
-  MarkedDaysAny,
-  MarkedGoalNumber,
-  CellInfoAny,
-} from "../../../Types/TabTypes"
+import { CellInfoAny } from "../../../Types/TabTypes"
 import { parseJSON } from "date-fns"
+import { getInitialRating } from "./Logic/InitialRating"
+import { updateStorage, getCellInfo } from "./Logic/updateStorage"
+import { getStyle, getBgColor } from "./Logic/Style"
 
 type PropTypes = {
   date: Date
@@ -41,54 +27,9 @@ export default function Cell({ date }: PropTypes) {
     isSameDay(parseJSON(marked.day), date)
   )
 
-  const [rating, setRating] = useState(getInitialRating())
+  const [rating, setRating] = useState(getInitialRating({ thisTab, marked }))
 
   let Icon: IconType = icons[0]
-
-  function getInitialRating() {
-    if (thisTab?.type === "moodchecker" || thisTab?.type === "yes-no") {
-      if (marked) {
-        const markedMood = marked as MarkedMoodChecker
-        return markedMood.mood
-      } else {
-        return 0
-      }
-    } else {
-      const markedGoal = marked as MarkedGoalNumber
-      if (markedGoal) {
-        const goal = markedGoal.goal
-        const result = markedGoal.numberResult
-        const { sad, meh, great, fantastic, perfect } = markedGoal.settings
-        if (result <= (sad * goal) / 100) {
-          return Mood.ANGRY
-        }
-        if (result <= (meh * goal) / 100 && result >= (sad * goal) / 100) {
-          return Mood.SAD
-        }
-        if (result <= (great * goal) / 100 && result >= (meh * goal) / 100) {
-          return Mood.MEH
-        }
-        if (
-          result <= (fantastic * goal) / 100 &&
-          result >= (great * goal) / 100
-        ) {
-          return Mood.GREAT
-        }
-        if (
-          result < (perfect * goal) / 100 &&
-          result >= (fantastic * goal) / 100
-        ) {
-          return Mood.FANTASTIC
-        }
-        if (result >= (perfect * goal) / 100) {
-          return Mood.PERFECT
-        }
-      } else {
-        return 0
-      }
-      return 0
-    }
-  }
 
   function getIcons() {
     if (marked) {
@@ -97,7 +38,7 @@ export default function Cell({ date }: PropTypes) {
   }
 
   useEffect(() => {
-    setRating(getInitialRating())
+    setRating(getInitialRating({ thisTab, marked }))
   }, [currentTab, setRating, getInitialRating])
 
   useEffect(() => {
@@ -117,136 +58,20 @@ export default function Cell({ date }: PropTypes) {
     }
   }
 
-  function calcRating(settings: TabSettings, mood: Mood, minRating: number) {
-    if (thisTab!.type === "moodchecker") {
-      switch (mood) {
-        case Mood.QUESTION:
-          return 0
-        case Mood.DAYOFF:
-          return 0
-        case Mood.SKIPPED:
-          return minRating
-        case Mood.ANGRY:
-          return settings.angry
-        case Mood.MEH:
-          return settings.meh
-        case Mood.SAD:
-          return settings.sad
-        case Mood.GREAT:
-          return settings.great
-        case Mood.FANTASTIC:
-          return settings.fantastic
-        case Mood.PERFECT:
-          return settings.perfect
-      }
-    }
-  }
-
-  function calcGoalRating(
-    goal: number,
-    result: number,
-    minRating: number,
-    maxRating: number
-  ) {
-    if (skipped) return minRating
-    if (dayOff) return 0
-    const rating = (result / goal) * maxRating
-    return rating
-  }
-
-  function getModifiedRating() {
-    if (thisTab!.type === "moodchecker") {
-      return rating === 8 ? 1 : rating! + 1
-    } else if (thisTab!.type === "yes-no") {
-      let right
-      if (rating === 0) right = 3
-      if (rating === 3) right = 7
-      if (rating === 7) right = 2
-      if (rating === 2) right = 3
-      return right
-    }
-  }
-
-  function getCellInfo() {
-    const rightRating = getModifiedRating()!
-    const set = (thisTab as FormTypes & MoodChecker)!.settings
-    let info
-    if (thisTab?.type === "moodchecker") {
-      info = {
-        day: date,
-        mood: rightRating,
-        skippedRating: thisTab!.minRating,
-        settings: set,
-        rating: calcRating(set, rightRating, thisTab!.minRating)!,
-        streak: 0,
-        week: { order: 3 },
-      }
-    } else if (thisTab?.type === "yes-no") {
-      let rating: number
-      if (rightRating === 0) rating = 0
-      if (rightRating === 3) rating = thisTab.minRating
-      else rating = thisTab.maxRating
-      info = {
-        day: date,
-        streak: 0,
-        mood: rightRating,
-        rating: rating,
-        week: { order: 3 },
-      }
-    } else if (thisTab?.type === "goal-number") {
-      info = {
-        day: selectedDate,
-        streak: 0,
-        rating: calcGoalRating(
-          thisTab.goal,
-          currentGoal,
-          thisTab.minRating,
-          thisTab.maxRating
-        ),
-        settings: set,
-        numberResult: currentGoal,
-        goal: thisTab.goal,
-        skipped: false,
-        dayOff: false,
-        week: { order: 3 },
-      }
-    }
-    return info
-  }
-
   function handleTab() {
-    const cellInfo: CellInfoAny = getCellInfo()!
-    updateStorage(cellInfo)
+    const cellInfo: CellInfoAny = getCellInfo({
+      thisTab,
+      rating,
+      date,
+      selectedDate,
+      currentGoal,
+      skipped,
+      dayOff,
+    })!
+    updateStorage(cellInfo, thisTab, dateState, currentTab, dispatch)
     if (thisTab?.type === "goal-number") {
       dispatch({ type: Commands.GOALSUBMITTED })
     }
-  }
-
-  function updateStorage(cellInfo: CellInfoAny) {
-    const oldTab: TabTypes = thisTab as TabTypes
-    const update = oldTab.markedDays.some((marked) =>
-      isSameDay(parseJSON(marked.day), cellInfo.day)
-    )
-    let newMarkedDays: MarkedDaysAny
-
-    if (update) {
-      newMarkedDays = oldTab.markedDays.map((marked) =>
-        isSameDay(parseJSON(marked.day), cellInfo.day) ? cellInfo : marked
-      ) as MarkedDaysAny
-    } else {
-      newMarkedDays = [...oldTab.markedDays, cellInfo!] as MarkedDaysAny
-    }
-
-    const newTab: TabTypes = {
-      ...oldTab,
-      markedDays: newMarkedDays,
-    } as TabTypes
-
-    const allNewTabs = dateState.tabs.map((tab) =>
-      tab.name === currentTab ? newTab : tab
-    )
-    localStorage.setItem("tabs", JSON.stringify(allNewTabs))
-    dispatch({ type: Commands.SAVECHANGE, allNewTabs: allNewTabs })
   }
 
   function handleRating() {
@@ -260,44 +85,16 @@ export default function Cell({ date }: PropTypes) {
     }
   }
 
-  function getBgColor() {
-    switch (rating) {
-      case 0:
-        return "transparent"
-      case 1:
-        return "black"
-      case 2:
-        return "white"
-      case 3:
-        return "red"
-      case 4:
-        return "#b45309"
-      case 5:
-        return "#eab308"
-      case 6:
-        return "green"
-      case 7:
-        return "#06b6d4"
-      case 8:
-        return "#7c3aed"
-      default:
-        return "transparent"
-    }
-  }
-
   const cellStyle = {
-    backgroundColor: getBgColor(),
+    backgroundColor: getBgColor(rating),
   }
-
-  let style: string
-  const nextMonth = add(today, { months: 1 })
-  if (isSameMonth(date, nextMonth)) style = "hidden"
-  else if (!isSameMonth(date, today)) style = "invisible"
-  else style = "flex-center"
 
   return (
     <div
-      className={`text-center text-white h-20 border ${style}  select-none ${
+      className={`text-center text-white h-20 border ${getStyle({
+        today,
+        date,
+      })}  select-none ${
         isSameDay(selectedDate, date) && !marked
           ? "border-red-600"
           : "border-border"
