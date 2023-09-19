@@ -39,7 +39,7 @@ export default function Cell({ date }: PropTypes) {
 
   useEffect(() => {
     setRating(getInitialRating({ thisTab, marked }))
-  }, [currentTab, setRating, getInitialRating])
+  }, [currentTab, setRating, marked, thisTab, today])
 
   useEffect(() => {
     if (addGoal) {
