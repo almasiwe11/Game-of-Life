@@ -13,7 +13,11 @@ export default function NewTab() {
   function onSubmit(values: TabTypesForm) {
     const isUniqeName = !dateState.tabs.some((tab) => tab.name === values.name)
     if (isUniqeName) {
-      const withMarkedDays: TabTypes = { ...values, markedDays: [] }
+      const withMarkedDays: TabTypes = {
+        ...values,
+        markedDays: [],
+        monthStats: [],
+      }
       dispatch({ type: Commands.TABINFO, details: withMarkedDays })
     }
   }

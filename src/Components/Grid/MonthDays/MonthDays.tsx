@@ -6,7 +6,7 @@ export default function MonthDays() {
   return (
     <>
       {monthDays.map((date, i) => (
-        <Cell key={i} date={date} />
+        <Cell key={i} date={date} index={i} />
       ))}
     </>
   )

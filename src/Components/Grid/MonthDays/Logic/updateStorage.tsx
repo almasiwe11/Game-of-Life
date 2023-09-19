@@ -1,10 +1,13 @@
-import { isSameDay, parseJSON } from "date-fns"
+import { isSameDay, parseJSON, isSameMonth, format } from "date-fns"
 import {
   TabTypes,
   MarkedDaysAny,
   FormTypes,
   MoodChecker,
   CellInfoAny,
+  MonthStats,
+  WeekInfo,
+  DayInfo,
 } from "../../../../Types/TabTypes"
 import {
   ActionType,
@@ -96,12 +99,27 @@ function getCellInfo({
   return info
 }
 function updateStorage(
-  cellInfo: CellInfoAny,
   thisTab: TabTypes | undefined,
   dateState: DateStateType,
   currentTab: string,
-  dispatch: (value: ActionType) => void
+  dispatch: (value: ActionType) => void,
+  index: number,
+  date: Date,
+  rating: number,
+  selectedDate: Date,
+  currentGoal: number,
+  skipped: boolean,
+  dayOff: boolean
 ) {
+  const cellInfo: CellInfoAny = getCellInfo({
+    thisTab,
+    rating,
+    date,
+    selectedDate,
+    currentGoal,
+    skipped,
+    dayOff,
+  })!
   const oldTab: TabTypes = thisTab as TabTypes
   const update = oldTab.markedDays.some((marked) =>
     isSameDay(parseJSON(marked.day), cellInfo.day)
@@ -116,9 +134,13 @@ function updateStorage(
     newMarkedDays = [...oldTab.markedDays, cellInfo!] as MarkedDaysAny
   }
 
+  const weekOrder = Math.floor(index / 7) + 1
+  updateMonthStats({ weekOrder, thisTab, date, cellInfo })
+
   const newTab: TabTypes = {
     ...oldTab,
     markedDays: newMarkedDays,
+    monthStats: updateMonthStats({ weekOrder, thisTab, date, cellInfo }),
   } as TabTypes
 
   const allNewTabs = dateState.tabs.map((tab) =>
@@ -126,6 +148,82 @@ function updateStorage(
   )
   localStorage.setItem("tabs", JSON.stringify(allNewTabs))
   dispatch({ type: Commands.SAVECHANGE, allNewTabs: allNewTabs })
+}
+
+function updateMonthStats({
+  weekOrder,
+  thisTab,
+  date,
+  cellInfo,
+}: {
+  weekOrder: number
+  thisTab: TabTypes | undefined
+  date: Date
+  cellInfo: CellInfoAny
+}) {
+  const currentYearMonth = format(date, "LLLL, y")
+  const oldMonthStats = thisTab!.monthStats
+  let newMonthStats: MonthStats[]
+
+  const updateMonthStats = oldMonthStats.find(
+    (month) => month.yearMonth === currentYearMonth
+  )
+
+  const dayInfo: DayInfo = {
+    day: date,
+    rate: cellInfo.rating,
+  }
+
+  if (!updateMonthStats) {
+    newMonthStats = [
+      ...oldMonthStats,
+      {
+        yearMonth: currentYearMonth,
+        weekStats: [{ week: weekOrder, ratings: [dayInfo] }],
+      },
+    ]
+  } else {
+    const oldMonth = oldMonthStats.find(
+      (month) => month.yearMonth === currentYearMonth
+    ) // initial MONTH
+    const allOldWeeks = oldMonth!.weekStats
+    let allNewWeeks: WeekInfo[]
+    let newWeek: WeekInfo
+    const weekUpdate = oldMonth!.weekStats.find(
+      (week) => week.week === weekOrder
+    ) // this week already exists
+    if (weekUpdate) {
+      let newWeekRatings: DayInfo[]
+      const oldWeekRatings = weekUpdate.ratings
+
+      // day already exist
+      const dayUpdate = oldWeekRatings.find((day) => isSameDay(date, day.day))
+      if (dayUpdate) {
+        newWeekRatings = oldWeekRatings.map((day) =>
+          isSameDay(date, day.day) ? dayInfo : day
+        )
+      } else {
+        newWeekRatings = [...oldWeekRatings, dayInfo]
+      }
+      //
+      newWeek = { week: weekOrder, ratings: newWeekRatings }
+      allNewWeeks = allOldWeeks.map((week) =>
+        week.week === weekOrder ? newWeek : week
+      )
+    } else {
+      newWeek = { week: weekOrder, ratings: [dayInfo] }
+      allNewWeeks = [...allOldWeeks, newWeek]
+    }
+    const newMonth: MonthStats = {
+      yearMonth: currentYearMonth,
+      weekStats: allNewWeeks,
+    }
+    newMonthStats = oldMonthStats.map((month) =>
+      month.yearMonth === currentYearMonth ? newMonth : month
+    )
+  }
+
+  return newMonthStats
 }
 
 export { updateStorage, getCellInfo, getModifiedRating }

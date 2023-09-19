@@ -26,6 +26,7 @@ const initalState: DateStateType = {
   currentTab: tabFromStorage.length > 0 ? tabFromStorage[0].name : "",
   selectedDate: new Date(),
   goalInfo: initialGoalInfo,
+  currentMonthStats: [],
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {

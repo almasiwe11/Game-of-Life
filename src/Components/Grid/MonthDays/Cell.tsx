@@ -12,9 +12,10 @@ import { getStyle, getBgColor } from "./Logic/Style"
 
 type PropTypes = {
   date: Date
+  index: number
 }
 
-export default function Cell({ date }: PropTypes) {
+export default function Cell({ date, index }: PropTypes) {
   const formattedDay = format(date, "d")
   const isToday = isSameDay(new Date(), date)
 
@@ -51,7 +52,6 @@ export default function Cell({ date }: PropTypes) {
   getIcons()
 
   function handleClick() {
-    console.log(date)
     dispatch({ type: Commands.SELECTDAY, day: date })
     if (thisTab?.type !== "goal-number") {
       handleRating()
@@ -60,16 +60,19 @@ export default function Cell({ date }: PropTypes) {
   }
 
   function handleTab() {
-    const cellInfo: CellInfoAny = getCellInfo({
+    updateStorage(
       thisTab,
-      rating,
+      dateState,
+      currentTab,
+      dispatch,
+      index,
       date,
+      rating,
       selectedDate,
       currentGoal,
       skipped,
-      dayOff,
-    })!
-    updateStorage(cellInfo, thisTab, dateState, currentTab, dispatch)
+      dayOff
+    )
     if (thisTab?.type === "goal-number") {
       dispatch({ type: Commands.GOALSUBMITTED })
     }

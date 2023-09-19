@@ -19,6 +19,21 @@ type FormTypes = {
   maxDayOff: number
 }
 
+type MonthStats = {
+  yearMonth: string
+  weekStats: WeekInfo[] //[{week:1, ratings:[30, 60, -40]}, {week:2, ratings:[30,20,70]}]
+}
+
+type WeekInfo = {
+  week: number
+  ratings: DayInfo[]
+}
+
+type DayInfo = {
+  day: Date
+  rate: number
+}
+
 type TabVariations = "moodchecker" | "goal-number" | "yes-no"
 
 type TabTypes = FormTypes & (MoodChecker | GoalNumber | YesNo)
@@ -39,6 +54,7 @@ type MoodChecker = {
   type: "moodchecker"
   settings: TabSettings
   markedDays: MarkedMoodChecker[]
+  monthStats: MonthStats[]
 }
 
 type MoodCheckerForm = {
@@ -51,6 +67,7 @@ type GoalNumber = {
   settings: TabSettings
   goal: number
   markedDays: MarkedGoalNumber[]
+  monthStats: MonthStats[]
 }
 
 type GoalNumberForm = {
@@ -62,6 +79,7 @@ type GoalNumberForm = {
 type YesNo = {
   type: "yes-no"
   markedDays: MarkedYesNo[]
+  monthStats: MonthStats[]
 }
 
 type YesNoForm = {
@@ -113,4 +131,7 @@ export type {
   MarkedDaysAny,
   CellInfoAny,
   MarkedGoalNumber,
+  MonthStats,
+  WeekInfo,
+  DayInfo,
 }

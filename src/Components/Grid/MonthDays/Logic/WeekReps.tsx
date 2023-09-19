@@ -17,17 +17,20 @@ function getWeekOrder({
   selectedDate: Date
   thisTab: TabTypes | undefined
 }) {
-  const firstDayOfMonthWeek = startOfWeek(startOfMonth(selectedDate))
-  const lastDayOfMonthWeek = endOfWeek(endOfMonth(selectedDate))
+  const firstDayOfMonthWeek = startOfWeek(startOfMonth(selectedDate), {
+    weekStartsOn: 1,
+  })
+  const lastDayOfMonthWeek = endOfWeek(endOfMonth(selectedDate), {
+    weekStartsOn: 1,
+  })
 
   let weekOrder = 1
+  const weekFirst = []
   let nextWeek = firstDayOfMonthWeek
   while (!isSameISOWeek(lastDayOfMonthWeek, nextWeek)) {
     weekOrder++
     nextWeek = add(nextWeek, { weeks: 1 })
   }
-
-  console.log(weekOrder)
 }
 
 export { getWeekOrder }

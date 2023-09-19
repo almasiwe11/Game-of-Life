@@ -9,6 +9,12 @@ type DateStateType = {
   currentTab: string
   selectedDate: Date
   goalInfo: GoalInfo
+  currentMonthStats: WeekInfo[]
+}
+
+type WeekInfo = {
+  week: number
+  ratings: number[]
 }
 
 type GoalInfo = {
