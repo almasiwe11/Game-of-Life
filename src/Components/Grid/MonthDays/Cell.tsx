@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react"
-import { format, isSameDay } from "date-fns"
+import {
+  format,
+  isSameDay,
+  isSameMonth,
+  add,
+  isSameISOWeek,
+  sub,
+} from "date-fns"
 import { useDate } from "../../../Context/DateContextProvider"
 import { icons } from "../../../Icons/Icons"
 import { Mood } from "../../../Types/TabTypes"
@@ -26,7 +33,7 @@ export default function Cell({ date }: PropTypes) {
   const isToday = isSameDay(new Date(), date)
 
   const { dateState, dispatch } = useDate()
-  const { currentTab, goalInfo, selectedDate } = dateState
+  const { currentTab, goalInfo, selectedDate, today } = dateState
   const { currentGoal, addGoal, skipped, dayOff } = goalInfo
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
 
@@ -172,6 +179,7 @@ export default function Cell({ date }: PropTypes) {
         settings: set,
         rating: calcRating(set, rightRating, thisTab!.minRating)!,
         streak: 0,
+        week: { order: 3 },
       }
     } else if (thisTab?.type === "yes-no") {
       let rating: number
@@ -183,6 +191,7 @@ export default function Cell({ date }: PropTypes) {
         streak: 0,
         mood: rightRating,
         rating: rating,
+        week: { order: 3 },
       }
     } else if (thisTab?.type === "goal-number") {
       info = {
@@ -199,6 +208,7 @@ export default function Cell({ date }: PropTypes) {
         goal: thisTab.goal,
         skipped: false,
         dayOff: false,
+        week: { order: 3 },
       }
     }
     return info
@@ -275,19 +285,25 @@ export default function Cell({ date }: PropTypes) {
     }
   }
 
-  const bgCell = {
+  const cellStyle = {
     backgroundColor: getBgColor(),
   }
 
+  let style: string
+  const nextMonth = add(today, { months: 1 })
+  if (isSameMonth(date, nextMonth)) style = "hidden"
+  else if (!isSameMonth(date, today)) style = "invisible"
+  else style = "flex-center"
+
   return (
     <div
-      className={`text-center text-white h-20 border select-none ${
+      className={`text-center text-white h-20 border ${style}  select-none ${
         isSameDay(selectedDate, date) && !marked
           ? "border-red-600"
           : "border-border"
-      } relative cursor-pointer flex-center  group`}
+      } relative cursor-pointer group`}
       onClick={handleClick}
-      style={bgCell}
+      style={cellStyle}
     >
       <span
         className={`absolute top-2 right-4 rounded-full h-6   w-6 ${

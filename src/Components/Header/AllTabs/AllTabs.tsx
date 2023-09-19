@@ -1,4 +1,3 @@
-import { BsPlusCircle } from "react-icons/bs"
 import { Commands } from "../../../Types/ContextTypes"
 import { useDate } from "../../../Context/DateContextProvider"
 
@@ -6,8 +5,8 @@ export default function AllTabs() {
   const { dispatch, dateState } = useDate()
   const { tabs } = dateState
   return (
-    <div className="absolute flex gap-2 left-[50%] translate-x-[-50%]">
-      <div className="flex gap-1  ">
+    <div className=" flex-center gap-2 ">
+      <div className="flex gap-2  w-full flex-wrap ">
         {tabs.map((tab) => (
           <button
             key={tab.name}
@@ -24,12 +23,6 @@ export default function AllTabs() {
           </button>
         ))}
       </div>
-      <button
-        className=" text-white self-center h-6 flex-center w-6 cursor-pointer  rounded-full"
-        onClick={() => dispatch({ type: Commands.NEWTAB })}
-      >
-        <BsPlusCircle className="w-6 h-6" />
-      </button>
     </div>
   )
 }

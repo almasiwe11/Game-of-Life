@@ -9,8 +9,8 @@ function App() {
   const { overlay, newTab } = dateState
   console.log(dateState)
   return (
-    <div className="flex items-center h-screen">
-      <div className="flex items-center  w-[90%] mx-auto">
+    <div className="flex justify-center items-start pt-24 h-screen">
+      <div className="flex  w-[90%] mx-auto">
         <Body />
         <Details />
       </div>
