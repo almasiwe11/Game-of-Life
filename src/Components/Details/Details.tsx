@@ -110,13 +110,13 @@ export default function Details() {
     } else {
       if (isSameISOWeek(new Date(), observedWeek)) {
         const dayOfWeekNumber = parseInt(format(new Date(), "i"))
-        times = Math.round((dayOfWeekNumber / times) * times)
+        times = Math.round((dayOfWeekNumber * times) / 7)
       }
       if (isSameISOWeek(parseJSON(thisTab!.startDay), observedWeek)) {
         const dayOfWeekNumber = parseInt(
           format(parseJSON(thisTab!.startDay), "i")
         )
-        times = Math.round(((7 - dayOfWeekNumber) * times) / 7)
+        times = Math.round(((7 - dayOfWeekNumber) * times) / 7) + 1
       }
     }
     return times
