@@ -93,10 +93,10 @@ export default function useFormikLogic() {
     minRating: Yup.number()
       .required("Min Rating is required")
       .test({
-        message: "Max Rating should be higher than avgRating and minRating",
+        message: "Min Ratnig should be less than 0 and avgRating",
         test: function (value) {
           const { maxRating, avgRating } = this.parent!
-          return value < (maxRating || avgRating)
+          return value < (maxRating || avgRating) && value < 0
         },
       }),
     avgRating: Yup.number()
@@ -113,7 +113,7 @@ export default function useFormikLogic() {
   const commonProperties = {
     name: "",
     maxRating: 100,
-    minRating: 0,
+    minRating: -100,
     avgRating: 80,
     timesPerWeek: 7,
     maxDayOff: 2,

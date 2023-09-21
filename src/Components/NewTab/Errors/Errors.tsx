@@ -8,11 +8,11 @@ type PropTypes = {
 function getErrorMessages(object: FormikErrors<TabTypesForm>) {
   const values: string[] = []
 
-  function getVal(object: FormikErrors<TabTypesForm>) {
+  function getVal<T>(object: FormikErrors<T>) {
     for (const key in object) {
-      const oneKey = object[key as keyof FormikErrors<TabTypesForm>]
+      const oneKey = object[key as keyof FormikErrors<T>]
       if (typeof oneKey === "object") {
-        getVal(oneKey)
+        getVal(oneKey as FormikErrors<T>)
       } else {
         values.push(oneKey!)
       }
