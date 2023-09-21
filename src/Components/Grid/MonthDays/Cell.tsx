@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
-import { format, isSameDay } from "date-fns"
+import { format, isSameDay, isAfter, isBefore } from "date-fns"
 import { useDate } from "../../../Context/DateContextProvider"
 import { icons } from "../../../Icons/Icons"
 import { IconType } from "react-icons"
 import { Commands } from "../../../Types/ContextTypes"
-import { CellInfoAny } from "../../../Types/TabTypes"
 import { parseJSON } from "date-fns"
 import { getInitialRating } from "./Logic/InitialRating"
-import { updateStorage, getCellInfo } from "./Logic/updateStorage"
+import { updateStorage } from "./Logic/updateStorage"
 import { getStyle, getBgColor } from "./Logic/Style"
 
 type PropTypes = {
@@ -52,6 +51,13 @@ export default function Cell({ date, index }: PropTypes) {
   getIcons()
 
   function handleClick() {
+    if (isAfter(date, new Date())) return
+
+    if (
+      !isSameDay(date, parseJSON(thisTab!.startDay)) &&
+      isBefore(date, parseJSON(thisTab!.startDay))
+    )
+      return
     dispatch({ type: Commands.SELECTDAY, day: date })
     if (thisTab?.type !== "goal-number") {
       handleRating()

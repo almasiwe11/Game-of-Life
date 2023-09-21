@@ -5,8 +5,11 @@ import {
   startOfMonth,
   endOfMonth,
   isSameISOWeek,
-  getDate,
   add,
+  differenceInDays,
+  parseJSON,
+  isSameMonth,
+  getWeekOfMonth,
 } from "date-fns"
 import { KeyboardEvent, useState } from "react"
 import { Commands } from "../../Types/ContextTypes"
@@ -24,17 +27,65 @@ export default function Details() {
     (month) => month.yearMonth === inpsectMonthFormat
   )
 
-  const weekCompleted = thisMonth?.weekStats
+  let totalAvg = 0
+  let totalTimesPerWeek = 0
+
+  let weekCompleted = thisMonth?.weekStats
     .map((week) => {
+      const outOf = calcTimesPerWeek(week.week)
       return {
         week: week.week,
         completed: calcCompleted(week.week, week.ratings).completed,
-        avg: Math.round(
-          calcCompleted(week.week, week.ratings).rating / thisTab!.timesPerWeek
-        ),
+        outOf: outOf,
+        avg: Math.round(calcCompleted(week.week, week.ratings).rating / outOf),
+        total: calcCompleted(week.week, week.ratings).rating,
       }
     })
     .sort((a, b) => a.week - b.week)
+
+  function weekUpdated() {
+    const { first, last } = rightInterval()
+    const arr = Array.from({ length: last - first + 1 }, (_, i) => first + i)
+    if (weekCompleted) {
+      const mapped = arr.map((week) => {
+        const outOf = calcTimesPerWeek(week)
+        const missed = {
+          week: week,
+          completed: 0,
+          outOf: outOf,
+          avg: 0,
+          total: 0,
+        }
+        const there = weekCompleted!.find((compl) => compl.week === week)
+        return there ? there : missed
+      })
+      return mapped
+    }
+  }
+  if (weekCompleted) {
+    weekCompleted = weekUpdated()
+    totalAvg = weekCompleted!.reduce((acc, rate) => {
+      return acc + rate.total
+    }, 0)
+    totalTimesPerWeek = weekCompleted!.reduce((acc, timesPerWeek) => {
+      return acc + timesPerWeek.outOf
+    }, 0)
+  }
+
+  function rightInterval() {
+    let first = 1
+    let last = lastWeekNumber(today)
+
+    if (isSameMonth(parseJSON(thisTab!.startDay), new Date())) {
+      first = getWeekOfMonth(thisTab!.startDay)
+      last = getWeekOfMonth(new Date())
+      return { first, last }
+    } else if (isSameMonth(new Date(), today)) {
+      last = getWeekOfMonth(new Date())
+      return { first, last }
+    }
+    return { first, last }
+  }
 
   function calcCompleted(week: number, ratings: DayInfo[]) {
     const weekAttempt = ratings.filter((rating) => rating.rate > 0).length
@@ -46,6 +97,29 @@ export default function Details() {
     } else if (week === lastWeekNumber(today)) {
       return linkMonth({ weekAttempt, weekTotal, link: "lastWeek" })
     } else return { completed: weekAttempt, rating: weekTotal }
+  }
+
+  function calcTimesPerWeek(week: number) {
+    const firstDay = startOfMonth(today)
+    const observedWeek = add(firstDay, { weeks: week - 1 })
+    let times = thisTab!.timesPerWeek
+    if (isSameISOWeek(new Date(), parseJSON(thisTab!.startDay))) {
+      const diff =
+        differenceInDays(new Date(), parseJSON(thisTab!.startDay)) + 1
+      times = Math.round((diff * thisTab!.timesPerWeek) / 7)
+    } else {
+      if (isSameISOWeek(new Date(), observedWeek)) {
+        const dayOfWeekNumber = parseInt(format(new Date(), "i"))
+        times = Math.round((dayOfWeekNumber / times) * times)
+      }
+      if (isSameISOWeek(parseJSON(thisTab!.startDay), observedWeek)) {
+        const dayOfWeekNumber = parseInt(
+          format(parseJSON(thisTab!.startDay), "i")
+        )
+        times = Math.round(((7 - dayOfWeekNumber) * times) / 7)
+      }
+    }
+    return times
   }
 
   function linkMonth({
@@ -140,7 +214,7 @@ export default function Details() {
               <Fragment key={week.week}>
                 <span> {week.week} </span>
                 <span> {week.completed} </span>
-                <span> {thisTab?.timesPerWeek} </span>
+                <span> {week.outOf} </span>
                 <span>
                   {week.avg}/{thisTab?.avgRating}{" "}
                 </span>
@@ -152,11 +226,7 @@ export default function Details() {
           <div className="text-center text-lg mt-6">
             Average this month
             <span className="text-blue ml-4">
-              {Math.round(
-                weekCompleted.reduce((acc, rate) => {
-                  return acc + rate.avg
-                }, 0) / lastWeekNumber(today)
-              )}
+              {Math.round(totalAvg / totalTimesPerWeek)}
             </span>
           </div>
         )}

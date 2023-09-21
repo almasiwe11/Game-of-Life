@@ -17,6 +17,7 @@ type FormTypes = {
   avgRating: number
   timesPerWeek: number
   maxDayOff: number
+  startDay: Date
 }
 
 type MonthStats = {
