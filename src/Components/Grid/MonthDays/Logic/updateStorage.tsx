@@ -1,4 +1,4 @@
-import { isSameDay, parseJSON, format } from "date-fns"
+import { isSameDay, parseJSON, format, getWeekOfMonth } from "date-fns"
 import {
   TabTypes,
   MarkedDaysAny,
@@ -136,13 +136,19 @@ function updateStorage(
   }
 
   const weekOrder = Math.floor(index / 7) + 1
+  const goalWeekOrder = getWeekOfMonth(selectedDate, { weekStartsOn: 1 })
 
   const newTab: TabTypes = {
     ...oldTab,
     markedDays: newMarkedDays,
     monthStats:
       thisTab!.type === "goal-number"
-        ? updateMonthStats({ weekOrder, thisTab, date: selectedDate, cellInfo })
+        ? updateMonthStats({
+            weekOrder: goalWeekOrder,
+            thisTab,
+            date: selectedDate,
+            cellInfo,
+          })
         : updateMonthStats({ weekOrder, thisTab, date, cellInfo }),
   } as TabTypes
 

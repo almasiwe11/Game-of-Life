@@ -77,11 +77,11 @@ export default function Details() {
     let last = lastWeekNumber(today)
 
     if (isSameMonth(parseJSON(thisTab!.startDay), new Date())) {
-      first = getWeekOfMonth(parseJSON(thisTab!.startDay))
-      last = getWeekOfMonth(new Date())
+      first = getWeekOfMonth(parseJSON(thisTab!.startDay), { weekStartsOn: 1 })
+      last = getWeekOfMonth(new Date(), { weekStartsOn: 1 })
       return { first, last }
     } else if (isSameMonth(new Date(), today)) {
-      last = getWeekOfMonth(new Date())
+      last = getWeekOfMonth(new Date(), { weekStartsOn: 1 })
       return { first, last }
     }
     return { first, last }
