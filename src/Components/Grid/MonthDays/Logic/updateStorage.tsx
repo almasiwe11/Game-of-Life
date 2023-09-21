@@ -197,10 +197,12 @@ function updateMonthStats({
       const oldWeekRatings = weekUpdate.ratings
 
       // day already exist
-      const dayUpdate = oldWeekRatings.find((day) => isSameDay(date, day.day))
+      const dayUpdate = oldWeekRatings.find((day) =>
+        isSameDay(date, parseJSON(day.day))
+      )
       if (dayUpdate) {
         newWeekRatings = oldWeekRatings.map((day) =>
-          isSameDay(date, day.day) ? dayInfo : day
+          isSameDay(date, parseJSON(day.day)) ? dayInfo : day
         )
       } else {
         newWeekRatings = [...oldWeekRatings, dayInfo]
