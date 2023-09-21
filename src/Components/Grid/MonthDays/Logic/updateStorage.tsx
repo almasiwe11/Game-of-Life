@@ -136,12 +136,14 @@ function updateStorage(
   }
 
   const weekOrder = Math.floor(index / 7) + 1
-  updateMonthStats({ weekOrder, thisTab, date, cellInfo })
 
   const newTab: TabTypes = {
     ...oldTab,
     markedDays: newMarkedDays,
-    monthStats: updateMonthStats({ weekOrder, thisTab, date, cellInfo }),
+    monthStats:
+      thisTab!.type === "goal-number"
+        ? updateMonthStats({ weekOrder, thisTab, date: selectedDate, cellInfo })
+        : updateMonthStats({ weekOrder, thisTab, date, cellInfo }),
   } as TabTypes
 
   const allNewTabs = dateState.tabs.map((tab) =>
