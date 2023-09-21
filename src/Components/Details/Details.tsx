@@ -4,8 +4,8 @@ import {
   sub,
   startOfMonth,
   endOfMonth,
-  eachWeekOfInterval,
   isSameISOWeek,
+  getDate,
   add,
 } from "date-fns"
 import { KeyboardEvent, useState } from "react"
@@ -42,62 +42,31 @@ export default function Details() {
       return acc + rate.rate
     }, 0)
     if (week === 1) {
-      const lastMonth = sub(today, { months: 1 })
-      const prevMonthFormat = format(lastMonth, "LLLL, y")
-      const prevMonth = thisTab?.monthStats.find(
-        (month) => month.yearMonth === prevMonthFormat
-      )
-      const maxWeeksLastMonth = lastWeekNumber(lastMonth)
-      const lastWeek = prevMonth?.weekStats.find(
-        (week) => week.week === maxWeeksLastMonth
-      )
-      let lastMonthLastWeek: number
-      let lastMonthWeekTotal: number
-      if (lastWeek) {
-        lastMonthLastWeek = lastWeek.ratings.filter(
-          (rate) => rate.rate > 0
-        ).length
-        lastMonthWeekTotal = lastWeek.ratings.reduce((acc, rate) => {
-          return acc + rate.rate
-        }, 0)
-      } else (lastMonthLastWeek = 0), (lastMonthWeekTotal = 0)
-      return {
-        completed: weekAttempt + lastMonthLastWeek,
-        rating: weekTotal + lastMonthWeekTotal,
-      }
+      return linkMonth({ weekAttempt, weekTotal, link: "firstWeek" })
     } else if (week === lastWeekNumber(today)) {
-      const nextMonth = add(today, { months: 1 })
-      const nextMonthFormat = format(nextMonth, "LLLL, y")
-      const nextMonthStats = thisTab?.monthStats.find(
-        (month) => month.yearMonth === nextMonthFormat
-      )
-      const firstWeek = nextMonthStats?.weekStats.find(
-        (week) => week.week === 1
-      )
-      let nextMonthLastWeek: number
-      let nextMonthWeekTotal: number
-      if (firstWeek) {
-        nextMonthLastWeek = firstWeek.ratings.filter(
-          (rate) => rate.rate > 0
-        ).length
-        nextMonthWeekTotal = firstWeek.ratings.reduce((acc, rate) => {
-          return acc + rate.rate
-        }, 0)
-      } else (nextMonthLastWeek = 0), (nextMonthWeekTotal = 0)
-      return {
-        completed: weekAttempt + nextMonthLastWeek,
-        rating: weekTotal + nextMonthWeekTotal,
-      }
+      return linkMonth({ weekAttempt, weekTotal, link: "lastWeek" })
     } else return { completed: weekAttempt, rating: weekTotal }
   }
 
-  function linkMonth({ weekAttempt, weekTotal, link }) {
-    const lastMonth = sub(today, { months: 1 })
+  function linkMonth({
+    weekAttempt,
+    weekTotal,
+    link,
+  }: {
+    weekAttempt: number
+    weekTotal: number
+    link: "firstWeek" | "lastWeek"
+  }) {
+    const lastMonth =
+      link === "firstWeek"
+        ? sub(today, { months: 1 })
+        : add(today, { months: 1 })
     const prevMonthFormat = format(lastMonth, "LLLL, y")
     const prevMonth = thisTab?.monthStats.find(
       (month) => month.yearMonth === prevMonthFormat
     )
-    const maxWeeksLastMonth = lastWeekNumber(lastMonth)
+    const maxWeeksLastMonth =
+      link === "firstWeek" ? lastWeekNumber(lastMonth) : 1
     const lastWeek = prevMonth?.weekStats.find(
       (week) => week.week === maxWeeksLastMonth
     )
@@ -136,6 +105,7 @@ export default function Details() {
       dispatch({ type: Commands.SUBMITGOAL, goal: Number(goal) })
     }
   }
+
   return (
     <div className="bg-dark self-stretch w-full">
       <div className="p-8 text-white">
@@ -176,6 +146,18 @@ export default function Details() {
                 </span>
               </Fragment>
             ))}
+          </div>
+        )}
+        {weekCompleted && (
+          <div className="text-center text-lg mt-6">
+            Average this month
+            <span className="text-blue ml-4">
+              {Math.round(
+                weekCompleted.reduce((acc, rate) => {
+                  return acc + rate.avg
+                }, 0) / lastWeekNumber(today)
+              )}
+            </span>
           </div>
         )}
       </div>
