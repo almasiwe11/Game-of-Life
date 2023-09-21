@@ -1,7 +1,6 @@
 import * as Yup from "yup"
 import { TabTypesForm, TabVariations } from "../../../Types/TabTypes"
 import { useDate } from "../../../Context/DateContextProvider"
-import { sub } from "date-fns"
 
 export default function useFormikLogic() {
   const { dateState } = useDate()
@@ -117,7 +116,6 @@ export default function useFormikLogic() {
     avgRating: 80,
     timesPerWeek: 7,
     maxDayOff: 2,
-    startDay: new Date(),
   }
 
   const settings = {

@@ -1,24 +1,23 @@
 import { isSameMonth, add } from "date-fns"
+import { Mood } from "../../../../Types/TabTypes"
 
 function getBgColor(rating: number) {
   switch (rating) {
     case 0:
       return "transparent"
-    case 1:
+    case Mood.SKIPPED:
       return "black"
-    case 2:
-      return "white"
-    case 3:
+    case Mood.ANGRY:
       return "red"
-    case 4:
+    case Mood.SAD:
       return "#b45309"
-    case 5:
+    case Mood.MEH:
       return "#eab308"
-    case 6:
+    case Mood.GREAT:
       return "green"
-    case 7:
+    case Mood.FANTASTIC:
       return "#06b6d4"
-    case 8:
+    case Mood.PERFECT:
       return "#7c3aed"
     default:
       return "transparent"

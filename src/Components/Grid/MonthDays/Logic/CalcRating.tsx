@@ -10,8 +10,6 @@ function calcRating(
     switch (mood) {
       case Mood.QUESTION:
         return 0
-      case Mood.DAYOFF:
-        return 0
       case Mood.SKIPPED:
         return minRating
       case Mood.ANGRY:

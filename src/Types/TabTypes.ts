@@ -1,7 +1,6 @@
 const enum Mood {
   QUESTION,
   SKIPPED,
-  DAYOFF,
   ANGRY,
   SAD,
   MEH,
@@ -17,12 +16,11 @@ type FormTypes = {
   avgRating: number
   timesPerWeek: number
   maxDayOff: number
-  startDay: Date
 }
 
 type MonthStats = {
   yearMonth: string
-  weekStats: WeekInfo[] //[{week:1, ratings:[30, 60, -40]}, {week:2, ratings:[30,20,70]}]
+  weekStats: WeekInfo[]
 }
 
 type WeekInfo = {
@@ -56,6 +54,7 @@ type MoodChecker = {
   settings: TabSettings
   markedDays: MarkedMoodChecker[]
   monthStats: MonthStats[]
+  startDay: Date
 }
 
 type MoodCheckerForm = {
@@ -69,6 +68,7 @@ type GoalNumber = {
   goal: number
   markedDays: MarkedGoalNumber[]
   monthStats: MonthStats[]
+  startDay: Date
 }
 
 type GoalNumberForm = {
@@ -81,6 +81,7 @@ type YesNo = {
   type: "yes-no"
   markedDays: MarkedYesNo[]
   monthStats: MonthStats[]
+  startDay: Date
 }
 
 type YesNoForm = {

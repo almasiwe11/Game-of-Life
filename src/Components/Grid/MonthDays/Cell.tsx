@@ -8,6 +8,7 @@ import { parseJSON } from "date-fns"
 import { getInitialRating } from "./Logic/InitialRating"
 import { updateStorage } from "./Logic/updateStorage"
 import { getStyle, getBgColor } from "./Logic/Style"
+import { Mood } from "../../../Types/TabTypes"
 
 type PropTypes = {
   date: Date
@@ -86,12 +87,13 @@ export default function Cell({ date, index }: PropTypes) {
 
   function handleRating() {
     if (thisTab?.type === "moodchecker") {
-      rating === 8 ? setRating(1) : setRating((prev) => prev! + 1)
+      rating === Mood.PERFECT
+        ? setRating(Mood.SKIPPED)
+        : setRating((prev) => prev! + 1)
     } else if (thisTab?.type === "yes-no") {
-      rating === 0 && setRating(3)
-      rating === 3 && setRating(7)
-      rating === 7 && setRating(2)
-      rating === 2 && setRating(3)
+      rating === Mood.QUESTION && setRating(Mood.ANGRY)
+      rating === Mood.ANGRY && setRating(Mood.GREAT)
+      rating === Mood.GREAT && setRating(Mood.ANGRY)
     }
   }
 
@@ -122,9 +124,9 @@ export default function Cell({ date, index }: PropTypes) {
 
       {Icon && (
         <Icon
-          className={`${rating === 8 ? "w-2/3 h-2/3" : "w-1/2 h-1/2"} ${
-            rating === 0 && "opacity-0 group-hover:opacity-100"
-          } ${rating === 2 && "text-blue"} `}
+          className={`${
+            rating === Mood.PERFECT ? "w-2/3 h-2/3" : "w-1/2 h-1/2"
+          } ${rating === 0 && "opacity-0 group-hover:opacity-100"}  `}
         />
       )}
     </div>

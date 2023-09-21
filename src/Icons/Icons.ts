@@ -1,5 +1,4 @@
 import {
-  FaRegFlag,
   FaSkullCrossbones,
   FaFaceAngry,
   FaFaceMeh,
@@ -14,7 +13,6 @@ import { BsQuestionLg } from "react-icons/bs"
 const icons = [
   BsQuestionLg,
   FaSkullCrossbones,
-  FaRegFlag,
   FaFaceAngry,
   FaFaceSadTear,
   FaFaceMeh,

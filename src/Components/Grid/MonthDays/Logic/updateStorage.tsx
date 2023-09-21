@@ -1,4 +1,4 @@
-import { isSameDay, parseJSON, isSameMonth, format } from "date-fns"
+import { isSameDay, parseJSON, format } from "date-fns"
 import {
   TabTypes,
   MarkedDaysAny,
@@ -8,7 +8,9 @@ import {
   MonthStats,
   WeekInfo,
   DayInfo,
+  Mood,
 } from "../../../../Types/TabTypes"
+
 import {
   ActionType,
   Commands,
@@ -23,13 +25,12 @@ function getModifiedRating({
   rating: number
 }) {
   if (thisTab!.type === "moodchecker") {
-    return rating === 8 ? 1 : rating! + 1
+    return rating === Mood.PERFECT ? Mood.SKIPPED : rating! + 1
   } else if (thisTab!.type === "yes-no") {
     let right
-    if (rating === 0) right = 3
-    if (rating === 3) right = 7
-    if (rating === 7) right = 2
-    if (rating === 2) right = 3
+    if (rating === Mood.QUESTION) right = Mood.ANGRY
+    if (rating === Mood.ANGRY) right = Mood.GREAT
+    if (rating === Mood.GREAT) right = Mood.ANGRY
     return right
   }
 }
@@ -66,8 +67,8 @@ function getCellInfo({
     }
   } else if (thisTab?.type === "yes-no") {
     let rating: number
-    if (rightRating === 0) rating = 0
-    if (rightRating === 3) rating = thisTab.minRating
+    if (rightRating === Mood.QUESTION) rating = 0
+    if (rightRating === Mood.ANGRY) rating = thisTab.minRating
     else rating = thisTab.maxRating
     info = {
       day: date,
