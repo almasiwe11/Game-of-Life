@@ -11,6 +11,15 @@ type DateStateType = {
   goalInfo: GoalInfo
   currentMonthStats: WeekInfo[]
   skipped: boolean
+  weekStat: WeekStat[]
+}
+
+type WeekStat = {
+  week: number
+  completed: number
+  outOf: number
+  avg: number
+  total: number
 }
 
 type WeekInfo = {
@@ -37,6 +46,7 @@ const enum Commands {
   GOALSUBMITTED,
   SKIPPED,
   SKIPUPDATED,
+  WEEKSTATS,
 }
 
 type ActionType = {
@@ -47,6 +57,7 @@ type ActionType = {
   allNewTabs?: TabTypes[]
   day?: Date
   goal?: number
+  weekStats?: WeekStat[]
 }
 
 type DispatchType = Dispatch<ActionType>
@@ -56,5 +67,5 @@ type DateContextType = {
   dispatch: DispatchType
 }
 
-export type { DateStateType, DateContextType, ActionType }
+export type { DateStateType, DateContextType, ActionType, WeekStat }
 export { Commands }

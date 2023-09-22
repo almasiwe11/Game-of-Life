@@ -28,6 +28,7 @@ const initalState: DateStateType = {
   goalInfo: initialGoalInfo,
   currentMonthStats: [],
   skipped: false,
+  weekStat: [],
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -104,6 +105,14 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
       return {
         ...state,
         skipped: false,
+      }
+    }
+
+    case Commands.WEEKSTATS: {
+      if (action.weekStats === undefined) throw new Error("weekstats expected")
+      return {
+        ...state,
+        weekStat: action.weekStats,
       }
     }
     default:

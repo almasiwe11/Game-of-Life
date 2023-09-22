@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { useDate } from "../../Context/DateContextProvider"
 import {
   format,
@@ -13,7 +14,7 @@ import {
   isSameDay,
 } from "date-fns"
 import { KeyboardEvent, useState } from "react"
-import { Commands } from "../../Types/ContextTypes"
+import { Commands, WeekStat } from "../../Types/ContextTypes"
 import {
   DayInfo,
   MarkedGoalNumber,
@@ -50,7 +51,7 @@ export default function Details() {
     }
   }
 
-  let weekCompleted = thisMonth?.weekStats
+  let weekCompleted: WeekStat[] | undefined = thisMonth?.weekStats
     .map((week) => {
       const outOf = calcTimesPerWeek(week.week)
       const attempted = calcCompleted(week.week, week.ratings).completed
@@ -90,6 +91,7 @@ export default function Details() {
   }
   if (weekCompleted) {
     weekCompleted = weekUpdated()
+    // dispatch({ type: Commands.WEEKSTATS, weekStats: weekCompleted })
     totalAvg = weekCompleted!.reduce((acc, rate) => {
       return acc + rate.total
     }, 0)
@@ -119,6 +121,13 @@ export default function Details() {
       saveChanges(allNewTabs, dispatch)
     }
   }
+
+  useEffect(() => {
+    if (weekCompleted) {
+      console.log(weekCompleted)
+      dispatch({ type: Commands.WEEKSTATS, weekStats: weekCompleted })
+    }
+  }, [thisTab!.markedDays])
 
   function rightInterval() {
     let first = 1
