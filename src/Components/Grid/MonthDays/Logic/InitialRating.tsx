@@ -24,8 +24,12 @@ function getInitialRating({
     const markedGoal = marked as MarkedGoalNumber
     if (markedGoal) {
       const goal = markedGoal.goal
+      const skipped = markedGoal.skipped
       const result = markedGoal.numberResult
       const { sad, meh, great, fantastic, perfect } = markedGoal.settings
+      if (skipped) {
+        return Mood.SKIPPED
+      }
       if (result <= (sad * goal) / 100) {
         return Mood.ANGRY
       }

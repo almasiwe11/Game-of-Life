@@ -20,7 +20,7 @@ export default function Cell({ date, index }: PropTypes) {
   const isToday = isSameDay(new Date(), date)
 
   const { dateState, dispatch } = useDate()
-  const { currentTab, goalInfo, selectedDate, today } = dateState
+  const { currentTab, goalInfo, selectedDate, today, skipped: skip } = dateState
   const { currentGoal, addGoal, skipped, dayOff } = goalInfo
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
 
@@ -48,6 +48,14 @@ export default function Cell({ date, index }: PropTypes) {
       handleTab()
     }
   }, [addGoal])
+
+  useEffect(() => {
+    if (skip && isSameDay(date, selectedDate)) {
+      setRating(Mood.SKIPPED)
+      handleTab()
+      dispatch({ type: Commands.SKIPUPDATED })
+    }
+  }, [skip])
 
   getIcons()
 

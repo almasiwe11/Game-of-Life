@@ -33,12 +33,17 @@ export default function Details() {
   let weekCompleted = thisMonth?.weekStats
     .map((week) => {
       const outOf = calcTimesPerWeek(week.week)
+      const attempted = calcCompleted(week.week, week.ratings).completed
+      const missedDays = outOf - attempted
+      const totalRatingWeek =
+        calcCompleted(week.week, week.ratings).rating +
+        missedDays * thisTab!.minRating
       return {
         week: week.week,
-        completed: calcCompleted(week.week, week.ratings).completed,
+        completed: attempted,
         outOf: outOf,
-        avg: Math.round(calcCompleted(week.week, week.ratings).rating / outOf),
-        total: calcCompleted(week.week, week.ratings).rating,
+        avg: Math.round(totalRatingWeek / outOf),
+        total: totalRatingWeek,
       }
     })
     .sort((a, b) => a.week - b.week)
@@ -53,8 +58,8 @@ export default function Details() {
           week: week,
           completed: 0,
           outOf: outOf,
-          avg: 0,
-          total: 0,
+          avg: thisTab!.minRating,
+          total: thisTab!.minRating * outOf,
         }
         const there = weekCompleted!.find((compl) => compl.week === week)
         return there ? there : missed
@@ -67,6 +72,7 @@ export default function Details() {
     totalAvg = weekCompleted!.reduce((acc, rate) => {
       return acc + rate.total
     }, 0)
+
     totalTimesPerWeek = weekCompleted!.reduce((acc, timesPerWeek) => {
       return acc + timesPerWeek.outOf
     }, 0)
@@ -180,7 +186,9 @@ export default function Details() {
     }
   }
 
-  function handleSkip() {}
+  function handleSkip() {
+    dispatch({ type: Commands.SKIPPED })
+  }
 
   return (
     <div className="bg-dark self-stretch w-full">

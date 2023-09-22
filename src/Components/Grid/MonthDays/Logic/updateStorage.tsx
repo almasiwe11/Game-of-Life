@@ -43,6 +43,7 @@ function getCellInfo({
   currentGoal,
   skipped,
   dayOff,
+  skip,
 }: {
   thisTab: TabTypes | undefined
   rating: number
@@ -51,6 +52,7 @@ function getCellInfo({
   currentGoal: number
   skipped: boolean
   dayOff: boolean
+  skip: boolean
 }) {
   const rightRating = getModifiedRating({ thisTab, rating })!
   const set = (thisTab as FormTypes & MoodChecker)!.settings
@@ -79,18 +81,20 @@ function getCellInfo({
     info = {
       day: selectedDate,
       streak: 0,
-      rating: calcGoalRating(
-        thisTab.goal,
-        currentGoal,
-        thisTab.minRating,
-        thisTab.maxRating,
-        skipped,
-        dayOff
-      ),
+      rating: skip
+        ? thisTab.minRating
+        : calcGoalRating(
+            thisTab.goal,
+            currentGoal,
+            thisTab.minRating,
+            thisTab.maxRating,
+            skipped,
+            dayOff
+          ),
       settings: set,
       numberResult: currentGoal,
       goal: thisTab.goal,
-      skipped: false,
+      skipped: skip,
       dayOff: false,
     }
   }
@@ -109,6 +113,7 @@ function updateStorage(
   skipped: boolean,
   dayOff: boolean
 ) {
+  const skip = dateState.skipped
   const cellInfo: CellInfoAny = getCellInfo({
     thisTab,
     rating,
@@ -117,6 +122,7 @@ function updateStorage(
     currentGoal,
     skipped,
     dayOff,
+    skip,
   })!
   const oldTab: TabTypes = thisTab as TabTypes
   const update = oldTab.markedDays.some((marked) =>

@@ -27,6 +27,7 @@ const initalState: DateStateType = {
   selectedDate: new Date(),
   goalInfo: initialGoalInfo,
   currentMonthStats: [],
+  skipped: false,
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -90,6 +91,19 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
           currentGoal: 0,
           addGoal: false,
         },
+      }
+    }
+    case Commands.SKIPPED: {
+      return {
+        ...state,
+        skipped: true,
+      }
+    }
+
+    case Commands.SKIPUPDATED: {
+      return {
+        ...state,
+        skipped: false,
       }
     }
     default:

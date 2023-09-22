@@ -129,8 +129,9 @@ export type {
   YesNo,
   MarkedDaysAny,
   CellInfoAny,
-  MarkedGoalNumber,
   MonthStats,
   WeekInfo,
   DayInfo,
+  GoalNumber,
+  MarkedGoalNumber,
 }

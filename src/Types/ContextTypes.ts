@@ -10,6 +10,7 @@ type DateStateType = {
   selectedDate: Date
   goalInfo: GoalInfo
   currentMonthStats: WeekInfo[]
+  skipped: boolean
 }
 
 type WeekInfo = {
@@ -34,6 +35,8 @@ const enum Commands {
   SELECTDAY,
   SUBMITGOAL,
   GOALSUBMITTED,
+  SKIPPED,
+  SKIPUPDATED,
 }
 
 type ActionType = {
