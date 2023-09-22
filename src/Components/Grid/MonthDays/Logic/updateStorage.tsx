@@ -63,7 +63,6 @@ function getCellInfo({
       settings: set,
       rating: calcRating(set, rightRating, thisTab!.minRating, thisTab)!,
       streak: 0,
-      week: { order: 3 },
     }
   } else if (thisTab?.type === "yes-no") {
     let rating: number
@@ -75,7 +74,6 @@ function getCellInfo({
       streak: 0,
       mood: rightRating,
       rating: rating,
-      week: { order: 3 },
     }
   } else if (thisTab?.type === "goal-number") {
     info = {
@@ -94,7 +92,6 @@ function getCellInfo({
       goal: thisTab.goal,
       skipped: false,
       dayOff: false,
-      week: { order: 3 },
     }
   }
   return info
@@ -155,6 +152,14 @@ function updateStorage(
   const allNewTabs = dateState.tabs.map((tab) =>
     tab.name === currentTab ? newTab : tab
   )
+
+  saveChanges(allNewTabs, dispatch)
+}
+
+function saveChanges(
+  allNewTabs: TabTypes[],
+  dispatch: (value: ActionType) => void
+) {
   localStorage.setItem("tabs", JSON.stringify(allNewTabs))
   dispatch({ type: Commands.SAVECHANGE, allNewTabs: allNewTabs })
 }
@@ -237,4 +242,4 @@ function updateMonthStats({
   return newMonthStats
 }
 
-export { updateStorage, getCellInfo, getModifiedRating }
+export { updateStorage, getCellInfo, getModifiedRating, saveChanges }

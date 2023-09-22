@@ -180,6 +180,8 @@ export default function Details() {
     }
   }
 
+  function handleSkip() {}
+
   return (
     <div className="bg-dark self-stretch w-full">
       <div className="p-8 text-white">
@@ -200,6 +202,12 @@ export default function Details() {
                 onChange={(e) => setGoal(e.target.value)}
                 onKeyDown={handleEnter}
               ></input>
+              <button
+                onClick={handleSkip}
+                className="p-1 5 px-3 font-bold bg-white text-black cursor-pointer rounded-lg"
+              >
+                Skipped
+              </button>
             </div>
           </div>
         )}

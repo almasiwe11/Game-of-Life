@@ -92,9 +92,6 @@ type MarkedDays = {
   day: Date
   streak: number
   rating: number
-  week: {
-    order: number
-  }
 }
 
 type MarkedMoodChecker = MarkedDays & {
