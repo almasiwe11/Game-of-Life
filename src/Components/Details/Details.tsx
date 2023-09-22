@@ -10,31 +10,52 @@ import {
   parseJSON,
   isSameMonth,
   getWeekOfMonth,
+  isSameDay,
 } from "date-fns"
 import { KeyboardEvent, useState } from "react"
 import { Commands } from "../../Types/ContextTypes"
-import { DayInfo } from "../../Types/TabTypes"
+import {
+  DayInfo,
+  MarkedGoalNumber,
+  MarkedYesNo,
+  MonthStats,
+  TabTypes,
+} from "../../Types/TabTypes"
 import { Fragment } from "react"
+import { saveChanges } from "../Grid/MonthDays/Logic/updateStorage"
 
 export default function Details() {
   const { dateState, dispatch } = useDate()
-  const { selectedDate, currentTab, today } = dateState
+  const { selectedDate, currentTab, today, tabs } = dateState
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
-  const formattedDay = format(selectedDate, "do MMMM")
   const [goal, setGoal] = useState("")
   const inpsectMonthFormat = format(today, "LLLL, y")
   const thisMonth = thisTab?.monthStats.find(
     (month) => month.yearMonth === inpsectMonthFormat
   )
-
+  let resultThisDay = 0
   let totalAvg = 0
   let totalTimesPerWeek = 0
+  let monthAvg
+  const marked = thisTab?.markedDays.find((day) =>
+    isSameDay(parseJSON(day.day), selectedDate)
+  )
+  if (marked) {
+    if (thisTab?.type === "goal-number") {
+      const markedDay = marked as MarkedGoalNumber
+      resultThisDay = markedDay.numberResult
+    } else {
+      const markedDay = marked as MarkedYesNo
+      resultThisDay = markedDay.rating
+    }
+  }
 
   let weekCompleted = thisMonth?.weekStats
     .map((week) => {
       const outOf = calcTimesPerWeek(week.week)
       const attempted = calcCompleted(week.week, week.ratings).completed
-      const missedDays = outOf - attempted
+      const marked = week.ratings.length
+      const missedDays = outOf - marked
       const totalRatingWeek =
         calcCompleted(week.week, week.ratings).rating +
         missedDays * thisTab!.minRating
@@ -76,6 +97,27 @@ export default function Details() {
     totalTimesPerWeek = weekCompleted!.reduce((acc, timesPerWeek) => {
       return acc + timesPerWeek.outOf
     }, 0)
+
+    monthAvg = Math.round(totalAvg / totalTimesPerWeek)
+    const oldMonthStats = thisTab!.monthStats
+    const oldThisMonth = thisMonth!
+
+    oldThisMonth.avgMonth
+    let newThisMonth: MonthStats
+    let newMonthStats: MonthStats[]
+    if (monthAvg !== oldThisMonth!.avgMonth) {
+      newThisMonth = { ...oldThisMonth, avgMonth: monthAvg }
+      newMonthStats = oldMonthStats.map((month) =>
+        month.yearMonth === inpsectMonthFormat ? newThisMonth : month
+      )
+      const thisTab = tabs.find((tab) => tab.name === currentTab)
+      const newTab = { ...thisTab!, monthStats: newMonthStats }
+      const allNewTabs: TabTypes[] = tabs.map((tab) =>
+        tab.name === currentTab ? newTab : tab
+      )
+      localStorage.setItem("tabs", JSON.stringify(allNewTabs))
+      saveChanges(allNewTabs, dispatch)
+    }
   }
 
   function rightInterval() {
@@ -194,12 +236,22 @@ export default function Details() {
     <div className="bg-dark self-stretch w-full">
       <div className="p-8 text-white">
         <h1 className="text-3xl font-bold text-center">
-          Details of {formattedDay}{" "}
+          {format(today, "LLLL")}
+          <span className="ml-3">
+            {isSameMonth(selectedDate, today) && format(selectedDate, "d")}
+          </span>
+        </h1>
+
+        <h1 className="font-bold text-center mt-2 text-xl">
+          {thisTab?.type === "goal-number"
+            ? `Result ${resultThisDay}`
+            : `Rating ${resultThisDay}`}
         </h1>
 
         {thisTab?.type === "goal-number" && (
           <div className="flex-center flex-col  mt-4 gap-3">
             <span className="text-2xl">Goal {thisTab.goal}</span>
+            <span>{}</span>
 
             <div className="flex gap-2  ">
               <span className="">Result</span>
@@ -241,9 +293,7 @@ export default function Details() {
         {weekCompleted && (
           <div className="text-center text-lg mt-6">
             Average this month
-            <span className="text-blue ml-4">
-              {Math.round(totalAvg / totalTimesPerWeek)}
-            </span>
+            <span className="text-blue ml-4">{monthAvg}</span>
           </div>
         )}
       </div>

@@ -200,6 +200,7 @@ function updateMonthStats({
       {
         yearMonth: currentYearMonth,
         weekStats: [{ week: weekOrder, ratings: [dayInfo] }],
+        avgMonth: 3,
       },
     ]
   } else {
@@ -237,6 +238,7 @@ function updateMonthStats({
       allNewWeeks = [...allOldWeeks, newWeek]
     }
     const newMonth: MonthStats = {
+      ...updateMonthStats,
       yearMonth: currentYearMonth,
       weekStats: allNewWeeks,
     }
