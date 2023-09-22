@@ -7,12 +7,12 @@ import { useDate } from "./Context/DateContextProvider"
 
 function App() {
   const { dateState } = useDate()
-  const { overlay, newTab } = dateState
+  const { overlay, newTab, tabs } = dateState
   return (
     <div className="flex flex-col justify-start items-start w-[90%] mx-auto pt-24 h-screen">
       <div className="flex w-full">
         <Body />
-        <Details />
+        {tabs.length > 0 && <Details />}
       </div>
       <Stats />
       {overlay && <Overlay />}

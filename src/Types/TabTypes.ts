@@ -19,7 +19,7 @@ type FormTypes = {
 }
 
 type MonthStats = {
-  yearMonth: string
+  yearMonth: Date
   weekStats: WeekInfo[]
   avgMonth: number
 }

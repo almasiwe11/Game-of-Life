@@ -30,9 +30,9 @@ export default function Details() {
   const { selectedDate, currentTab, today, tabs } = dateState
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
   const [goal, setGoal] = useState("")
-  const inpsectMonthFormat = format(today, "LLLL, y")
-  const thisMonth = thisTab?.monthStats.find(
-    (month) => month.yearMonth === inpsectMonthFormat
+  const inpsectMonthFormat = today
+  const thisMonth = thisTab?.monthStats.find((month) =>
+    isSameMonth(parseJSON(month.yearMonth), inpsectMonthFormat)
   )
   let resultThisDay = 0
   let totalAvg = 0
@@ -91,7 +91,6 @@ export default function Details() {
   }
   if (weekCompleted) {
     weekCompleted = weekUpdated()
-    // dispatch({ type: Commands.WEEKSTATS, weekStats: weekCompleted })
     totalAvg = weekCompleted!.reduce((acc, rate) => {
       return acc + rate.total
     }, 0)
@@ -110,7 +109,9 @@ export default function Details() {
     if (monthAvg !== oldThisMonth!.avgMonth) {
       newThisMonth = { ...oldThisMonth, avgMonth: monthAvg }
       newMonthStats = oldMonthStats.map((month) =>
-        month.yearMonth === inpsectMonthFormat ? newThisMonth : month
+        isSameMonth(parseJSON(month.yearMonth), inpsectMonthFormat)
+          ? newThisMonth
+          : month
       )
       const thisTab = tabs.find((tab) => tab.name === currentTab)
       const newTab = { ...thisTab!, monthStats: newMonthStats }
@@ -192,9 +193,8 @@ export default function Details() {
       link === "firstWeek"
         ? sub(today, { months: 1 })
         : add(today, { months: 1 })
-    const prevMonthFormat = format(lastMonth, "LLLL, y")
-    const prevMonth = thisTab?.monthStats.find(
-      (month) => month.yearMonth === prevMonthFormat
+    const prevMonth = thisTab?.monthStats.find((month) =>
+      isSameMonth(parseJSON(month.yearMonth), lastMonth)
     )
     const maxWeeksLastMonth =
       link === "firstWeek" ? lastWeekNumber(lastMonth) : 1

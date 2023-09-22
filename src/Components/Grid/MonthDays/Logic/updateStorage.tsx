@@ -1,4 +1,10 @@
-import { isSameDay, parseJSON, format, getWeekOfMonth } from "date-fns"
+import {
+  isSameDay,
+  parseJSON,
+  getWeekOfMonth,
+  startOfMonth,
+  isSameMonth,
+} from "date-fns"
 import {
   TabTypes,
   MarkedDaysAny,
@@ -181,12 +187,12 @@ function updateMonthStats({
   date: Date
   cellInfo: CellInfoAny
 }) {
-  const currentYearMonth = format(date, "LLLL, y")
+  const currentYearMonth = startOfMonth(date)
   const oldMonthStats = thisTab!.monthStats
   let newMonthStats: MonthStats[]
 
-  const updateMonthStats = oldMonthStats.find(
-    (month) => month.yearMonth === currentYearMonth
+  const updateMonthStats = oldMonthStats.find((month) =>
+    isSameMonth(parseJSON(month.yearMonth), currentYearMonth)
   )
 
   const dayInfo: DayInfo = {
@@ -204,8 +210,8 @@ function updateMonthStats({
       },
     ]
   } else {
-    const oldMonth = oldMonthStats.find(
-      (month) => month.yearMonth === currentYearMonth
+    const oldMonth = oldMonthStats.find((month) =>
+      isSameMonth(parseJSON(month.yearMonth), currentYearMonth)
     ) // initial MONTH
     const allOldWeeks = oldMonth!.weekStats
     let allNewWeeks: WeekInfo[]
@@ -243,7 +249,9 @@ function updateMonthStats({
       weekStats: allNewWeeks,
     }
     newMonthStats = oldMonthStats.map((month) =>
-      month.yearMonth === currentYearMonth ? newMonth : month
+      isSameMonth(parseJSON(month.yearMonth), currentYearMonth)
+        ? newMonth
+        : month
     )
   }
 
