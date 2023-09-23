@@ -28,35 +28,41 @@ export default function Stats() {
   })
 
   return (
-    <div className="bg-dark w-full text-white p-8">
-      <div className="flex-center gap-5 mt-3  pl-16">
-        <button
-          className={`${
-            year && "bg-white"
-          } p-1.5 px-3 rounded-xl text-blue cursor-pointer`}
-          onClick={() => setYear(true)}
-        >
-          Year
-        </button>
-        <button
-          className={`${
-            !year && "bg-white"
-          } p-1.5 px-3 rounded-xl text-blue cursor-pointer`}
-          onClick={() => setYear(false)}
-        >
-          Month
-        </button>
-      </div>
-      <div className="flex-center mb-8 mt-5 text-xl font-bold">
-        {year ? format(today, "yyyy") : format(today, "MMM")}{" "}
-      </div>
-      <div className="flex-center ">
-        {year ? (
-          <YearStat formattedYear={formattedYear} />
-        ) : (
-          <MonthStat weekStat={weekStat} thisTab={thisTab} />
-        )}
-      </div>
-    </div>
+    <>
+      {thisTab && thisTab!.markedDays.length > 0 ? (
+        <div className="bg-dark w-full text-white p-8">
+          <div className="flex-center gap-5 mt-3  pl-16">
+            <button
+              className={`${
+                year && "bg-white"
+              } p-1.5 px-3 rounded-xl text-blue cursor-pointer`}
+              onClick={() => setYear(true)}
+            >
+              Year
+            </button>
+            <button
+              className={`${
+                !year && "bg-white"
+              } p-1.5 px-3 rounded-xl text-blue cursor-pointer`}
+              onClick={() => setYear(false)}
+            >
+              Month
+            </button>
+          </div>
+          <div className="flex-center mb-8 mt-5 text-xl font-bold">
+            {year ? format(today, "yyyy") : format(today, "MMM")}{" "}
+          </div>
+          <div className="flex-center ">
+            {year ? (
+              <YearStat formattedYear={formattedYear} />
+            ) : (
+              <MonthStat weekStat={weekStat} thisTab={thisTab} />
+            )}
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
   )
 }

@@ -14,6 +14,7 @@ function App() {
         <Body />
         {tabs.length > 0 && <Details />}
       </div>
+
       <Stats />
       {overlay && <Overlay />}
       {newTab && <NewTab />}

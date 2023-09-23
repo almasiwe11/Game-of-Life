@@ -17,7 +17,7 @@ type PropTypes = {
 }
 export default function LineGraph({ array, yaxis, xaxis, name }: PropTypes) {
   return (
-    <LineChart data={array} width={600} height={300}>
+    <LineChart data={array} width={600} height={500}>
       <Line type="monotone" dataKey={yaxis} stroke="#2196F3" name={name} />
 
       <CartesianGrid stroke="rgb(64,64,64)"></CartesianGrid>

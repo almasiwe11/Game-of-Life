@@ -65,7 +65,7 @@ export default function Details() {
         calcCompleted(week.week, week.ratings).rating +
         missedDays * thisTab!.minRating
       const numberRes = Math.round(
-        calcCompleted(week.week, week.ratings).numberResult / outOf
+        calcCompleted(week.week, week.ratings).numberResult / attempted
       )
       const goalTotal = calcCompleted(week.week, week.ratings).numberResult
       return {
@@ -109,13 +109,16 @@ export default function Details() {
     totalAvg = weekCompleted!.reduce((acc, rate) => {
       return acc + rate.total
     }, 0)
+    const attemptTotal = weekCompleted!.reduce((acc, rate) => {
+      return acc + rate.completed
+    }, 0)
 
     totalTimesPerWeek = weekCompleted!.reduce((acc, timesPerWeek) => {
       return acc + Number(timesPerWeek.outOf)
     }, 0)
 
     monthAvg = Math.round(totalAvg / totalTimesPerWeek)
-    const resAvg = Math.round(resTotal / totalTimesPerWeek)
+    const resAvg = Math.round(resTotal / attemptTotal)
     const oldMonthStats = thisTab!.monthStats
     const oldThisMonth = thisMonth!
 

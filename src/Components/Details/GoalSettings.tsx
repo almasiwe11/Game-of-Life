@@ -10,6 +10,7 @@ export default function GoalSettings() {
   const [goal, setGoal] = useState("")
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    if (Number(goal) === 0) return
     e.preventDefault()
     const thisTab = tabs.find((tab) => tab.name === currentTab)! as FormTypes &
       GoalNumber
