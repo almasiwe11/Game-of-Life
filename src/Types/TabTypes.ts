@@ -22,6 +22,7 @@ type MonthStats = {
   yearMonth: Date
   weekStats: WeekInfo[]
   avgMonth: number
+  avgNumberRes: number
 }
 
 type WeekInfo = {
@@ -32,6 +33,7 @@ type WeekInfo = {
 type DayInfo = {
   day: Date
   rate: number
+  numberResult: number
 }
 
 type TabVariations = "moodchecker" | "goal-number" | "yes-no"

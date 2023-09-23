@@ -18,7 +18,6 @@ import { useState } from "react"
 import { Commands, WeekStat } from "../../Types/ContextTypes"
 import {
   DayInfo,
-  GoalNumber,
   MarkedGoalNumber,
   MarkedYesNo,
   MonthStats,
@@ -66,34 +65,21 @@ export default function Details() {
       const totalRatingWeek =
         calcCompleted(week.week, week.ratings).rating +
         missedDays * thisTab!.minRating
+      const numberRes = Math.round(
+        calcCompleted(week.week, week.ratings).numberResult / outOf
+      )
+      const goalTotal = calcCompleted(week.week, week.ratings).numberResult
       return {
         week: week.week,
         completed: attempted,
         outOf: outOf,
         avg: Math.round(totalRatingWeek / outOf),
         total: totalRatingWeek,
-        goalAvg: calcGoalAvg(week),
+        goalAvg: numberRes,
+        goalTotal: goalTotal,
       }
     })
     .sort((a, b) => a.week - b.week)
-
-  function calcGoalAvg(week: WeekInfo) {
-    if (thisTab!.type === "goal-number") {
-      const days = week.ratings.map((day) => day.day)
-      const goals = days.map((day) => {
-        const thisDay = thisTab!.markedDays.find((marked) =>
-          isSameDay(parseJSON(marked.day), parseJSON(day))
-        )!.numberResult
-        return thisDay
-      })
-      const totalRes = goals.reduce((acc, goal) => {
-        return acc + goal
-      }, 0)
-      const avgRes = Math.round(totalRes / goals.length)
-      return avgRes
-    }
-    return 0
-  }
 
   function weekUpdated() {
     const { first, last } = rightInterval()
@@ -108,6 +94,7 @@ export default function Details() {
           avg: thisTab!.minRating,
           total: thisTab!.minRating * outOf,
           goalAvg: 0,
+          goalTotal: 0,
         }
         const there = weekCompleted!.find((compl) => compl.week === week)
         return there ? there : missed
@@ -116,16 +103,20 @@ export default function Details() {
     }
   }
   if (weekCompleted) {
+    const resTotal = weekCompleted!.reduce((acc, rate) => {
+      return acc + rate.goalTotal
+    }, 0)
     weekCompleted = weekUpdated()
     totalAvg = weekCompleted!.reduce((acc, rate) => {
       return acc + rate.total
     }, 0)
 
     totalTimesPerWeek = weekCompleted!.reduce((acc, timesPerWeek) => {
-      return acc + timesPerWeek.outOf
+      return acc + Number(timesPerWeek.outOf)
     }, 0)
 
     monthAvg = Math.round(totalAvg / totalTimesPerWeek)
+    const resAvg = Math.round(resTotal / totalTimesPerWeek)
     const oldMonthStats = thisTab!.monthStats
     const oldThisMonth = thisMonth!
 
@@ -133,7 +124,11 @@ export default function Details() {
     let newThisMonth: MonthStats
     let newMonthStats: MonthStats[]
     if (monthAvg !== oldThisMonth!.avgMonth) {
-      newThisMonth = { ...oldThisMonth, avgMonth: monthAvg }
+      newThisMonth = {
+        ...oldThisMonth,
+        avgMonth: monthAvg,
+        avgNumberRes: resAvg,
+      }
       newMonthStats = oldMonthStats.map((month) =>
         isSameMonth(parseJSON(month.yearMonth), inpsectMonthFormat)
           ? newThisMonth
@@ -170,14 +165,33 @@ export default function Details() {
 
   function calcCompleted(week: number, ratings: DayInfo[]) {
     const weekAttempt = ratings.filter((rating) => rating.rate > 0).length
-    const weekTotal = ratings.reduce((acc, rate) => {
+    const weekTotalRating = ratings.reduce((acc, rate) => {
       return acc + rate.rate
     }, 0)
+    const weekTotalRes = ratings.reduce((acc, rate) => {
+      return acc + rate.numberResult
+    }, 0)
+
     if (week === 1) {
-      return linkMonth({ weekAttempt, weekTotal, link: "firstWeek" })
+      return linkMonth({
+        weekAttempt,
+        weekTotalRating,
+        link: "firstWeek",
+        weekTotalRes,
+      })
     } else if (week === lastWeekNumber(today)) {
-      return linkMonth({ weekAttempt, weekTotal, link: "lastWeek" })
-    } else return { completed: weekAttempt, rating: weekTotal }
+      return linkMonth({
+        weekAttempt,
+        weekTotalRating,
+        link: "lastWeek",
+        weekTotalRes,
+      })
+    } else
+      return {
+        completed: weekAttempt,
+        rating: weekTotalRating,
+        numberResult: weekTotalRes,
+      }
   }
 
   function calcTimesPerWeek(week: number) {
@@ -205,12 +219,14 @@ export default function Details() {
 
   function linkMonth({
     weekAttempt,
-    weekTotal,
+    weekTotalRating,
     link,
+    weekTotalRes,
   }: {
     weekAttempt: number
-    weekTotal: number
+    weekTotalRating: number
     link: "firstWeek" | "lastWeek"
+    weekTotalRes: number
   }) {
     const lastMonth =
       link === "firstWeek"
@@ -226,6 +242,7 @@ export default function Details() {
     )
     let lastMonthLastWeek: number
     let lastMonthWeekTotal: number
+    let lastMonthResTotal: number
     if (lastWeek) {
       lastMonthLastWeek = lastWeek.ratings.filter(
         (rate) => rate.rate > 0
@@ -233,10 +250,15 @@ export default function Details() {
       lastMonthWeekTotal = lastWeek.ratings.reduce((acc, rate) => {
         return acc + rate.rate
       }, 0)
-    } else (lastMonthLastWeek = 0), (lastMonthWeekTotal = 0)
+      lastMonthResTotal = lastWeek.ratings.reduce((acc, rate) => {
+        return acc + rate.numberResult
+      }, 0)
+    } else
+      (lastMonthLastWeek = 0), (lastMonthWeekTotal = 0), (lastMonthResTotal = 0)
     return {
       completed: weekAttempt + lastMonthLastWeek,
-      rating: weekTotal + lastMonthWeekTotal,
+      rating: weekTotalRating + lastMonthWeekTotal,
+      numberResult: weekTotalRes + lastMonthResTotal,
     }
   }
 

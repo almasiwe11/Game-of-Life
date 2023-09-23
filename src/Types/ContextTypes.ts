@@ -22,6 +22,7 @@ type WeekStat = {
   avg: number
   total: number
   goalAvg: number
+  goalTotal: number
 }
 
 type WeekInfo = {

@@ -15,6 +15,7 @@ import {
   WeekInfo,
   DayInfo,
   Mood,
+  MarkedGoalNumber,
 } from "../../../../Types/TabTypes"
 
 import {
@@ -195,9 +196,13 @@ function updateMonthStats({
     isSameMonth(parseJSON(month.yearMonth), currentYearMonth)
   )
 
+  const numbCellInfo = cellInfo as MarkedGoalNumber
+
   const dayInfo: DayInfo = {
     day: date,
     rate: cellInfo.rating,
+    numberResult:
+      thisTab!.type === "goal-number" ? numbCellInfo.numberResult : 0,
   }
 
   if (!updateMonthStats) {
@@ -207,6 +212,7 @@ function updateMonthStats({
         yearMonth: currentYearMonth,
         weekStats: [{ week: weekOrder, ratings: [dayInfo] }],
         avgMonth: 3,
+        avgNumberRes: 0,
       },
     ]
   } else {
