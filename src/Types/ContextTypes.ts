@@ -12,6 +12,7 @@ type DateStateType = {
   currentMonthStats: WeekInfo[]
   skipped: boolean
   weekStat: WeekStat[]
+  settingsIsOpen: boolean
 }
 
 type WeekStat = {
@@ -47,6 +48,8 @@ const enum Commands {
   SKIPPED,
   SKIPUPDATED,
   WEEKSTATS,
+  OPENSETTINGS,
+  CLOSEDSETTINGS,
 }
 
 type ActionType = {
@@ -67,5 +70,11 @@ type DateContextType = {
   dispatch: DispatchType
 }
 
-export type { DateStateType, DateContextType, ActionType, WeekStat }
+export type {
+  DateStateType,
+  DateContextType,
+  ActionType,
+  WeekStat,
+  DispatchType,
+}
 export { Commands }

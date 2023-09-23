@@ -1,3 +1,3 @@
 export default function Overlay() {
-  return <div className="fixed h-screen w-screen bg-black/30"></div>
+  return <div className="fixed inset-0 bg-black/30"></div>
 }

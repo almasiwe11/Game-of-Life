@@ -13,7 +13,8 @@ import {
   getWeekOfMonth,
   isSameDay,
 } from "date-fns"
-import { KeyboardEvent, useState } from "react"
+
+import { useState } from "react"
 import { Commands, WeekStat } from "../../Types/ContextTypes"
 import {
   DayInfo,
@@ -22,8 +23,9 @@ import {
   MonthStats,
   TabTypes,
 } from "../../Types/TabTypes"
-import { Fragment } from "react"
-import { saveChanges } from "../Grid/MonthDays/Logic/updateStorage"
+import WeekStats from "./WeekStats"
+import GoalInput from "./GoalInput"
+import GoalSettings from "./GoalSettings"
 
 export default function Details() {
   const { dateState, dispatch } = useDate()
@@ -119,7 +121,7 @@ export default function Details() {
         tab.name === currentTab ? newTab : tab
       )
       localStorage.setItem("tabs", JSON.stringify(allNewTabs))
-      saveChanges(allNewTabs, dispatch)
+      dispatch({ type: Commands.SAVECHANGE, allNewTabs: allNewTabs })
     }
   }
 
@@ -230,17 +232,6 @@ export default function Details() {
     return maxWeeks
   }
 
-  function handleEnter(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      setGoal("")
-      dispatch({ type: Commands.SUBMITGOAL, goal: Number(goal) })
-    }
-  }
-
-  function handleSkip() {
-    dispatch({ type: Commands.SKIPPED })
-  }
-
   return (
     <div className="bg-dark self-stretch w-full">
       <div className="p-8 text-white">
@@ -257,48 +248,15 @@ export default function Details() {
             : `Rating ${resultThisDay}`}
         </h1>
 
-        {thisTab?.type === "goal-number" && (
-          <div className="flex-center flex-col  mt-4 gap-3">
-            <span className="text-2xl">Goal {thisTab.goal}</span>
-            <span>{}</span>
+        <GoalInput
+          thisTab={thisTab}
+          goal={goal}
+          setGoal={setGoal}
+          dispatch={dispatch}
+        />
+        <WeekStats weekCompleted={weekCompleted} thisTab={thisTab} />
+        <GoalSettings />
 
-            <div className="flex gap-2  ">
-              <span className="">Result</span>
-              <input
-                className="p-1 px-2 rounded-lg outline-transparent text-black  focus:outline-blue"
-                type="number"
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-                onKeyDown={handleEnter}
-              ></input>
-              <button
-                onClick={handleSkip}
-                className="p-1 5 px-3 font-bold bg-white text-black cursor-pointer rounded-lg"
-              >
-                Skipped
-              </button>
-            </div>
-          </div>
-        )}
-
-        {weekCompleted && (
-          <div className="grid grid-cols-4 mt-5 text-center text-lg">
-            <span> Week </span>
-            <span> attempted </span>
-            <span> out of </span>
-            <span>Average Rating</span>
-            {weekCompleted?.map((week) => (
-              <Fragment key={week.week}>
-                <span> {week.week} </span>
-                <span> {week.completed} </span>
-                <span> {week.outOf} </span>
-                <span>
-                  {week.avg}/{thisTab?.avgRating}{" "}
-                </span>
-              </Fragment>
-            ))}
-          </div>
-        )}
         {weekCompleted && (
           <div className="text-center text-lg mt-6">
             Average this month

@@ -29,6 +29,7 @@ const initalState: DateStateType = {
   currentMonthStats: [],
   skipped: false,
   weekStat: [],
+  settingsIsOpen: false,
 }
 
 function reduce(state: DateStateType, action: ActionType): DateStateType {
@@ -114,6 +115,14 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
         ...state,
         weekStat: action.weekStats,
       }
+    }
+
+    case Commands.OPENSETTINGS: {
+      return { ...state, settingsIsOpen: true, overlay: true }
+    }
+
+    case Commands.CLOSEDSETTINGS: {
+      return { ...state, settingsIsOpen: false, overlay: false }
     }
     default:
       throw new Error("action type not found it should be one of Command enum")
