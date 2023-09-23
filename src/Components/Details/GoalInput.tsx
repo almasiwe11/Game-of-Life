@@ -30,7 +30,9 @@ export default function GoalInput({
     <>
       {thisTab?.type === "goal-number" && (
         <div className="flex-center flex-col  mt-4 gap-3">
-          <span className="text-2xl">Goal {thisTab.goal}</span>
+          <span className="text-2xl text-blue">
+            Goal for today {thisTab.goal}
+          </span>
 
           <div className="flex gap-2 ">
             <span className="self-center">Result</span>

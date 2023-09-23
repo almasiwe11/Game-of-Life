@@ -7,13 +7,13 @@ import { saveChanges } from "../Grid/MonthDays/Logic/updateStorage"
 export default function GoalSettings() {
   const { dateState, dispatch } = useDate()
   const { settingsIsOpen, tabs, currentTab } = dateState
-  const [goal, setGoal] = useState(0)
+  const [goal, setGoal] = useState("")
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const thisTab = tabs.find((tab) => tab.name === currentTab)! as FormTypes &
       GoalNumber
-    const newTab = { ...thisTab, goal: goal }
+    const newTab = { ...thisTab, goal: Number(goal) }
     const allNewTabs = tabs.map((tab) =>
       tab.name === currentTab ? newTab : tab
     )
@@ -37,7 +37,7 @@ export default function GoalSettings() {
           name="newGoal"
           value={goal}
           className="border rounded-lg p-1.5"
-          onChange={(e) => setGoal(Number(e.target.value))}
+          onChange={(e) => setGoal(e.target.value)}
         />
         <button
           type="submit"

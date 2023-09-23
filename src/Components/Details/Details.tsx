@@ -18,10 +18,12 @@ import { useState } from "react"
 import { Commands, WeekStat } from "../../Types/ContextTypes"
 import {
   DayInfo,
+  GoalNumber,
   MarkedGoalNumber,
   MarkedYesNo,
   MonthStats,
   TabTypes,
+  WeekInfo,
 } from "../../Types/TabTypes"
 import WeekStats from "./WeekStats"
 import GoalInput from "./GoalInput"
@@ -37,6 +39,7 @@ export default function Details() {
     isSameMonth(parseJSON(month.yearMonth), inpsectMonthFormat)
   )
   let resultThisDay = 0
+  let goalThisDay
   let totalAvg = 0
   let totalTimesPerWeek = 0
   let monthAvg
@@ -47,6 +50,7 @@ export default function Details() {
     if (thisTab?.type === "goal-number") {
       const markedDay = marked as MarkedGoalNumber
       resultThisDay = markedDay.numberResult
+      goalThisDay = markedDay.goal
     } else {
       const markedDay = marked as MarkedYesNo
       resultThisDay = markedDay.rating
@@ -68,9 +72,28 @@ export default function Details() {
         outOf: outOf,
         avg: Math.round(totalRatingWeek / outOf),
         total: totalRatingWeek,
+        goalAvg: calcGoalAvg(week),
       }
     })
     .sort((a, b) => a.week - b.week)
+
+  function calcGoalAvg(week: WeekInfo) {
+    if (thisTab!.type === "goal-number") {
+      const days = week.ratings.map((day) => day.day)
+      const goals = days.map((day) => {
+        const thisDay = thisTab!.markedDays.find((marked) =>
+          isSameDay(parseJSON(marked.day), parseJSON(day))
+        )!.numberResult
+        return thisDay
+      })
+      const totalRes = goals.reduce((acc, goal) => {
+        return acc + goal
+      }, 0)
+      const avgRes = Math.round(totalRes / goals.length)
+      return avgRes
+    }
+    return 0
+  }
 
   function weekUpdated() {
     const { first, last } = rightInterval()
@@ -84,6 +107,7 @@ export default function Details() {
           outOf: outOf,
           avg: thisTab!.minRating,
           total: thisTab!.minRating * outOf,
+          goalAvg: 0,
         }
         const there = weekCompleted!.find((compl) => compl.week === week)
         return there ? there : missed
@@ -126,11 +150,8 @@ export default function Details() {
   }
 
   useEffect(() => {
-    if (weekCompleted) {
-      console.log(weekCompleted)
-      dispatch({ type: Commands.WEEKSTATS, weekStats: weekCompleted })
-    }
-  }, [thisTab!.markedDays])
+    dispatch({ type: Commands.WEEKSTATS, weekStats: weekCompleted })
+  }, [thisTab!.markedDays, today])
 
   function rightInterval() {
     let first = 1
@@ -244,7 +265,7 @@ export default function Details() {
 
         <h1 className="font-bold text-center mt-2 text-xl">
           {thisTab?.type === "goal-number"
-            ? `Result ${resultThisDay}`
+            ? `Result ${resultThisDay} ${""}${""}  Goal This Day: ${goalThisDay}`
             : `Rating ${resultThisDay}`}
         </h1>
 

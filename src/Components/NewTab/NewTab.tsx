@@ -18,7 +18,7 @@ export default function NewTab() {
         ...values,
         markedDays: [],
         monthStats: [],
-        startDay: sub(new Date(), { days: 20 }),
+        startDay: sub(new Date(), { months: 20 }),
       }
       dispatch({ type: Commands.TABINFO, details: withMarkedDays })
     }

@@ -6,6 +6,7 @@ import {
   Commands,
 } from "../Types/ContextTypes"
 import { add, sub } from "date-fns"
+import { WeekStat } from "../Types/ContextTypes"
 
 const DateContext = createContext<DateContextType | null>(null)
 
@@ -110,10 +111,16 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
     }
 
     case Commands.WEEKSTATS: {
-      if (action.weekStats === undefined) throw new Error("weekstats expected")
+      let weekStats: WeekStat[]
+
+      if (action.weekStats === undefined) {
+        weekStats = []
+      } else {
+        weekStats = action.weekStats
+      }
       return {
         ...state,
-        weekStat: action.weekStats,
+        weekStat: weekStats,
       }
     }
 

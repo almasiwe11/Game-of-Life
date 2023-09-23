@@ -21,6 +21,7 @@ type WeekStat = {
   outOf: number
   avg: number
   total: number
+  goalAvg: number
 }
 
 type WeekInfo = {
