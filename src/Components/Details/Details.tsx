@@ -22,7 +22,6 @@ import {
   MarkedYesNo,
   MonthStats,
   TabTypes,
-  WeekInfo,
 } from "../../Types/TabTypes"
 import WeekStats from "./WeekStats"
 import GoalInput from "./GoalInput"
@@ -285,11 +284,17 @@ export default function Details() {
           </span>
         </h1>
 
-        <h1 className="font-bold text-center mt-2 text-xl">
-          {thisTab?.type === "goal-number"
-            ? `Result ${resultThisDay} ${""}${""}  Goal This Day: ${goalThisDay}`
-            : `Rating ${resultThisDay}`}
-        </h1>
+        {isSameMonth(selectedDate, today) && (
+          <h1 className="font-bold text-center mt-2 text-xl">
+            {thisTab?.type === "goal-number"
+              ? `Result ${resultThisDay} ${""}${""}  ${
+                  goalThisDay !== undefined
+                    ? `Goal This Day: ${goalThisDay}`
+                    : ""
+                }`
+              : `Rating ${resultThisDay}`}
+          </h1>
+        )}
 
         <GoalInput
           thisTab={thisTab}

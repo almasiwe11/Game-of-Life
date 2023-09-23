@@ -1,16 +1,12 @@
+import { useState } from "react"
 import { useDate } from "../../Context/DateContextProvider"
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from "recharts"
+
 import { isSameYear, parseJSON, format, isAfter } from "date-fns"
+import MonthStat from "./MonthStat"
+import YearStat from "./YearStat"
 
 export default function Stats() {
+  const [year, setYear] = useState(false)
   const { dateState } = useDate()
   const { weekStat, currentTab, tabs, today } = dateState
   const thisTab = tabs.find((tab) => tab.name === currentTab)
@@ -33,39 +29,32 @@ export default function Stats() {
 
   return (
     <div className="bg-dark w-full text-white p-8">
-      <div className="">
-        {weekStat.length > 0 && (
-          <LineChart data={weekStat} width={600} height={300}>
-            <Line type="monotone" dataKey="avg" stroke="#2196F3" />
-
-            <CartesianGrid stroke="rgb(64,64,64)"></CartesianGrid>
-            <XAxis dataKey="week"></XAxis>
-            <YAxis dataKey="avg"></YAxis>
-            <Tooltip />
-            <Legend />
-          </LineChart>
-        )}
-        {weekStat.length > 0 && thisTab?.type === "goal-number" && (
-          <LineChart data={weekStat} width={600} height={300}>
-            <Line type="monotone" dataKey="goalAvg" stroke="red" />
-
-            <CartesianGrid stroke="rgb(64,64,64)"></CartesianGrid>
-            <XAxis dataKey="week"></XAxis>
-            <YAxis dataKey="goalAvg"></YAxis>
-            <Tooltip />
-            <Legend />
-          </LineChart>
-        )}
-        {formattedYear && formattedYear!.length > 0 && (
-          <LineChart data={formattedYear} width={600} height={300}>
-            <Line type="monotone" dataKey="avgMonth" stroke="#2196F3" />
-
-            <CartesianGrid stroke="rgb(64,64,64)"></CartesianGrid>
-            <XAxis dataKey="yearMonth"></XAxis>
-            <YAxis dataKey="avgMonth"></YAxis>
-            <Tooltip />
-            <Legend />
-          </LineChart>
+      <div className="flex-center gap-5 mt-3  pl-16">
+        <button
+          className={`${
+            year && "bg-white"
+          } p-1.5 px-3 rounded-xl text-blue cursor-pointer`}
+          onClick={() => setYear(true)}
+        >
+          Year
+        </button>
+        <button
+          className={`${
+            !year && "bg-white"
+          } p-1.5 px-3 rounded-xl text-blue cursor-pointer`}
+          onClick={() => setYear(false)}
+        >
+          Month
+        </button>
+      </div>
+      <div className="flex-center mb-8 mt-5 text-xl font-bold">
+        {year ? format(today, "yyyy") : format(today, "MMM")}{" "}
+      </div>
+      <div className="flex-center ">
+        {year ? (
+          <YearStat formattedYear={formattedYear} />
+        ) : (
+          <MonthStat weekStat={weekStat} thisTab={thisTab} />
         )}
       </div>
     </div>
