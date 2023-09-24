@@ -148,7 +148,7 @@ export default function Details() {
 
   useEffect(() => {
     dispatch({ type: Commands.WEEKSTATS, weekStats: weekCompleted })
-  }, [thisTab!.markedDays, today])
+  }, [thisTab?.markedDays, today])
 
   function rightInterval() {
     let first = 1

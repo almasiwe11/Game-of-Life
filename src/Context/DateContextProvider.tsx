@@ -131,6 +131,19 @@ function reduce(state: DateStateType, action: ActionType): DateStateType {
     case Commands.CLOSEDSETTINGS: {
       return { ...state, settingsIsOpen: false, overlay: false }
     }
+    case Commands.OVERLAYON: {
+      return { ...state, overlay: true }
+    }
+    case Commands.OVERLAYOFF: {
+      return { ...state, overlay: false }
+    }
+
+    case Commands.SETCURRENTTAB: {
+      return {
+        ...state,
+        currentTab: state.tabs.length > 0 ? state.tabs[0].name : "",
+      }
+    }
     default:
       throw new Error("action type not found it should be one of Command enum")
   }

@@ -52,6 +52,9 @@ const enum Commands {
   WEEKSTATS,
   OPENSETTINGS,
   CLOSEDSETTINGS,
+  OVERLAYON,
+  OVERLAYOFF,
+  SETCURRENTTAB,
 }
 
 type ActionType = {
