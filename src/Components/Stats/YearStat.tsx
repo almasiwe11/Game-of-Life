@@ -1,7 +1,7 @@
 import LineGraph from "./LineGraph"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function YearStat({ formattedYear }: any) {
+export default function YearStat({ formattedYear, thisTab }: any) {
   return (
     <>
       {formattedYear && formattedYear!.length > 0 && (
@@ -12,12 +12,13 @@ export default function YearStat({ formattedYear }: any) {
           name="Avg Rating this Year"
         />
       )}
-      {formattedYear && formattedYear!.length > 0 && (
+      {formattedYear && thisTab?.type === "goal-number" && (
         <LineGraph
           array={formattedYear}
           xaxis="yearMonth"
           yaxis="avgNumberRes"
           name="Avg Result this Year"
+          noAvg={true}
         />
       )}
     </>

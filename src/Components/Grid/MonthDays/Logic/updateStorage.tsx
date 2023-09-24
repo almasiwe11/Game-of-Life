@@ -213,6 +213,7 @@ function updateMonthStats({
         weekStats: [{ week: weekOrder, ratings: [dayInfo] }],
         avgMonth: 3,
         avgNumberRes: 0,
+        avgDesired: thisTab!.avgRating,
       },
     ]
   } else {

@@ -23,6 +23,7 @@ type MonthStats = {
   weekStats: WeekInfo[]
   avgMonth: number
   avgNumberRes: number
+  avgDesired: number
 }
 
 type WeekInfo = {

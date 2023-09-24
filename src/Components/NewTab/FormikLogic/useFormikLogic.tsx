@@ -104,7 +104,7 @@ export default function useFormikLogic() {
         message: "Avg Rating should be between Min and Max rating",
         test: function (value) {
           const { minRating, maxRating } = this.parent!
-          return value < maxRating && value > minRating
+          return value <= maxRating && value > minRating
         },
       }),
   })

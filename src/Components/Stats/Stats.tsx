@@ -57,7 +57,7 @@ export default function Stats() {
           </div>
           <div className="flex-center ">
             {year ? (
-              <YearStat formattedYear={formattedYear} />
+              <YearStat formattedYear={formattedYear} thisTab={thisTab} />
             ) : (
               <MonthStat weekStat={weekStat} thisTab={thisTab} />
             )}

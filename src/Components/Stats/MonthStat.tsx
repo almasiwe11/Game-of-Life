@@ -25,6 +25,7 @@ export default function MonthStat({
           xaxis="week"
           yaxis="goalAvg"
           name="Avg Result of Weeks"
+          noAvg={true}
         />
       )}
     </>

@@ -77,6 +77,7 @@ export default function Details() {
         total: totalRatingWeek,
         goalAvg: numberRes,
         goalTotal: goalTotal,
+        avgDesired: thisTab!.avgRating,
       }
     })
     .sort((a, b) => a.week - b.week)
@@ -95,6 +96,7 @@ export default function Details() {
           total: thisTab!.minRating * outOf,
           goalAvg: 0,
           goalTotal: 0,
+          avgDesired: thisTab!.avgRating,
         }
         const there = weekCompleted!.find((compl) => compl.week === week)
         return there ? there : missed
