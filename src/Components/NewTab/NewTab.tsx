@@ -7,7 +7,6 @@ import Settings from "./Settings/Settings"
 import { useDate } from "../../Context/DateContextProvider"
 import Errors from "./Errors/Errors"
 import useFormikLogic from "./FormikLogic/useFormikLogic"
-import { sub } from "date-fns"
 export default function NewTab() {
   const { dispatch, dateState } = useDate()
 
