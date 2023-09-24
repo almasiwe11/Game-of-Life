@@ -41,6 +41,7 @@ export default function Details() {
   let totalAvg = 0
   let totalTimesPerWeek = 0
   let monthAvg
+  let allNewTabs: TabTypes[] = []
   const marked = thisTab?.markedDays.find((day) =>
     isSameDay(parseJSON(day.day), selectedDate)
   )
@@ -139,13 +140,16 @@ export default function Details() {
       )
       const thisTab = tabs.find((tab) => tab.name === currentTab)
       const newTab = { ...thisTab!, monthStats: newMonthStats }
-      const allNewTabs: TabTypes[] = tabs.map((tab) =>
-        tab.name === currentTab ? newTab : tab
-      )
+      allNewTabs = tabs.map((tab) => (tab.name === currentTab ? newTab : tab))
       localStorage.setItem("tabs", JSON.stringify(allNewTabs))
-      dispatch({ type: Commands.SAVECHANGE, allNewTabs: allNewTabs })
     }
   }
+
+  useEffect(() => {
+    if (allNewTabs.length > 0) {
+      dispatch({ type: Commands.SAVECHANGE, allNewTabs: allNewTabs })
+    }
+  }, [weekCompleted, dispatch, allNewTabs])
 
   useEffect(() => {
     dispatch({ type: Commands.WEEKSTATS, weekStats: weekCompleted })
