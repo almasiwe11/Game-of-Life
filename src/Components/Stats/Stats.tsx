@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useDate } from "../../Context/DateContextProvider"
 
-import { isSameYear, parseJSON, format, isAfter } from "date-fns"
+import { isSameYear, parseJSON, format, isAfter, isSameMonth } from "date-fns"
 import MonthStat from "./MonthStat"
 import YearStat from "./YearStat"
 
@@ -26,10 +26,13 @@ export default function Stats() {
     }
     return formatted
   })
+  const monthHasMarked = thisTab?.markedDays.find((day) =>
+    isSameMonth(parseJSON(day.day), today)
+  )
 
   return (
     <>
-      {thisTab && thisTab!.markedDays.length > 0 ? (
+      {thisTab && monthHasMarked ? (
         <div className="bg-dark w-full text-white p-8">
           <div className="flex-center gap-5 mt-3  pl-16">
             <button

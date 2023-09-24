@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { sub } from "date-fns"
 import { Formik, Form } from "formik"
 import { TabVariations, TabTypes, TabTypesForm } from "../../Types/TabTypes"
 import { Commands } from "../../Types/ContextTypes"
@@ -18,7 +17,8 @@ export default function NewTab() {
         ...values,
         markedDays: [],
         monthStats: [],
-        startDay: sub(new Date(), { months: 20 }),
+        startDay: new Date(),
+        /*  startDay: sub(new Date(), { months: 20 }), */
       }
       dispatch({ type: Commands.TABINFO, details: withMarkedDays })
     }

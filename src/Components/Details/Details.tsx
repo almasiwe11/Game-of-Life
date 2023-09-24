@@ -101,6 +101,7 @@ export default function Details() {
       return mapped
     }
   }
+
   if (weekCompleted) {
     const resTotal = weekCompleted!.reduce((acc, rate) => {
       return acc + rate.goalTotal

@@ -20,7 +20,14 @@ export default function Cell({ date, index }: PropTypes) {
   const isToday = isSameDay(new Date(), date)
 
   const { dateState, dispatch } = useDate()
-  const { currentTab, goalInfo, selectedDate, today, skipped: skip } = dateState
+  const {
+    currentTab,
+    goalInfo,
+    selectedDate,
+    today,
+    skipped: skip,
+    tabs,
+  } = dateState
   const { currentGoal, addGoal, skipped, dayOff } = goalInfo
   const thisTab = dateState.tabs.find((tab) => tab.name === currentTab)
 
@@ -60,6 +67,7 @@ export default function Cell({ date, index }: PropTypes) {
   getIcons()
 
   function handleClick() {
+    if (tabs.length === 0) return
     if (isAfter(date, new Date())) return
 
     if (
