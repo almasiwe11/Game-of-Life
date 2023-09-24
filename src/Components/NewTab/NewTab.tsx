@@ -7,7 +7,7 @@ import Settings from "./Settings/Settings"
 import { useDate } from "../../Context/DateContextProvider"
 import Errors from "./Errors/Errors"
 import useFormikLogic from "./FormikLogic/useFormikLogic"
-import { sub } from "date-fns"
+/* import { sub } from "date-fns" */
 export default function NewTab() {
   const { dispatch, dateState } = useDate()
 
@@ -18,8 +18,8 @@ export default function NewTab() {
         ...values,
         markedDays: [],
         monthStats: [],
-        /* startDay: new Date(), */
-        startDay: sub(new Date(), { months: 20 }),
+        startDay: new Date(),
+        /*   startDay: sub(new Date(), { months: 20 }), */
       }
       dispatch({ type: Commands.TABINFO, details: withMarkedDays })
     }
