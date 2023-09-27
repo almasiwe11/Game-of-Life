@@ -210,17 +210,17 @@ export default function Details() {
     if (isSameISOWeek(new Date(), parseJSON(thisTab!.startDay))) {
       const diff =
         differenceInDays(new Date(), parseJSON(thisTab!.startDay)) + 1
-      times = Math.round((diff * thisTab!.timesPerWeek) / 7)
+      times = Math.ceil((diff * thisTab!.timesPerWeek) / 7)
     } else {
       if (isSameISOWeek(new Date(), observedWeek)) {
         const dayOfWeekNumber = parseInt(format(new Date(), "i"))
-        times = Math.round((dayOfWeekNumber * times) / 7)
+        times = Math.ceil((dayOfWeekNumber * times) / 7)
       }
       if (isSameISOWeek(parseJSON(thisTab!.startDay), observedWeek)) {
         const dayOfWeekNumber = parseInt(
           format(parseJSON(thisTab!.startDay), "i")
         )
-        times = Math.round(((7 - dayOfWeekNumber) * times) / 7) + 1
+        times = Math.ceil(((7 - dayOfWeekNumber) * times) / 7) + 1
       }
     }
     return times
