@@ -2,12 +2,13 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./App.tsx"
 import "../style.css"
-import { DateContextProvider } from "./Context/DateContextProvider.tsx"
+import { Provider } from "react-redux"
+import store from "./store.ts"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <DateContextProvider>
+    <Provider store={store}>
       <App />
-    </DateContextProvider>
+    </Provider>
   </React.StrictMode>
 )

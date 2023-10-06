@@ -1,5 +1,5 @@
-import Cell from "./Cell"
-import useGrid from "../../Hooks/useGrid"
+import Cell from "./GridCell"
+import useGrid from "../../../Hooks/useGrid"
 
 export default function Grid() {
   const { monthDays, weekDays } = useGrid()

@@ -1,9 +1,10 @@
-import { add, startOfMonth, startOfWeek, format } from "date-fns"
-import { useDate } from "../Context/DateContextProvider"
+import { add, startOfMonth, startOfWeek, format, parseJSON } from "date-fns"
+import { useSelector } from "react-redux"
+import { RootState } from "../RootState"
 
 export default function useGrid() {
-  const { dateState } = useDate()
-  const { today } = dateState
+  const todayState = useSelector((state: RootState) => state.calendar.today)
+  const today = parseJSON(todayState)
   const firstDayOfMonth = startOfMonth(today)
   const firstDayCalendar = startOfWeek(firstDayOfMonth, { weekStartsOn: 1 })
   const sixWeeks = Array.from({ length: 42 }, (_, i) => i)
