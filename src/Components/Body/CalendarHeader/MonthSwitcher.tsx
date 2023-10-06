@@ -1,5 +1,5 @@
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai"
-import { subMonth } from "../../../Calendar/calendarSlice"
+import { addMonth, subMonth } from "../../../Calendar/calendarSlice"
 import { useDispatch } from "react-redux"
 
 export default function MonthSwitcher() {
@@ -19,7 +19,7 @@ export default function MonthSwitcher() {
       <button
         className="bg-gray-dark p-2 rounded-full text-white"
         onClick={() => {
-          dispatch(subMonth())
+          dispatch(addMonth())
         }}
       >
         <AiOutlineRight />

@@ -4,9 +4,9 @@ import useGrid from "../../../Hooks/useGrid"
 export default function Grid() {
   const { monthDays, weekDays } = useGrid()
   return (
-    <div className="bg-dark grid grid-cols-7   ">
+    <div className="bg-dark grid grid-cols-7 grow grid-rows-grid">
       {weekDays.map((day) => (
-        <div key={day} className="text-center text-blue mb-2">
+        <div key={day} className="text-center text-blue">
           {day}
         </div>
       ))}

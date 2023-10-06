@@ -10,6 +10,15 @@ export default {
         blue: "rgb(63, 127, 223)",
         gray: "rgb(230,230,230)",
       },
+
+      gridTemplateColumns: {
+        app: "15rem 1fr",
+      },
+
+      gridTemplateRows: {
+        app: "4.5rem 1fr",
+        grid: "3rem repeat(6, 1fr)",
+      },
     },
     screens: {
       sm: "480px",
