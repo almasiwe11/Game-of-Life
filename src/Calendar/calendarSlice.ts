@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { add, parseJSON, sub } from "date-fns"
-import { Calendar } from "./calendarType"
+import { Calendar } from "../Types/calendarType"
 
 const initialState: Calendar = {
   today: JSON.stringify(new Date()),

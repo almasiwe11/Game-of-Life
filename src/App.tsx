@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { useSelector } from "react-redux"
-import Body from "./Components/Body/Body"
+import Body from "./Layout/Body/Body"
 import { RootState } from "./RootState"
 import HabitForm from "./Components/HabitForm/HabitForm"
 import Overlay from "./Components/Shared/Overlay"

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router"
-import Header from "../Components/Header/Header"
-import Navigation from "../Components/Navigation/Navigation"
+import Header from "./Header/Header"
+import Navigation from "./Navigation/Navigation"
 
 export default function AppLayout() {
   return (

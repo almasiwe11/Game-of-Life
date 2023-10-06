@@ -1,7 +1,7 @@
 import { BsGraphUpArrow } from "react-icons/bs"
 import { BsCalendarDay } from "react-icons/bs"
 import { GiStrongMan } from "react-icons/gi"
-import Logo from "../Shared/Logo"
+import Logo from "../../Components/Shared/Logo"
 import PageLink from "./PageLink"
 
 export default function Navigation() {
