@@ -18,9 +18,18 @@ const calendarSlice = createSlice({
     subMonth(state) {
       state.today = JSON.stringify(sub(parseJSON(state.today), { months: 1 }))
     },
+    newHabit(state) {
+      state.newHabit = true
+      state.overlay = true
+    },
+    createHabit(state) {
+      state.newHabit = false
+      state.overlay = false
+    },
   },
 })
 
-export const { addMonth, subMonth } = calendarSlice.actions
+export const { addMonth, subMonth, newHabit, createHabit } =
+  calendarSlice.actions
 
 export default calendarSlice.reducer
