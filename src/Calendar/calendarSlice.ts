@@ -4,6 +4,8 @@ import { Calendar } from "./calendarType"
 
 const initialState: Calendar = {
   today: JSON.stringify(new Date()),
+  newHabit: false,
+  overlay: false,
 }
 
 const calendarSlice = createSlice({
