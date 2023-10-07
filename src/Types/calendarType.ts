@@ -6,10 +6,13 @@ type Calendar = {
   overlay: boolean
   allHabits: HabitTab[]
   currentHabit: HabitTab | null
+  deleteWindow: boolean
 }
 
 type HabitTab = HabitFormTypes & {
   markedDays: []
 }
 
-export type { Calendar, HabitTab }
+type DeleteActions = "try-delete" | "no-delete" | "delete"
+
+export type { Calendar, HabitTab, DeleteActions }

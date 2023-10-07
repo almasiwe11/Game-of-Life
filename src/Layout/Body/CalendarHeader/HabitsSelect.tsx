@@ -16,7 +16,7 @@ export default function HabitsSelect({ allHabits }: Props) {
 
   return (
     <select
-      className="bg-dark text-base"
+      className="bg-gray-dark rounded-lg text-base text-white px-2"
       onChange={(e) => handleChange(e.target.value)}
     >
       {allHabits.map((habit) => (

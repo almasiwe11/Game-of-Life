@@ -23,3 +23,7 @@
     @apply max-w-[75rem] mx-auto w-[90%];
   }
 }
+
+body {
+  overflow: hidden;
+}

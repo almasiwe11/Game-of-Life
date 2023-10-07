@@ -10,7 +10,7 @@ export default {
         blue: "rgb(63, 127, 223)",
         brand: "#4f46e5",
         "gray-light": "#f3f4f6",
-        "gray-medum": "##4b5563",
+        "gray-medium": "#4b5563",
         gray: "rgb(230,230,230)",
       },
 

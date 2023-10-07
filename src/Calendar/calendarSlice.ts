@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { add, parseJSON, sub } from "date-fns"
-import { Calendar, HabitTab } from "../Types/calendarType"
+import { Calendar, DeleteActions, HabitTab } from "../Types/calendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
   getFromStorage,
@@ -16,6 +16,7 @@ const initialState: Calendar = {
   overlay: allHabits.length > 0 ? false : true,
   allHabits: allHabits,
   currentHabit: initalCurrentHabbit(),
+  deleteWindow: false,
 }
 
 const calendarSlice = createSlice({
@@ -32,8 +33,8 @@ const calendarSlice = createSlice({
       state.newHabit = true
       state.overlay = true
     },
-    createHabit(state, action) {
-      const newHabit: HabitFormTypes = action.payload
+    createHabit(state, action: PayloadAction<HabitFormTypes>) {
+      const newHabit = action.payload
       const withMarkedDays: HabitTab = { ...newHabit, markedDays: [] }
       state.newHabit = false
       state.overlay = false
@@ -41,15 +42,42 @@ const calendarSlice = createSlice({
       state.currentHabit = withMarkedDays
       updateStorage(state.allHabits)
     },
-    updateCurrentHabit(state, action) {
+    updateCurrentHabit(state, action: PayloadAction<string>) {
       state.currentHabit = state.allHabits.find(
         (habit) => habit.name === action.payload
       )!
     },
+
+    deleteHabit(state, action: PayloadAction<DeleteActions>) {
+      switch (action.payload) {
+        case "try-delete":
+          state.deleteWindow = true
+          state.overlay = true
+          return
+        case "no-delete":
+          state.deleteWindow = false
+          state.overlay = false
+          return
+        case "delete":
+          state.deleteWindow = false
+          state.overlay = false
+          state.allHabits = state.allHabits.filter(
+            (habit) => habit.name !== state.currentHabit!.name
+          )
+          updateStorage(state.allHabits)
+          return
+      }
+    },
   },
 })
 
-export const { addMonth, subMonth, newHabit, createHabit, updateCurrentHabit } =
-  calendarSlice.actions
+export const {
+  addMonth,
+  subMonth,
+  newHabit,
+  createHabit,
+  updateCurrentHabit,
+  deleteHabit,
+} = calendarSlice.actions
 
 export default calendarSlice.reducer

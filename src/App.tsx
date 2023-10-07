@@ -3,11 +3,12 @@ import { useSelector } from "react-redux"
 import Body from "./Layout/Body/Body"
 import { RootState } from "./RootState"
 import HabitForm from "./Components/HabitForm/HabitForm"
-import Overlay from "./Components/Shared/Overlay"
+import Overlay from "./Components/Overlay"
 import AppLayout from "./Layout/AppLayout"
+import DeleteHabit from "./Components/DeleteHabit"
 
 function App() {
-  const { overlay, newHabit } = useSelector(
+  const { overlay, newHabit, deleteWindow } = useSelector(
     (state: RootState) => state.calendar
   )
   return (
@@ -22,6 +23,7 @@ function App() {
       {/*  */}
       {newHabit && <HabitForm />}
       {overlay && <Overlay />}
+      {deleteWindow && <DeleteHabit />}
     </div>
   )
 }
