@@ -8,6 +8,7 @@ type Props = {
   color?: keyof Color
   onClick?: () => void
   type?: "button" | "submit"
+  className?: string
 }
 
 export default function Button({
@@ -15,21 +16,28 @@ export default function Button({
   color = "light",
   onClick,
   type = "button",
+  className,
 }: Props) {
-  const base = `p-2 px-5 rounded-lg text-base font-normal `
+  const base = `p-2 px-5 rounded-lg text-base font-normal border border-transparent `
   const style: Color = {
-    light: base + "bg-gray-dark text-white",
+    light:
+      base +
+      "bg-gray-dark text-white hover:bg-white duration-300 ease-in-out hover:text-dark border-gray-dark",
     dark: base + "bg-dark text-wh",
   }
 
   return (
     <>
       {onClick ? (
-        <button className={style[color]} onClick={onClick} type={type}>
+        <button
+          className={`${style[color]} ${className}`}
+          onClick={onClick}
+          type={type}
+        >
           {text}
         </button>
       ) : (
-        <button className={style[color]} type={type}>
+        <button className={`${style[color]} ${className}`} type={type}>
           {text}
         </button>
       )}

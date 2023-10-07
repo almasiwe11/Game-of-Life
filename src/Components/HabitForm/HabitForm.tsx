@@ -29,10 +29,10 @@ export default function HabitForm() {
 
   return (
     <form
-      className="z-50 fixed inset-0"
+      className="z-50 fixed inset-0 py-24"
       onSubmit={handleSubmit(handleHabitCreation)}
     >
-      <div className="w-2/3  my-14 bg-white mx-auto rounded-xl py-4 px-8 h-full flex flex-col gap-4">
+      <div className="w-2/3   bg-white mx-auto rounded-xl py-4 px-8 h-full flex flex-col gap-4">
         <div className="flex-center mb-2">
           <SiJordan className="h-16 w-16" />
         </div>
@@ -85,7 +85,7 @@ export default function HabitForm() {
           />
         </div>
 
-        <Button text="Create Habit" type="submit" />
+        <Button text="Create Habit" type="submit" className="self-center" />
 
         <Errors errors={errors} />
       </div>

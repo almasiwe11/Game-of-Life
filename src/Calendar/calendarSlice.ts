@@ -8,11 +8,13 @@ import {
   updateStorage,
 } from "../utils/helper"
 
+const allHabits = getFromStorage()
+
 const initialState: Calendar = {
   today: JSON.stringify(new Date()),
-  newHabit: false,
-  overlay: false,
-  allHabits: getFromStorage(),
+  newHabit: allHabits.length > 0 ? false : true,
+  overlay: allHabits.length > 0 ? false : true,
+  allHabits: allHabits,
   currentHabit: initalCurrentHabbit(),
 }
 
@@ -31,11 +33,12 @@ const calendarSlice = createSlice({
       state.overlay = true
     },
     createHabit(state, action) {
-      const habit: HabitFormTypes = action.payload
-      const withMarkedDays: HabitTab = { ...habit, markedDays: [] }
+      const newHabit: HabitFormTypes = action.payload
+      const withMarkedDays: HabitTab = { ...newHabit, markedDays: [] }
       state.newHabit = false
       state.overlay = false
       state.allHabits.push(withMarkedDays)
+      state.currentHabit = withMarkedDays
       updateStorage(state.allHabits)
     },
     updateCurrentHabit(state, action) {
