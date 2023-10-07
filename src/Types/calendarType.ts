@@ -1,7 +1,14 @@
+import { HabitFormTypes } from "./HabitTypes"
+
 type Calendar = {
   today: string
   newHabit: boolean
   overlay: boolean
+  allHabits: HabitTab[]
 }
 
-export type { Calendar }
+type HabitTab = HabitFormTypes & {
+  markedDays: []
+}
+
+export type { Calendar, HabitTab }

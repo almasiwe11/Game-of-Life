@@ -1,9 +1,4 @@
-import {
-  FieldErrors,
-  FieldValues,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form"
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import Button from "../Shared/Button"
@@ -13,8 +8,8 @@ import { SiJordan } from "react-icons/si"
 import Select from "./Select"
 import "react-datepicker/dist/react-datepicker.css"
 import StartDate from "./StartDate"
-import { HabitTypesTypes } from "../../Types/HabitTypes"
 import Errors from "./Errors"
+import { formValidation } from "./formValidation"
 
 export default function HabitForm() {
   const dispatch = useDispatch()
@@ -23,25 +18,8 @@ export default function HabitForm() {
   const { errors } = formState
 
   const handleHabitCreation: SubmitHandler<FieldValues> = (values) => {
-    dispatch(createHabit())
-  }
-
-  const formValidation = {
-    name: { required: "Name is required" },
-    skippedPenalty: {
-      required: "Penalty is required",
-    },
-    goal: {
-      validate: (value: number | "", { type }: { type: HabitTypesTypes }) => {
-        if (value === "" && type === "goal") {
-          return "Goal is required"
-        }
-
-        return true
-      },
-    },
-    type: { required: true },
-    timesPerWeek: { required: true },
+    const newVal = { ...values, startDate: JSON.stringify(values.startDate) }
+    dispatch(createHabit(newVal))
   }
 
   const habitTypes = ["moodchecker", "yes-no", "goal"]
@@ -54,7 +32,7 @@ export default function HabitForm() {
       className="z-50 fixed inset-0"
       onSubmit={handleSubmit(handleHabitCreation)}
     >
-      <div className="w-2/3 m-32 bg-white mx-auto rounded-xl py-4 px-8 h-full flex flex-col gap-4">
+      <div className="w-2/3  my-14 bg-white mx-auto rounded-xl py-4 px-8 h-full flex flex-col gap-4">
         <div className="flex-center mb-2">
           <SiJordan className="h-16 w-16" />
         </div>

@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { add, parseJSON, sub } from "date-fns"
-import { Calendar } from "../Types/calendarType"
+import { Calendar, HabitTab } from "../Types/calendarType"
+import { HabitFormTypes } from "../Types/HabitTypes"
 
 const initialState: Calendar = {
   today: JSON.stringify(new Date()),
   newHabit: false,
   overlay: false,
+  allHabits: [],
 }
 
 const calendarSlice = createSlice({
@@ -22,9 +24,12 @@ const calendarSlice = createSlice({
       state.newHabit = true
       state.overlay = true
     },
-    createHabit(state) {
+    createHabit(state, action) {
+      const habit: HabitFormTypes = action.payload
+      const withMarkedDays: HabitTab = { ...habit, markedDays: [] }
       state.newHabit = false
       state.overlay = false
+      state.allHabits.push(withMarkedDays)
     },
   },
 })

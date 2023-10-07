@@ -4,7 +4,7 @@ type HabitFormTypes = {
   name: string
   type: HabitTypesTypes
   timesPerWeek: number
-  goal: number
+  goal?: number
   startDate: Date
   skippedPenalty: number
 }
