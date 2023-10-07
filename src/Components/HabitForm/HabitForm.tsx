@@ -18,7 +18,14 @@ export default function HabitForm() {
   const { errors } = formState
 
   const handleHabitCreation: SubmitHandler<FieldValues> = (values) => {
-    const newVal = { ...values, startDate: JSON.stringify(values.startDate) }
+    const { name, type, timesPerWeek, skippedPenalty, startDate } = values
+    const newVal = {
+      name,
+      type,
+      timesPerWeek,
+      skippedPenalty,
+      startDate: JSON.stringify(startDate),
+    }
     dispatch(createHabit(newVal))
   }
 

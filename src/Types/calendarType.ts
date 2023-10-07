@@ -7,6 +7,8 @@ type Calendar = {
   allHabits: HabitTab[]
   currentHabit: HabitTab | null
   deleteWindow: boolean
+  markDay: boolean
+  selectedDay: string
 }
 
 type HabitTab = HabitFormTypes & {

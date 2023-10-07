@@ -6,9 +6,10 @@ import HabitForm from "./Components/HabitForm/HabitForm"
 import Overlay from "./Components/Overlay"
 import AppLayout from "./Layout/AppLayout"
 import DeleteHabit from "./Components/DeleteHabit"
+import MarkDay from "./Components/MarkDay/MarkDay"
 
 function App() {
-  const { overlay, newHabit, deleteWindow } = useSelector(
+  const { overlay, newHabit, deleteWindow, markDay } = useSelector(
     (state: RootState) => state.calendar
   )
   return (
@@ -24,6 +25,7 @@ function App() {
       {newHabit && <HabitForm />}
       {overlay && <Overlay />}
       {deleteWindow && <DeleteHabit />}
+      {markDay && <MarkDay />}
     </div>
   )
 }

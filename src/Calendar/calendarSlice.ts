@@ -17,6 +17,8 @@ const initialState: Calendar = {
   allHabits: allHabits,
   currentHabit: initalCurrentHabbit(),
   deleteWindow: false,
+  markDay: false,
+  selectedDay: JSON.stringify(new Date()),
 }
 
 const calendarSlice = createSlice({
@@ -68,6 +70,12 @@ const calendarSlice = createSlice({
           return
       }
     },
+
+    openMarkDay(state, action: PayloadAction<string>) {
+      state.selectedDay = action.payload
+      state.markDay = true
+      state.overlay = true
+    },
   },
 })
 
@@ -78,6 +86,7 @@ export const {
   createHabit,
   updateCurrentHabit,
   deleteHabit,
+  openMarkDay,
 } = calendarSlice.actions
 
 export default calendarSlice.reducer

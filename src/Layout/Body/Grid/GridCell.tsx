@@ -1,26 +1,19 @@
-import { format, isAfter, isBefore, isSameDay, parseJSON } from "date-fns"
-import { useSelector } from "react-redux"
-import { RootState } from "../../../RootState"
+import { useDispatch } from "react-redux"
+import MarkDay from "../../../Components/MarkDay/MarkDay"
+import useCell from "../../../Hooks/useCell"
+import { openMarkDay } from "../../../Calendar/calendarSlice"
 
 type PropTypes = {
   date: Date
 }
 
 export default function Cell({ date }: PropTypes) {
-  const formattedDay = format(date, "d")
-  const isToday = isSameDay(new Date(), date)
-
-  const { currentHabit } = useSelector((state: RootState) => state.calendar)
-  const { startDate: startDateState } = currentHabit!
-  const startDate = parseJSON(startDateState)
-  const isStartDay = isSameDay(startDate, date)
-  const isBeforeStartDay = isBefore(date, startDate) && !isStartDay
-  const isAfterToday = isAfter(date, new Date())
-  const outOfScope = isBeforeStartDay || isAfterToday
+  const dispatch = useDispatch()
+  const { outOfScope, isStartDay, isToday, formattedDay } = useCell(date)
 
   function handleClick() {
     if (!outOfScope) {
-      console.log("hello there")
+      dispatch(openMarkDay(JSON.stringify(date)))
     }
   }
 
