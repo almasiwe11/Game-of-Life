@@ -5,6 +5,7 @@ type Calendar = {
   newHabit: boolean
   overlay: boolean
   allHabits: HabitTab[]
+  currentHabit: HabitTab | null
 }
 
 type HabitTab = HabitFormTypes & {

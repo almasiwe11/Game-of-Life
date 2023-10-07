@@ -7,7 +7,7 @@ type Props = {
   text: string
   color?: keyof Color
   onClick?: () => void
-  type: "button" | "submit"
+  type?: "button" | "submit"
 }
 
 export default function Button({
