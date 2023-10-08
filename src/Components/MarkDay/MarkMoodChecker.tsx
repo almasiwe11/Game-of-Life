@@ -29,6 +29,7 @@ export default function MarkMoodChecker({ setMood }: Props) {
   }
 
   function handleChange(mood: number) {
+    setSelected("")
     setMood(mood)
   }
 
@@ -42,7 +43,6 @@ export default function MarkMoodChecker({ setMood }: Props) {
         className="border border-dark py-2 rounded-lg px-3"
         onChange={(e) => {
           handleChange(Number(e.target.value))
-          setSelected("")
         }}
       >
         {rateDay.map((rate) => (

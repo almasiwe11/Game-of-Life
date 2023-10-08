@@ -11,15 +11,25 @@ export default function MarkDay() {
   const { currentHabit } = useSelector((state: RootState) => state.calendar)
   const habit = currentHabit!
 
-  const [mood, setMood] = useState(10)
+  const [mood, setMood] = useState(1)
+  function handleDayMarking() {
+    console.log(mood)
+  }
+
   return (
     <div className="fixed z-50 inset-0 w-2/3 mx-auto py-16">
       <div className="bg-white p-6 rounded-xl flex flex-col gap-6">
         <MarkedDayHeader />
         {habit.type === "moodchecker" && <MarkMoodChecker setMood={setMood} />}
-        {habit.type === "goal" && <MarkGoal setMood={setMood} />}
+        {habit.type === "goal" && (
+          <MarkGoal setMood={setMood} handleDayMarking={handleDayMarking} />
+        )}
         {habit.type === "yes-no" && <MarkYesNo setMood={setMood} />}
-        <Button text="Mark Day" color="light" />
+        <Button
+          text="Mark Day"
+          color="light"
+          onClick={() => handleDayMarking()}
+        />
       </div>
     </div>
   )

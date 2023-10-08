@@ -6,22 +6,29 @@ import { Mood } from "../../Types/HabitTypes"
 
 type Props = {
   setMood: React.Dispatch<React.SetStateAction<number>>
+  handleDayMarking: () => void
 }
 
-export default function MarkGoal({ setMood }: Props) {
+export default function MarkGoal({ setMood, handleDayMarking }: Props) {
+  const [result, setResult] = useState("")
+  const [selected, setSelected] = useState("")
+
   const { currentHabit } = useSelector((state: RootState) => state.calendar)
   const habit = currentHabit!
 
   function handleSubmit(e: React.KeyboardEvent<HTMLInputElement>) {
     if (result === "") return
     if (e.key === "Enter") {
-      const mood = Math.floor(Number(result) / habit.goal!) * 10
-      setMood(mood)
+      handleDayMarking()
     }
   }
 
-  const [result, setResult] = useState("")
-  const [selected, setSelected] = useState("")
+  function handleChange(result: string) {
+    const mood = Math.floor((Number(result) * 10) / habit.goal!)
+    setMood(mood)
+    setResult(result)
+    setSelected("")
+  }
 
   return (
     <div className="flex gap-6 items-end justify-center">
@@ -33,8 +40,7 @@ export default function MarkGoal({ setMood }: Props) {
           name="result"
           className="border border-dark p-2 px-3 rounded-lg"
           onChange={(e) => {
-            setResult(e.target.value)
-            setSelected("")
+            handleChange(e.target.value)
           }}
           onKeyDown={handleSubmit}
         />
