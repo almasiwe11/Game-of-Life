@@ -22,6 +22,7 @@ export default function HabitForm() {
     const newVal = {
       name,
       type,
+      goal: values.goal ? values.goal : "",
       timesPerWeek,
       skippedPenalty,
       startDate: JSON.stringify(startDate),

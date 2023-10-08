@@ -19,13 +19,15 @@ export default function Header() {
           }}
         />
         <HabitsSelect allHabits={allHabits} />
-        <Button
-          text="delete Habit"
-          color="danger"
-          onClick={() => {
-            dispatch(deleteHabit("try-delete"))
-          }}
-        />
+        {allHabits.length > 0 && (
+          <Button
+            text="delete Habit"
+            color="danger"
+            onClick={() => {
+              dispatch(deleteHabit("try-delete"))
+            }}
+          />
+        )}
       </div>
     </section>
   )

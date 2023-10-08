@@ -1,22 +1,21 @@
 import { useSelector } from "react-redux"
 import Button from "../Shared/Button"
+import MarkedDayHeader from "./MarkedDayHeader"
 import { RootState } from "../../RootState"
-import { format, parseJSON } from "date-fns"
+import MarkMoodChecker from "./MarkMoodChecker"
+import MarkGoal from "./MarkGoal"
 
 export default function MarkDay() {
-  const { selectedDay, currentHabit } = useSelector(
-    (state: RootState) => state.calendar
-  )
-  const markingDay = format(parseJSON(selectedDay), "d MMMM")
-
+  const { currentHabit } = useSelector((state: RootState) => state.calendar)
+  const habit = currentHabit!
   return (
     <div className="fixed z-50 inset-0 w-2/3 mx-auto py-16">
-      <div className="bg-white p-6 rounded-xl">
-        <div className="flex justify-center items-center gap-1">
-          <span className="text-brand">{currentHabit?.name} - </span>
-          <p className="text-center font-bold text-xl"> {markingDay}</p>
-        </div>
-        <Button text="Mark Day" color="brand" />
+      <div className="bg-white p-6 rounded-xl flex flex-col gap-6">
+        <MarkedDayHeader />
+        {habit.type === "moodchecker" && <MarkMoodChecker />}
+        {habit.type === "goal" && <MarkGoal />}
+        {habit.type === "yes-no" && <MarkMoodChecker />}
+        <Button text="Mark Day" color="light" />
       </div>
     </div>
   )

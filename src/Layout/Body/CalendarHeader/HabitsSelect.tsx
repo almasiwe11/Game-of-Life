@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux"
-import { HabitTab } from "../../../Types/calendarType"
+import { HabitTab } from "../../../Types/CalendarType"
 import { updateCurrentHabit } from "../../../Calendar/calendarSlice"
 
 type Props = {

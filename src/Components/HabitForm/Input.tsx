@@ -26,6 +26,7 @@ export default function Input({
       </label>
       <input
         className="p-1.5 px-3 rounded-lg border-2 border-dark focus:outline-brand"
+        autoComplete="new-password"
         type={type}
         placeholder={placeholder}
         {...register(name, formValidation[name])}

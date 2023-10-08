@@ -9,4 +9,20 @@ type HabitFormTypes = {
   skippedPenalty: number
 }
 
+enum Mood {
+  Skipped,
+  Abysmal,
+  Terrible,
+  Angry,
+  Disappointed,
+  Meh,
+  Ok,
+  Decent,
+  Great,
+  Amazing,
+  Perfect,
+  Extraordinary,
+}
+
 export type { HabitFormTypes, HabitTypesTypes }
+export { Mood }

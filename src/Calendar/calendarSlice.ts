@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { add, parseJSON, sub } from "date-fns"
-import { Calendar, DeleteActions, HabitTab } from "../Types/calendarType"
+import { Calendar, DeleteActions, HabitTab } from "../Types/CalendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
   getFromStorage,
@@ -66,6 +66,7 @@ const calendarSlice = createSlice({
           state.allHabits = state.allHabits.filter(
             (habit) => habit.name !== state.currentHabit!.name
           )
+          state.currentHabit = state.allHabits[0]
           updateStorage(state.allHabits)
           return
       }
