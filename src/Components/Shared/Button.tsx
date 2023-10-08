@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge"
+
 type Color = {
   light: string
   dark: string
@@ -30,14 +32,11 @@ export default function Button({
     brand: base + "bg-brand text-white",
   }
 
+  const mergedClassName = twMerge(style[color], className)
   return (
     <>
       {onClick ? (
-        <button
-          className={`${style[color]} ${className}`}
-          onClick={onClick}
-          type={type}
-        >
+        <button className={mergedClassName} onClick={onClick} type={type}>
           {text}
         </button>
       ) : (

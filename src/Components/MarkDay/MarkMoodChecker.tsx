@@ -1,9 +1,14 @@
+import { useState } from "react"
 import { useSelector } from "react-redux"
 import { Mood } from "../../Types/HabitTypes"
 import { RootState } from "../../RootState"
 import Button from "../Shared/Button"
 
-export default function MarkMoodChecker() {
+type Props = {
+  setMood: React.Dispatch<React.SetStateAction<number>>
+}
+
+export default function MarkMoodChecker({ setMood }: Props) {
   const enumArray = Object.values(Mood)
   const halfLen = enumArray.length / 2
   const rateDay = []
@@ -23,11 +28,23 @@ export default function MarkMoodChecker() {
     rateDay.push(obj)
   }
 
+  function handleChange(mood: number) {
+    setMood(mood)
+  }
+
   rateDay.pop()
   rateDay.shift()
+
+  const [selected, setSelected] = useState("")
   return (
     <div className="flex flex-col gap-4">
-      <select className="border border-dark py-2 rounded-lg px-3">
+      <select
+        className="border border-dark py-2 rounded-lg px-3"
+        onChange={(e) => {
+          handleChange(Number(e.target.value))
+          setSelected("")
+        }}
+      >
         {rateDay.map((rate) => (
           <option value={rate.exp / 10} key={rate.exp}>
             {rate.mood} - {rate.exp}
@@ -36,8 +53,28 @@ export default function MarkMoodChecker() {
       </select>
 
       <div className="flex gap-3 justify-center">
-        <Button text={`Skipped - ${habit.skippedPenalty}`} color="danger" />
-        <Button text="Extraordinary - 200" color="brand" />
+        <Button
+          text={`Skipped - ${habit.skippedPenalty}`}
+          color="danger"
+          onClick={() => {
+            setMood(Mood.Skipped)
+            setSelected("skipped")
+          }}
+          className={`${
+            selected === "skipped" && "bg-white text-red-600 border-red-600"
+          }`}
+        />
+        <Button
+          text="Extraordinary - 200"
+          color="brand"
+          onClick={() => {
+            setMood(Mood.Extraordinary)
+            setSelected("extra")
+          }}
+          className={`${
+            selected === "extra" && "bg-white text-brand border-brand"
+          }`}
+        />
       </div>
     </div>
   )
