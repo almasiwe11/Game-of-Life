@@ -13,7 +13,7 @@ enum Mood {
   Skipped,
   Abysmal,
   Terrible,
-  Angry,
+  Sad,
   Disappointed,
   Meh,
   Ok,
@@ -21,7 +21,7 @@ enum Mood {
   Great,
   Amazing,
   Perfect,
-  Extraordinary = 14,
+  Extraordinary = 13,
 }
 
 export type { HabitFormTypes, HabitTypesTypes }

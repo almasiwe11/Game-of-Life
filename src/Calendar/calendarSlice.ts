@@ -1,4 +1,4 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import {
   add,
   format,
@@ -114,19 +114,17 @@ const calendarSlice = createSlice({
         isSameMonth(parseJSON(month.month), date)
       )
       if (exists) {
-        const update = state.allHabits
+        const existingMonth = state.allHabits
           .find((habit) => habit.name === state.currentHabit!.name)!
           .markedDays.find((month) =>
             isSameMonth(parseJSON(month.month), date)
           )!
-          .marked.find((day) => isSameDay(parseJSON(day.date), date))
+        const update = existingMonth.marked.find((day) =>
+          isSameDay(parseJSON(day.date), date)
+        )
 
         if (update) {
-          state.allHabits
-            .find((habit) => habit.name === state.currentHabit!.name)!
-            .markedDays.find((month) =>
-              isSameMonth(parseJSON(month.month), date)
-            )!.marked = state.allHabits
+          existingMonth.marked = state.allHabits
             .find((habit) => habit.name === state.currentHabit!.name)!
             .markedDays.find((month) =>
               isSameMonth(parseJSON(month.month), date)
@@ -135,12 +133,7 @@ const calendarSlice = createSlice({
               isSameDay(parseJSON(day.date), date) ? markedDay : day
             )
         } else {
-          state.allHabits
-            .find((habit) => habit.name === state.currentHabit!.name)!
-            .markedDays.find((month) =>
-              isSameMonth(parseJSON(month.month), date)
-            )!
-            .marked.push(markedDay)
+          existingMonth.marked.push(markedDay)
         }
       } else {
         state.allHabits
@@ -151,9 +144,9 @@ const calendarSlice = createSlice({
         (habit) => habit.name === state.currentHabit!.name
       )!
 
+      updateStorage(state.allHabits)
       state.markDay = false
       state.overlay = false
-      updateStorage(state.allHabits)
     },
   },
 })

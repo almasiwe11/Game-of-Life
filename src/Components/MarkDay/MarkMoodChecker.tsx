@@ -65,7 +65,7 @@ export default function MarkMoodChecker({ setMood }: Props) {
           }`}
         />
         <Button
-          text="Extraordinary - 200"
+          text="Extraordinary + 200"
           color="brand"
           onClick={() => {
             setMood(Mood.Extraordinary)

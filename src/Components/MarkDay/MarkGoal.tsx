@@ -18,6 +18,7 @@ export default function MarkGoal({ setMood, handleDayMarking }: Props) {
 
   function handleSubmit(e: React.KeyboardEvent<HTMLInputElement>) {
     if (result === "") return
+    if (Number(result) <= 0) return
     if (e.key === "Enter") {
       handleDayMarking()
     }
@@ -25,6 +26,12 @@ export default function MarkGoal({ setMood, handleDayMarking }: Props) {
 
   function handleChange(result: string) {
     const mood = Math.floor((Number(result) * 10) / habit.goal!)
+    setSelected("")
+    if (mood < 1) {
+      setMood(1)
+      setResult("1")
+      return
+    }
     setMood(mood)
     setResult(result)
     setSelected("")
