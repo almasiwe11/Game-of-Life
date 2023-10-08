@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import Button from "../Shared/Button"
 import MarkedDayHeader from "./MarkedDayHeader"
 import { RootState } from "../../RootState"
@@ -6,14 +6,28 @@ import MarkMoodChecker from "./MarkMoodChecker"
 import MarkGoal from "./MarkGoal"
 import MarkYesNo from "./MarkYesNo"
 import { useState } from "react"
+import { addMarkDay } from "../../Calendar/calendarSlice"
+import { Mood } from "../../Types/HabitTypes"
 
 export default function MarkDay() {
-  const { currentHabit } = useSelector((state: RootState) => state.calendar)
+  const [mood, setMood] = useState(1)
+  const dispatch = useDispatch()
+  const { currentHabit, selectedDay } = useSelector(
+    (state: RootState) => state.calendar
+  )
   const habit = currentHabit!
 
-  const [mood, setMood] = useState(1)
   function handleDayMarking() {
-    console.log(mood)
+    let exp
+    if (mood === Mood.Skipped) {
+      exp = -habit.skippedPenalty
+    } else if (mood >= Mood.Extraordinary) {
+      exp = 200
+    } else {
+      exp = mood * 10
+    }
+    dispatch(addMarkDay({ day: JSON.stringify(selectedDay), mood, exp }))
+    console.log(exp)
   }
 
   return (

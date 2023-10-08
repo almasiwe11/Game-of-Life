@@ -1,4 +1,4 @@
-import { HabitTab } from "../Types/calendarType"
+import { HabitTab } from "../Types/CalendarType"
 
 function updateStorage(allHabits: HabitTab[]) {
   localStorage.setItem("allHabits", JSON.stringify(allHabits))

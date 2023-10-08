@@ -1,4 +1,4 @@
-import { HabitFormTypes } from "./HabitTypes"
+import { HabitFormTypes, Mood } from "./HabitTypes"
 
 type Calendar = {
   today: string
@@ -12,9 +12,30 @@ type Calendar = {
 }
 
 type HabitTab = HabitFormTypes & {
-  markedDays: []
+  markedDays: MarkedHabit[]
+}
+
+type MarkedHabit = {
+  month: string
+  marked: MarkedDaysOfMonth[]
+}
+
+type MarkedDaysOfMonth = {
+  date: string
+  day: number
+  week: number
+  expEarned: number
+  result?: number | null
+  totalExp: number
+  mood: Mood
 }
 
 type DeleteActions = "try-delete" | "no-delete" | "delete"
 
-export type { Calendar, HabitTab, DeleteActions }
+export type {
+  Calendar,
+  HabitTab,
+  DeleteActions,
+  MarkedDaysOfMonth,
+  MarkedHabit,
+}
