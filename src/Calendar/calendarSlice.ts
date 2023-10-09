@@ -148,11 +148,29 @@ const calendarSlice = createSlice({
       state.markDay = false
       state.overlay = false
     },
+
+    calcTotalExp(state, action) {
+      console.log("calculation")
+    },
+
+    updateTotal(state, action: PayloadAction<number>) {
+      state.currentHabit!.totalExp =
+        state.currentHabit!.totalExp + action.payload
+    },
+
+    updateAllHabits(state) {
+      state.allHabits = state.allHabits.map((habit) =>
+        habit.name === state.currentHabit!.name ? state.currentHabit! : habit
+      )
+      updateStorage(state.allHabits)
+    },
   },
 })
 
 export const {
   addMonth,
+  calcTotalExp,
+  updateTotal,
   subMonth,
   newHabit,
   createHabit,

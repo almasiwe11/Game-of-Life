@@ -24,6 +24,7 @@ export default function HabitForm() {
       name,
       type,
       goal: values.goal ? values.goal : "",
+      totalExp: 0,
       timesPerWeek,
       skippedPenalty,
       startDate: JSON.stringify(startDate),

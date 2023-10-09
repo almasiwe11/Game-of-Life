@@ -7,6 +7,7 @@ type HabitFormTypes = {
   goal?: number
   startDate: string
   skippedPenalty: number
+  totalExp: number
 }
 
 enum Mood {
