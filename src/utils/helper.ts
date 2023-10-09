@@ -40,17 +40,27 @@ function calcSelfExp(
   if (theFirstDay || isToday) {
     return state.currentHabit!.totalExp + expMarked
   } else if (latestDay) {
+    if (state.selectedDayIsMarked) return calcFromPrev(state, date, expMarked)
     return state.currentHabit!.totalExp + expMarked
   } else if (
     isAfter(parseJSON(state.currentHabit!.firstMarkedDate!), date) ||
     isSameDay(parseJSON(state.currentHabit!.firstMarkedDate!), date)
   ) {
+    // is before the first marked day
     return expMarked
   } else {
     //between
-    const prevDay = findPrevDay(state, date)
-    return prevDay.totalExp + expMarked
+    return calcFromPrev(state, date, expMarked)
   }
+}
+
+function calcFromPrev(
+  state: WritableDraft<Calendar>,
+  date: Date,
+  expMarked: number
+) {
+  const prevDay = findPrevDay(state, date)
+  return prevDay.totalExp + expMarked
 }
 
 function isLastDay(

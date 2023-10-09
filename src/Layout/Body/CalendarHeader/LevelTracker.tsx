@@ -3,6 +3,7 @@ import { RootState } from "../../../RootState"
 
 export default function LevelTracker() {
   const { currentHabit } = useSelector((state: RootState) => state.calendar)
+  if (currentHabit?.markedDays.length === 0 || !currentHabit) return
   const { totalExp } = currentHabit!
 
   function calculateLevel(xp: number) {
@@ -14,13 +15,11 @@ export default function LevelTracker() {
       level++
       xpPerLevel += 200
     }
-    console.log(`xp untill next lvl ${xpPerLevel} \n current xp ${xp}`)
     return level
   }
 
   const xp = 6800
   const playerLevel = calculateLevel(xp)
-  console.log(`Player is at level ${playerLevel}`)
 
   return (
     <div className="text-white font-bold flex flex-col items-center">
