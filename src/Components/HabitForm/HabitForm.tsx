@@ -28,6 +28,7 @@ export default function HabitForm() {
       timesPerWeek,
       skippedPenalty,
       startDate: JSON.stringify(startDate),
+      firstMarkedDate: undefined,
     }
     dispatch(createHabit(newVal))
   }

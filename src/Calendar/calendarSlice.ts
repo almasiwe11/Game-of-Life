@@ -18,6 +18,7 @@ import {
 } from "../Types/CalendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
+  calcSelfExp,
   getFromStorage,
   initalCurrentHabbit,
   updateStorage,
@@ -104,12 +105,13 @@ const calendarSlice = createSlice({
 
     addMarkDay(state, action: PayloadAction<AddMarkDay>) {
       const date = parseJSON(action.payload.day)
+      const dayOrder = Number(format(date, "d"))
       const markedDay: MarkedDaysOfMonth = {
         date: JSON.stringify(date),
-        day: Number(format(date, "d")),
+        day: dayOrder,
         week: getISOWeek(date),
         expEarned: action.payload.exp,
-        totalExp: 0,
+        totalExp: calcSelfExp(state, date, action.payload.exp, dayOrder),
         mood: action.payload.mood,
       }
 
@@ -143,6 +145,10 @@ const calendarSlice = createSlice({
       } else {
         state.currentHabit!.markedDays.push(markedMonth)
       }
+
+      if (state.currentHabit!.startDate === undefined) {
+        state.currentHabit!.startDate = JSON.stringify(date)
+      }
       calendarSlice.caseReducers.updateAllHabits(state)
       state.markDay = false
       state.overlay = false
@@ -155,18 +161,12 @@ const calendarSlice = createSlice({
       updateStorage(state.allHabits)
     },
 
-    calcTotalExp(state, action) {
+    calcTotalExp() {
       console.log("calculation")
     },
 
     updateTotal(state, action: PayloadAction<number>) {
-      //if not day marked than just add total on top of it
-      //if already marked substract the exp of that marked day and add new exp
       if (state.selectedDayIsMarked) {
-        console.log(
-          "substraction oldvalue",
-          state.selectedDayIsMarked.expEarned
-        )
         state.currentHabit!.totalExp =
           state.currentHabit!.totalExp - state.selectedDayIsMarked.expEarned
       }

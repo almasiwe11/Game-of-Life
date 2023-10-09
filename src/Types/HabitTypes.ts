@@ -8,6 +8,7 @@ type HabitFormTypes = {
   startDate: string
   skippedPenalty: number
   totalExp: number
+  firstMarkedDate: string | undefined
 }
 
 enum Mood {
