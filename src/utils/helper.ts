@@ -28,7 +28,13 @@ function calcSelfExp(
     return state.currentHabit!.totalExp + expMarked
   } else if (latestDay) {
     return state.currentHabit!.totalExp + expMarked
+  } else if (
+    isAfter(parseJSON(state.currentHabit!.firstMarkedDate!), date) ||
+    isSameDay(parseJSON(state.currentHabit!.firstMarkedDate!), date)
+  ) {
+    return expMarked
   } else {
+    console.log("between")
     const prevDay = findPrevDay(state, date)
     return prevDay.totalExp + expMarked
   }
@@ -68,17 +74,16 @@ function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
   while (isAlreadyMarked(state, observedDay)) {
     observedDay = sub(observedDay, { days: 1 })
   }
-  return isAlreadyMarked(state, observedDay)!
+  const prevDay = isAlreadyMarked(state, sub(observedDay, { days: 1 }))!
+  return prevDay
 }
 
-function isAlreadyMarked(state: WritableDraft<Calendar>, day: Date) {
+function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
   const isMarked = state
     .currentHabit!.markedDays.find((day) =>
-      isSameMonth(parseJSON(day.month), parseJSON(state.selectedDay))
+      isSameMonth(parseJSON(day.month), observed)
     )
-    ?.marked.find((day) =>
-      isSameDay(parseJSON(day.date), parseJSON(state.selectedDay))
-    )
+    ?.marked.find((day) => isSameDay(parseJSON(day.date), observed))
 
   return isMarked
 }

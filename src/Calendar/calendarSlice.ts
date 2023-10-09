@@ -3,6 +3,7 @@ import {
   add,
   format,
   getISOWeek,
+  isBefore,
   isSameDay,
   isSameMonth,
   parseJSON,
@@ -105,6 +106,14 @@ const calendarSlice = createSlice({
 
     addMarkDay(state, action: PayloadAction<AddMarkDay>) {
       const date = parseJSON(action.payload.day)
+
+      if (
+        state.currentHabit!.firstMarkedDate === undefined ||
+        isBefore(date, parseJSON(state.currentHabit!.firstMarkedDate))
+      ) {
+        state.currentHabit!.firstMarkedDate = JSON.stringify(date)
+      }
+
       const dayOrder = Number(format(date, "d"))
       const markedDay: MarkedDaysOfMonth = {
         date: JSON.stringify(date),
@@ -146,9 +155,6 @@ const calendarSlice = createSlice({
         state.currentHabit!.markedDays.push(markedMonth)
       }
 
-      if (state.currentHabit!.startDate === undefined) {
-        state.currentHabit!.startDate = JSON.stringify(date)
-      }
       calendarSlice.caseReducers.updateAllHabits(state)
       state.markDay = false
       state.overlay = false
