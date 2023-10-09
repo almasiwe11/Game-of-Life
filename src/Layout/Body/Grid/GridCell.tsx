@@ -40,11 +40,14 @@ export default function Cell({ date }: PropTypes) {
         {formattedDay}
       </span>
       {isMarked ? (
-        <Icon
-          className={`${
-            isMarked!.mood >= Mood.Extraordinary ? "w-16 h-16" : "h-10 w-10"
-          } `}
-        />
+        <>
+          <span className="absolute top-1 left-1">{isMarked.totalExp}</span>
+          <Icon
+            className={`${
+              isMarked!.mood >= Mood.Extraordinary ? "w-16 h-16" : "h-10 w-10"
+            } `}
+          />
+        </>
       ) : (
         ""
       )}

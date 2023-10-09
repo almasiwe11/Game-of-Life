@@ -2,6 +2,7 @@ import { useSelector } from "react-redux"
 import MonthSwitcher from "./MonthSwitcher"
 import { RootState } from "../../../RootState"
 import { format, parseJSON } from "date-fns"
+import LevelTracker from "./LevelTracker"
 
 export default function Header() {
   const calendar = useSelector((state: RootState) => state.calendar)
@@ -12,7 +13,7 @@ export default function Header() {
       <div className="text-white text-3xl flex items-center gap-9 font-bold">
         <span> {today} </span>
       </div>
-
+      <LevelTracker />
       <MonthSwitcher />
     </div>
   )

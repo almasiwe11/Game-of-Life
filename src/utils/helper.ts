@@ -24,6 +24,19 @@ function calcSelfExp(
   const theFirstDay = state.currentHabit!.markedDays.length === 0
   const isToday = isSameDay(date, new Date())
   const latestDay = isLastDay(state, date, dayOrder)
+
+  const updateExp = state.selectedDayIsMarked
+    ? state.selectedDayIsMarked!.expEarned
+    : 0
+
+  state.currentHabit!.markedDays.map((month) =>
+    month.marked.map((day) =>
+      isAfter(parseJSON(day.date), date)
+        ? (day.totalExp = day.totalExp + expMarked - updateExp)
+        : day
+    )
+  )
+
   if (theFirstDay || isToday) {
     return state.currentHabit!.totalExp + expMarked
   } else if (latestDay) {
@@ -34,21 +47,10 @@ function calcSelfExp(
   ) {
     return expMarked
   } else {
-    console.log("between")
+    //between
     const prevDay = findPrevDay(state, date)
     return prevDay.totalExp + expMarked
   }
-  //user can't mark days that are ahead of today
-  //1) check if there are any days marked in the habit if this day is first than toal iexp is expGained
-  //1.1) so if the marked day is today than just add the total exp to the expGained
-  //else if the marked day is the latest day from all marked days than add expGained aswell
-
-  //else there are days before and after marked day
-  //in that case find the previous day by substracting one day from marked day untill the day is found
-  //add that days total exp with current exp and get new exp for the marked day
-  //also update all days that are ahead of the marked day buy adding to their total exp current expGained
-
-  //if day is already marked
 }
 
 function isLastDay(
@@ -71,10 +73,10 @@ function isLastDay(
 
 function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
   let observedDay = sub(date, { days: 1 })
-  while (isAlreadyMarked(state, observedDay)) {
+  while (!isAlreadyMarked(state, observedDay)) {
     observedDay = sub(observedDay, { days: 1 })
   }
-  const prevDay = isAlreadyMarked(state, sub(observedDay, { days: 1 }))!
+  const prevDay = isAlreadyMarked(state, observedDay)!
   return prevDay
 }
 
@@ -84,7 +86,6 @@ function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
       isSameMonth(parseJSON(day.month), observed)
     )
     ?.marked.find((day) => isSameDay(parseJSON(day.date), observed))
-
   return isMarked
 }
 
