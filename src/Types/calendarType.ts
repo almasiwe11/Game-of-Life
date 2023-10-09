@@ -9,6 +9,7 @@ type Calendar = {
   deleteWindow: boolean
   markDay: boolean
   selectedDay: string
+  selectedDayIsMarked: MarkedDaysOfMonth | undefined
 }
 
 type HabitTab = HabitFormTypes & {

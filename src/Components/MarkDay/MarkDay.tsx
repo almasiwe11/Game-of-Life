@@ -8,6 +8,7 @@ import MarkYesNo from "./MarkYesNo"
 import { useState } from "react"
 import { addMarkDay, updateTotal } from "../../Calendar/calendarSlice"
 import { Mood } from "../../Types/HabitTypes"
+import { isSameDay, isSameMonth, parseJSON } from "date-fns"
 
 export default function MarkDay() {
   const [mood, setMood] = useState(1)
@@ -27,6 +28,7 @@ export default function MarkDay() {
       exp = mood * 10
     }
     dispatch(addMarkDay({ day: JSON.stringify(selectedDay), mood, exp }))
+    console.log(selectedDay)
     dispatch(updateTotal(exp))
   }
 

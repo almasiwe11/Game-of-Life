@@ -20,7 +20,6 @@ export default function Cell({ date }: PropTypes) {
     if (outOfScope) return
     dispatch(openMarkDay(JSON.stringify(date)))
   }
-
   const isMarked = habit.markedDays
     .find((day) => isSameMonth(parseJSON(day.month), date))
     ?.marked.find((day) => isSameDay(parseJSON(day.date), date))

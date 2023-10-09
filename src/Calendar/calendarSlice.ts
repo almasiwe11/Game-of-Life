@@ -35,6 +35,7 @@ const initialState: Calendar = {
   deleteWindow: false,
   markDay: false,
   selectedDay: JSON.stringify(new Date()),
+  selectedDayIsMarked: undefined,
 }
 
 const calendarSlice = createSlice({
@@ -92,6 +93,13 @@ const calendarSlice = createSlice({
       state.selectedDay = action.payload
       state.markDay = true
       state.overlay = true
+      state.selectedDayIsMarked = state
+        .currentHabit!.markedDays.find((day) =>
+          isSameMonth(parseJSON(day.month), parseJSON(state.selectedDay))
+        )
+        ?.marked.find((day) =>
+          isSameDay(parseJSON(day.date), parseJSON(state.selectedDay))
+        )
     },
 
     addMarkDay(state, action: PayloadAction<AddMarkDay>) {
@@ -152,8 +160,20 @@ const calendarSlice = createSlice({
     },
 
     updateTotal(state, action: PayloadAction<number>) {
+      //if not day marked than just add total on top of it
+      //if already marked substract the exp of that marked day and add new exp
+      if (state.selectedDayIsMarked) {
+        console.log(
+          "substraction oldvalue",
+          state.selectedDayIsMarked.expEarned
+        )
+        state.currentHabit!.totalExp =
+          state.currentHabit!.totalExp - state.selectedDayIsMarked.expEarned
+      }
       state.currentHabit!.totalExp =
         state.currentHabit!.totalExp + action.payload
+
+      calendarSlice.caseReducers.updateAllHabits(state)
     },
   },
 })
