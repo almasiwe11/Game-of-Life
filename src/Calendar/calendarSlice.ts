@@ -114,19 +114,16 @@ const calendarSlice = createSlice({
         isSameMonth(parseJSON(month.month), date)
       )
       if (exists) {
-        const existingMonth = state.allHabits
-          .find((habit) => habit.name === state.currentHabit!.name)!
-          .markedDays.find((month) =>
-            isSameMonth(parseJSON(month.month), date)
-          )!
+        const existingMonth = state.currentHabit!.markedDays.find((month) =>
+          isSameMonth(parseJSON(month.month), date)
+        )!
         const update = existingMonth.marked.find((day) =>
           isSameDay(parseJSON(day.date), date)
         )
 
         if (update) {
-          existingMonth.marked = state.allHabits
-            .find((habit) => habit.name === state.currentHabit!.name)!
-            .markedDays.find((month) =>
+          existingMonth.marked = state
+            .currentHabit!.markedDays.find((month) =>
               isSameMonth(parseJSON(month.month), date)
             )!
             .marked.map((day) =>
@@ -136,17 +133,18 @@ const calendarSlice = createSlice({
           existingMonth.marked.push(markedDay)
         }
       } else {
-        state.allHabits
-          .find((habit) => habit.name === state.currentHabit!.name)!
-          .markedDays.push(markedMonth)
+        state.currentHabit!.markedDays.push(markedMonth)
       }
-      state.currentHabit = state.allHabits.find(
-        (habit) => habit.name === state.currentHabit!.name
-      )!
-
-      updateStorage(state.allHabits)
+      calendarSlice.caseReducers.updateAllHabits(state)
       state.markDay = false
       state.overlay = false
+    },
+
+    updateAllHabits(state) {
+      state.allHabits = state.allHabits.map((habit) =>
+        habit.name === state.currentHabit!.name ? state.currentHabit! : habit
+      )
+      updateStorage(state.allHabits)
     },
 
     calcTotalExp(state, action) {
@@ -156,13 +154,6 @@ const calendarSlice = createSlice({
     updateTotal(state, action: PayloadAction<number>) {
       state.currentHabit!.totalExp =
         state.currentHabit!.totalExp + action.payload
-    },
-
-    updateAllHabits(state) {
-      state.allHabits = state.allHabits.map((habit) =>
-        habit.name === state.currentHabit!.name ? state.currentHabit! : habit
-      )
-      updateStorage(state.allHabits)
     },
   },
 })
