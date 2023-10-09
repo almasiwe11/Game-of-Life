@@ -6,8 +6,10 @@ export default function LevelTracker() {
   if (currentHabit?.markedDays.length === 0 || !currentHabit) return
   const { totalExp } = currentHabit!
 
-  function calculateLevel(xp: number) {
-    let xpPerLevel = 500
+  let xpPerLevel = 500
+  let xp = totalExp
+
+  function calculateLevel() {
     let level = 1
 
     while (xp >= xpPerLevel) {
@@ -18,13 +20,15 @@ export default function LevelTracker() {
     return level
   }
 
-  const xp = 6800
-  const playerLevel = calculateLevel(xp)
+  const playerLevel = calculateLevel()
 
   return (
     <div className="text-white font-bold flex flex-col items-center">
-      <span>{totalExp}</span>
-      <span>{"lvl"}</span>
+      <div className="flex gap-4 items-center">
+        <span className="text-center">Level {playerLevel}</span>
+        <progress value={xp} max={xpPerLevel} className=""></progress>
+        <span className="">{`${xp}/${xpPerLevel}`}</span>
+      </div>
     </div>
   )
 }
