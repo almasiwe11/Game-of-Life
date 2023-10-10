@@ -42,15 +42,20 @@ const ProgressBarContainer = styled.div`
 
 const ProgressBarValue = styled.div.withConfig({
   shouldForwardProp: (prop) =>
-    !["levelUp", "prevXpLevelUp", "levelDown", "prevXpLevelDown"].includes(
-      prop
-    ),
+    ![
+      "levelUp",
+      "prevXpLevelUp",
+      "levelDown",
+      "prevXpLevelDown",
+      "tabChanged",
+    ].includes(prop),
 })<{
   width: number
   levelUp: boolean
   levelDown: boolean
   prevXpLevelUp: number
   prevXpLevelDown: number
+  tabChanged: boolean
 }>`
   width: ${(props) => props.width}%;
   position: absolute;
@@ -58,14 +63,16 @@ const ProgressBarValue = styled.div.withConfig({
   height: 100%;
   border-radius: 7px;
   animation: ${(props) =>
-      props.levelUp
+      props.tabChanged
+        ? "none"
+        : props.levelUp
         ? levelUpAnimation(props.width, props.prevXpLevelUp)
         : props.levelDown
         ? levelDownAnimation(props.width, props.prevXpLevelDown)
         : "none"}
     1.3s ease-in-out;
   background-color: blue;
-  transition: 1.3s ease;
+  transition: ${(props) => (props.tabChanged ? "none" : "1.3s ease")};
 `
 
 export default function LevelTracker() {
@@ -89,9 +96,11 @@ export default function LevelTracker() {
 
   const prevLevelRef = useRef(Infinity)
   const prevXpRef = useRef(1)
+  const prevTab = useRef("")
 
   useEffect(() => {
     prevLevelRef.current = level
+    prevTab.current = currentHabit!.name
     prevXpRef.current = xp
   }, [level, xp])
 
@@ -101,11 +110,7 @@ export default function LevelTracker() {
 
   const prevXpLevelUp = (prevXpRef.current * 100) / (xpPerLevel - 200)
   const prevXpLevelDown = (prevXpRef.current * 100) / (xpPerLevel + 200)
-  function getProgressWidth() {
-    if (!levelUp) {
-      return `${(xp * 100) / xpPerLevel}%`
-    }
-  }
+  const tabChanged = prevTab.current !== currentHabit!.name
 
   return (
     <div className="text-white font-bold flex flex-col items-center">
@@ -118,6 +123,7 @@ export default function LevelTracker() {
             levelUp={levelUp}
             prevXpLevelUp={prevXpLevelUp}
             prevXpLevelDown={prevXpLevelDown}
+            tabChanged={tabChanged}
           ></ProgressBarValue>
         </ProgressBarContainer>
         <span className="">{`${xp}/${xpPerLevel}`}</span>
