@@ -3,7 +3,7 @@ import { RootState } from "../../../RootState"
 import { useEffect, useRef } from "react"
 import styled, { keyframes } from "styled-components"
 
-const fillProgress = (width: number, prevxp: number) => keyframes`
+const levelUpAnimation = (width: number, prevxp: number) => keyframes`
   0%{
     width:${prevxp}%
   }
@@ -12,6 +12,21 @@ const fillProgress = (width: number, prevxp: number) => keyframes`
   }
   51%{
     width:0%
+  }
+  100% {
+    width:${width}%
+  }
+`
+
+const levelDownAnimation = (width: number, prevxp: number) => keyframes`
+  0%{
+    width:${prevxp}%
+  }
+  50%{
+    width:0%;
+  }
+  51%{
+    width:100%
   }
   100% {
     width:${width}%
@@ -26,11 +41,14 @@ const ProgressBarContainer = styled.div`
 `
 
 const ProgressBarValue = styled.div.withConfig({
-  shouldForwardProp: (prop) => !["levelUp", "prevXpLevelUp"].includes(prop),
+  shouldForwardProp: (prop) =>
+    !["levelUp", "prevXpLevelUp, levelDown, prevXpLevelDown"].includes(prop),
 })<{
   width: number
   levelUp: boolean
+  levelDown: boolean
   prevXpLevelUp: number
+  prevXpLevelDown: number
 }>`
   width: ${(props) => props.width}%;
   position: absolute;
@@ -38,10 +56,14 @@ const ProgressBarValue = styled.div.withConfig({
   height: 100%;
   border-radius: 7px;
   animation: ${(props) =>
-      props.levelUp ? fillProgress(props.width, props.prevXpLevelUp) : "none"}
-    1s ease-in-out;
+      props.levelUp
+        ? levelUpAnimation(props.width, props.prevXpLevelUp)
+        : props.levelDown
+        ? levelDownAnimation(props.width, props.prevXpLevelDown)
+        : "none"}
+    1.3s ease-in-out;
   background-color: blue;
-  transition: 0.3s ease-in-out;
+  transition: 1.3s ease;
 `
 
 export default function LevelTracker() {
@@ -72,7 +94,11 @@ export default function LevelTracker() {
   }, [level, xp])
 
   const levelUp = level > prevLevelRef.current
+  const levelDown =
+    level < prevLevelRef.current && prevLevelRef.current !== Infinity
 
+  const prevXpLevelUp = (prevXpRef.current * 100) / (xpPerLevel - 200)
+  const prevXpLevelDown = (prevXpRef.current * 100) / (xpPerLevel + 200)
   function getProgressWidth() {
     if (!levelUp) {
       return `${(xp * 100) / xpPerLevel}%`
@@ -86,8 +112,10 @@ export default function LevelTracker() {
         <ProgressBarContainer>
           <ProgressBarValue
             width={(xp * 100) / xpPerLevel}
+            levelDown={levelDown}
             levelUp={levelUp}
-            prevXpLevelUp={(prevXpRef.current * 100) / (xpPerLevel - 200)}
+            prevXpLevelUp={prevXpLevelUp}
+            prevXpLevelDown={prevXpLevelDown}
           ></ProgressBarValue>
         </ProgressBarContainer>
         <span className="">{`${xp}/${xpPerLevel}`}</span>
