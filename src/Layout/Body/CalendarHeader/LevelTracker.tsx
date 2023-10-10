@@ -1,6 +1,48 @@
 import { useSelector } from "react-redux"
 import { RootState } from "../../../RootState"
 import { useEffect, useRef } from "react"
+import styled, { keyframes } from "styled-components"
+
+const fillProgress = (width: number, prevxp: number) => keyframes`
+  0%{
+    width:${prevxp}%
+  }
+  50%{
+    width:100%;
+  }
+  51%{
+    width:0%
+  }
+  100% {
+    width:${width}%
+  }
+`
+const ProgressBarContainer = styled.div`
+  position: relative;
+  width: 200px;
+  height: 4px;
+  background-color: yellow;
+  border-radius: 7px;
+`
+
+const ProgressBarValue = styled.div.withConfig({
+  shouldForwardProp: (prop) => !["levelUp", "prevXpLevelUp"].includes(prop),
+})<{
+  width: number
+  levelUp: boolean
+  prevXpLevelUp: number
+}>`
+  width: ${(props) => props.width}%;
+  position: absolute;
+  left: 0;
+  height: 100%;
+  border-radius: 7px;
+  animation: ${(props) =>
+      props.levelUp ? fillProgress(props.width, props.prevXpLevelUp) : "none"}
+    1s ease-in-out;
+  background-color: blue;
+  transition: 0.3s ease-in-out;
+`
 
 export default function LevelTracker() {
   const { currentHabit } = useSelector((state: RootState) => state.calendar)
@@ -21,31 +63,15 @@ export default function LevelTracker() {
 
   const playerLevel = calculateLevel()
 
-  const prevRef = useRef(1)
+  const prevLevelRef = useRef(Infinity)
+  const prevXpRef = useRef(1)
 
   useEffect(() => {
-    prevRef.current = level
-  }, [level])
+    prevLevelRef.current = level
+    prevXpRef.current = xp
+  }, [level, xp])
 
-  const levelUp = level > prevRef.current
-
-  const progressContainerStyle = {
-    position: "relative",
-    width: "200px",
-    height: "4px",
-    backgroundColor: "yellow",
-    borderRadius: "7px",
-  }
-
-  const progressBarVauleStyle = {
-    position: "absolute",
-    left: "0",
-    height: "100%",
-    borderRadius: "7px",
-    backgroundColor: "blue",
-    width: getProgressWidth(),
-    transition: "0.3s ease-in-out",
-  }
+  const levelUp = level > prevLevelRef.current
 
   function getProgressWidth() {
     if (!levelUp) {
@@ -57,10 +83,13 @@ export default function LevelTracker() {
     <div className="text-white font-bold flex flex-col items-center">
       <div className="flex gap-4 items-center">
         <span className="text-center">Level {playerLevel}</span>
-        {/* <progress value={xp} max={xpPerLevel} className=""></progress> */}
-        <div style={progressContainerStyle}>
-          <span style={progressBarVauleStyle}></span>
-        </div>
+        <ProgressBarContainer>
+          <ProgressBarValue
+            width={(xp * 100) / xpPerLevel}
+            levelUp={levelUp}
+            prevXpLevelUp={(prevXpRef.current * 100) / (xpPerLevel - 200)}
+          ></ProgressBarValue>
+        </ProgressBarContainer>
         <span className="">{`${xp}/${xpPerLevel}`}</span>
       </div>
     </div>
