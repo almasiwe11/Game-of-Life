@@ -38,6 +38,8 @@ function calcSelfExp(
   )
 
   if (theFirstDay || isToday) {
+    if (state.selectedDayIsMarked)
+      return state.currentHabit!.totalExp - updateExp + expMarked
     return state.currentHabit!.totalExp + expMarked
   } else if (latestDay) {
     if (state.selectedDayIsMarked) return calcFromPrev(state, date, expMarked)
