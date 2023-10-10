@@ -9,9 +9,9 @@ export default function Navigation() {
     <div className="row-span-2 flex justify-center">
       <div className="flex flex-col pt-4 gap-3">
         <Logo />
-        <PageLink Icon={GiStrongMan} name="Today" />
-        <PageLink Icon={BsCalendarDay} name="Calendar" />
-        <PageLink Icon={BsGraphUpArrow} name="Progress" />
+        <PageLink Icon={GiStrongMan} name="Today" to="today" />
+        <PageLink Icon={BsCalendarDay} name="Calendar" to="/" />
+        <PageLink Icon={BsGraphUpArrow} name="Progress" to="progress" />
       </div>
     </div>
   )

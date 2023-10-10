@@ -7,6 +7,8 @@ import Overlay from "./Components/Overlay"
 import AppLayout from "./Layout/AppLayout"
 import DeleteHabit from "./Components/DeleteHabit"
 import MarkDay from "./Components/MarkDay/MarkDay"
+import Today from "./Layout/Today/Today"
+import Progress from "./Layout/Progress/Progress"
 
 function App() {
   const { overlay, newHabit, deleteWindow, markDay } = useSelector(
@@ -18,6 +20,8 @@ function App() {
         <Routes>
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Body />}></Route>
+            <Route path="today" element={<Today />}></Route>
+            <Route path="progress" element={<Progress />}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

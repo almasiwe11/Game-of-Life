@@ -1,7 +1,6 @@
-import { useSelector } from "react-redux"
-import { RootState } from "../../../RootState"
 import { useEffect, useRef } from "react"
 import styled, { keyframes } from "styled-components"
+import { HabitTab } from "../../../Types/CalendarType"
 
 const levelUpAnimation = (width: number, prevxp: number) => keyframes`
   0%{
@@ -75,9 +74,12 @@ const ProgressBarValue = styled.div.withConfig({
   transition: ${(props) => (props.tabChanged ? "none" : "1.3s ease")};
 `
 
-export default function LevelTracker() {
-  const { currentHabit } = useSelector((state: RootState) => state.calendar)
-  const { totalExp } = currentHabit!
+type Props = {
+  habit: HabitTab
+}
+
+export default function LevelTracker({ habit }: Props) {
+  const { totalExp } = habit
 
   let xpPerLevel = 500
   let xp = totalExp
@@ -100,9 +102,9 @@ export default function LevelTracker() {
 
   useEffect(() => {
     prevLevelRef.current = level
-    prevTab.current = currentHabit!.name
+    prevTab.current = habit.name
     prevXpRef.current = xp
-  }, [level, xp])
+  }, [level, xp, habit.name])
 
   const levelUp = level > prevLevelRef.current
   const levelDown =
@@ -110,7 +112,7 @@ export default function LevelTracker() {
 
   const prevXpLevelUp = (prevXpRef.current * 100) / (xpPerLevel - 200)
   const prevXpLevelDown = (prevXpRef.current * 100) / (xpPerLevel + 200)
-  const tabChanged = prevTab.current !== currentHabit!.name
+  const tabChanged = prevTab.current !== habit.name
 
   return (
     <div className="text-white font-bold flex flex-col items-center">

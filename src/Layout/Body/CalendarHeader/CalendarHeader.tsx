@@ -13,7 +13,7 @@ export default function Header() {
       <div className="text-white text-3xl flex items-center gap-9 font-bold">
         <span> {today} </span>
       </div>
-      {currentHabit && <LevelTracker />}
+      {currentHabit && <LevelTracker habit={currentHabit} />}
       <MonthSwitcher />
     </div>
   )

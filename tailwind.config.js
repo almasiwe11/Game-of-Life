@@ -22,6 +22,7 @@ export default {
       gridTemplateColumns: {
         app: "15rem 1fr",
         level: "max-content max-content",
+        todayHabit: "max-content 1fr max-content",
       },
 
       gridTemplateRows: {
