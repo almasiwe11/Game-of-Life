@@ -192,15 +192,10 @@ const calendarSlice = createSlice({
       console.log("calculation")
     },
 
-    updateTotal(state, action: PayloadAction<number>) {
+    updateTotal(state) {
       const finalDay = findLastDay(state)
-      if (state.selectedDayIsMarked) {
-        state.currentHabit!.totalExp =
-          state.currentHabit!.totalExp - state.selectedDayIsMarked.expEarned
-      }
-      state.currentHabit!.totalExp =
-        state.currentHabit!.totalExp + action.payload
 
+      state.currentHabit!.totalExp = finalDay.totalExp
       calendarSlice.caseReducers.updateAllHabits(state)
     },
   },

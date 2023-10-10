@@ -35,6 +35,8 @@ function calcSelfExp(
   const isToday = isSameDay(date, new Date())
   const latestDay = isLastDay(state, date, dayOrder)
 
+  const skipped = expMarked === state.currentHabit!.skippedPenalty
+
   const updateExp = state.selectedDayIsMarked
     ? state.selectedDayIsMarked!.expEarned
     : 0
@@ -113,8 +115,8 @@ function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
 
 function findLastDay(state: WritableDraft<Calendar>) {
   const allMonth = state.currentHabit!.markedDays
-  const lastMonth = allMonth[allMonth.length]
-  const lastDay = lastMonth.marked[lastMonth.marked.length]
+  const lastMonth = allMonth[allMonth.length - 1]
+  const lastDay = lastMonth.marked[lastMonth.marked.length - 1]
   return lastDay
 }
 
@@ -125,3 +127,11 @@ export {
   calcSelfExp,
   findLastDay,
 }
+
+// if marked rating is === skippedRating
+// check if the skull is the first day
+// if it's the first day than don't substract anything out of future cells
+
+// else
+// get the prevDay total rating
+// if its less than 0 than we should substract the prevRating instead of skippedRating
