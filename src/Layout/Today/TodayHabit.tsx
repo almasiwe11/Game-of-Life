@@ -29,7 +29,7 @@ export default function TodayHabit({ habit }: Props) {
       className="border border-brand rounded-full px-6 py-2 grid grid-cols-todayHabit gap-4 items-center cursor-pointer"
       onClick={handleClick}
     >
-      <div className="border-2 rounded-full w-20 h-20 flex-center" style={bg}>
+      <div className="rounded-full w-20 h-20 flex-center" style={bg}>
         {isMarked && (
           <Icon
             className={`${

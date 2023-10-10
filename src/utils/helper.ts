@@ -14,6 +14,16 @@ function initalCurrentHabbit() {
   return getFromStorage().length > 0 ? getFromStorage()[0] : null
 }
 
+function updateFutureCells(
+  oldExp: number,
+  markedDayExp: number,
+  oldMarkedDayExp: number
+) {
+  const newExp = oldExp + markedDayExp - oldMarkedDayExp
+  if (newExp < 0) return 0
+  return newExp
+}
+
 function calcSelfExp(
   state: WritableDraft<Calendar>,
   date: Date,
@@ -32,7 +42,7 @@ function calcSelfExp(
   state.currentHabit!.markedDays.map((month) =>
     month.marked.map((day) =>
       isAfter(parseJSON(day.date), date)
-        ? (day.totalExp = day.totalExp + expMarked - updateExp)
+        ? (day.totalExp = updateFutureCells(day.totalExp, expMarked, updateExp))
         : day
     )
   )
@@ -101,4 +111,17 @@ function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
   return isMarked
 }
 
-export { updateStorage, getFromStorage, initalCurrentHabbit, calcSelfExp }
+function findLastDay(state: WritableDraft<Calendar>) {
+  const allMonth = state.currentHabit!.markedDays
+  const lastMonth = allMonth[allMonth.length]
+  const lastDay = lastMonth.marked[lastMonth.marked.length]
+  return lastDay
+}
+
+export {
+  updateStorage,
+  getFromStorage,
+  initalCurrentHabbit,
+  calcSelfExp,
+  findLastDay,
+}

@@ -3,6 +3,7 @@ import {
   add,
   format,
   getISOWeek,
+  isAfter,
   isBefore,
   isSameDay,
   isSameMonth,
@@ -20,6 +21,7 @@ import {
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
   calcSelfExp,
+  findLastDay,
   getFromStorage,
   initalCurrentHabbit,
   updateStorage,
@@ -127,7 +129,7 @@ const calendarSlice = createSlice({
         day: dayOrder,
         week: getISOWeek(date),
         expEarned: action.payload.exp,
-        totalExp: totalSelfExp,
+        totalExp: totalSelfExp >= 0 ? totalSelfExp : 0,
         mood: action.payload.mood,
         level: calculateLevel(totalSelfExp).level,
       }
@@ -159,8 +161,19 @@ const calendarSlice = createSlice({
         } else {
           existingMonth.marked.push(markedDay)
         }
+        state.currentHabit!.markedDays = state.currentHabit!.markedDays.map(
+          (month) => {
+            return {
+              ...month,
+              marked: month.marked.sort((a, b) => a.day - b.day),
+            }
+          }
+        )
       } else {
         state.currentHabit!.markedDays.push(markedMonth)
+        state.currentHabit!.markedDays.sort((a, b) =>
+          isAfter(parseJSON(a.month), parseJSON(b.month)) ? 1 : -1
+        )
       }
 
       calendarSlice.caseReducers.updateAllHabits(state)
@@ -180,6 +193,7 @@ const calendarSlice = createSlice({
     },
 
     updateTotal(state, action: PayloadAction<number>) {
+      const finalDay = findLastDay(state)
       if (state.selectedDayIsMarked) {
         state.currentHabit!.totalExp =
           state.currentHabit!.totalExp - state.selectedDayIsMarked.expEarned

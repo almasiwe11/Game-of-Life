@@ -13,18 +13,12 @@ import NoHabits from "../NoHabits"
 import { isSameMonth, parseJSON } from "date-fns"
 
 export default function Progress() {
-  const arr = [
-    { num: 5, b: 22 },
-    { num: 30, b: 33 },
-  ]
-
   const { currentHabit, today } = useSelector(
     (state: RootState) => state.calendar
   )
-  const markedMonth = currentHabit?.markedDays
-    .find((day) => isSameMonth(parseJSON(day.month), parseJSON(today)))
-    ?.marked.slice()
-    .sort((a, b) => a.day - b.day)
+  const markedMonth = currentHabit?.markedDays.find((day) =>
+    isSameMonth(parseJSON(day.month), parseJSON(today))
+  )?.marked
 
   return (
     <div className="bg-dark text-white px-10 py-6">
