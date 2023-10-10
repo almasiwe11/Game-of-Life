@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import styled, { keyframes } from "styled-components"
 import { HabitTab } from "../../../Types/CalendarType"
+import { calculateLevel } from "../../../utils/helperLevel"
 
 const levelUpAnimation = (width: number, prevxp: number) => keyframes`
   0%{
@@ -81,20 +82,7 @@ type Props = {
 export default function LevelTracker({ habit }: Props) {
   const { totalExp } = habit
 
-  let xpPerLevel = 500
-  let xp = totalExp
-  let level = 1
-
-  function calculateLevel() {
-    while (xp >= xpPerLevel) {
-      xp -= xpPerLevel
-      level++
-      xpPerLevel += 200
-    }
-    return level
-  }
-
-  const playerLevel = calculateLevel()
+  const { level, xp, xpPerLevel } = calculateLevel(totalExp)
 
   const prevLevelRef = useRef(Infinity)
   const prevXpRef = useRef(1)
@@ -117,7 +105,7 @@ export default function LevelTracker({ habit }: Props) {
   return (
     <div className="text-white font-bold flex flex-col items-center">
       <div className="flex gap-4 items-center">
-        <span className="text-center">Level {playerLevel}</span>
+        <span className="text-center">Level {level}</span>
         <ProgressBarContainer>
           <ProgressBarValue
             width={(xp * 100) / xpPerLevel}

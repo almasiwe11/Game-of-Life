@@ -25,6 +25,7 @@ import {
   updateStorage,
 } from "../utils/helper"
 import { AddMarkDay } from "../Types/calendarSliceTypes"
+import { calculateLevel } from "../utils/helperLevel"
 
 const allHabits = getFromStorage()
 
@@ -115,13 +116,20 @@ const calendarSlice = createSlice({
       }
 
       const dayOrder = Number(format(date, "d"))
+      const totalSelfExp = calcSelfExp(
+        state,
+        date,
+        action.payload.exp,
+        dayOrder
+      )
       const markedDay: MarkedDaysOfMonth = {
         date: JSON.stringify(date),
         day: dayOrder,
         week: getISOWeek(date),
         expEarned: action.payload.exp,
-        totalExp: calcSelfExp(state, date, action.payload.exp, dayOrder),
+        totalExp: totalSelfExp,
         mood: action.payload.mood,
+        level: calculateLevel(totalSelfExp).level,
       }
 
       const markedMonth: MarkedHabit = {

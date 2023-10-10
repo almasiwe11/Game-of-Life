@@ -29,6 +29,7 @@ type MarkedDaysOfMonth = {
   result?: number | null
   totalExp: number
   mood: Mood
+  level: number
 }
 
 type DeleteActions = "try-delete" | "no-delete" | "delete"

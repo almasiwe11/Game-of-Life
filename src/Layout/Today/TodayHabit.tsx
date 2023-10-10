@@ -15,7 +15,7 @@ export default function TodayHabit({ habit }: Props) {
   const date = new Date()
   function handleClick() {
     dispatch(updateCurrentHabit(habit.name))
-    dispatch(openMarkDay(JSON.stringify(new Date())))
+    dispatch(openMarkDay(JSON.stringify(date)))
   }
 
   const isMarked = habit.markedDays
