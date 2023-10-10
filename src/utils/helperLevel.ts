@@ -8,7 +8,11 @@ function calculateLevel(totalExp: number) {
     xpPerLevel += 200
   }
 
-  if (xp <= 0) (level = 1), (xp = 0)
+  if (totalExp <= 0) {
+    level = 1
+    xp = 0
+  }
+
   return { level, xp, xpPerLevel }
 }
 

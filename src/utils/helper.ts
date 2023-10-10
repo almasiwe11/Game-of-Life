@@ -15,10 +15,13 @@ function initalCurrentHabbit() {
 }
 
 function updateFutureCells(
+  state: WritableDraft<Calendar>,
   oldExp: number,
   markedDayExp: number,
   oldMarkedDayExp: number
 ) {
+  const skipped = markedDayExp === -Number(state.currentHabit!.skippedPenalty)
+
   const newExp = oldExp + markedDayExp - oldMarkedDayExp
   if (newExp < 0) return 0
   return newExp
@@ -31,11 +34,10 @@ function calcSelfExp(
   dayOrder: number
 ) {
   //if day is not marked
+
   const theFirstDay = state.currentHabit!.markedDays.length === 0
   const isToday = isSameDay(date, new Date())
   const latestDay = isLastDay(state, date, dayOrder)
-
-  const skipped = expMarked === state.currentHabit!.skippedPenalty
 
   const updateExp = state.selectedDayIsMarked
     ? state.selectedDayIsMarked!.expEarned
@@ -44,7 +46,12 @@ function calcSelfExp(
   state.currentHabit!.markedDays.map((month) =>
     month.marked.map((day) =>
       isAfter(parseJSON(day.date), date)
-        ? (day.totalExp = updateFutureCells(day.totalExp, expMarked, updateExp))
+        ? (day.totalExp = updateFutureCells(
+            state,
+            day.totalExp,
+            expMarked,
+            updateExp
+          ))
         : day
     )
   )

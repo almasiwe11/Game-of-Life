@@ -194,7 +194,6 @@ const calendarSlice = createSlice({
 
     updateTotal(state) {
       const finalDay = findLastDay(state)
-
       state.currentHabit!.totalExp = finalDay.totalExp
       calendarSlice.caseReducers.updateAllHabits(state)
     },

@@ -83,7 +83,6 @@ export default function LevelTracker({ habit }: Props) {
   const { totalExp } = habit
 
   const { level, xp, xpPerLevel } = calculateLevel(totalExp)
-
   const prevLevelRef = useRef(Infinity)
   const prevXpRef = useRef(1)
   const prevTab = useRef("")
