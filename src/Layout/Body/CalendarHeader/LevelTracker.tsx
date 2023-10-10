@@ -42,7 +42,9 @@ const ProgressBarContainer = styled.div`
 
 const ProgressBarValue = styled.div.withConfig({
   shouldForwardProp: (prop) =>
-    !["levelUp", "prevXpLevelUp, levelDown, prevXpLevelDown"].includes(prop),
+    !["levelUp", "prevXpLevelUp", "levelDown", "prevXpLevelDown"].includes(
+      prop
+    ),
 })<{
   width: number
   levelUp: boolean
