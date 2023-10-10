@@ -43,3 +43,15 @@ progress::-webkit-progress-value {
 progress::-moz-progress-bar {
   /* style rules */
 }
+
+a.active {
+  background-color: #f3f4f6;
+}
+
+a.active .navIcon {
+  color: #4f46e5;
+}
+
+a.active .navPageText {
+  font-weight: 500;
+}
