@@ -9,14 +9,15 @@ import Select from "./Select"
 import "react-datepicker/dist/react-datepicker.css"
 import StartDate from "./StartDate"
 import Errors from "./Errors"
-import { formValidation } from "./formValidation"
 import { HabitFormTypes } from "../../Types/HabitTypes"
+import useFormValidation from "./formValidation"
 
 export default function HabitForm() {
   const dispatch = useDispatch()
   const { register, handleSubmit, formState, control } = useForm()
 
   const { errors } = formState
+  const formValidation = useFormValidation()
 
   const handleHabitCreation: SubmitHandler<FieldValues> = (values) => {
     const { name, type, timesPerWeek, skippedPenalty, startDate } = values
