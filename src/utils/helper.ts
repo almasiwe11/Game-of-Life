@@ -131,8 +131,3 @@ export {
   findLastDay,
   calculateTotalSelfExp,
 }
-
-// when I mark a day, if that day is today or the last day of all marked days than I do a simple addition
-// otherwise, I have to find prevDay and get its rating
-// thann do what have be done and pass the new total rating to the next day
-// it will ripple and do the same for the next day untill it updates all next days
