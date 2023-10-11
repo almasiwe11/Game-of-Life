@@ -21,8 +21,9 @@ function updateFutureCells(
   oldMarkedDayExp: number
 ) {
   const skipped = markedDayExp === -Number(state.currentHabit!.skippedPenalty)
+  const adjust = markedDayExp - oldMarkedDayExp
 
-  const newExp = oldExp + markedDayExp - oldMarkedDayExp
+  const newExp = oldExp + adjust
   if (newExp < 0) return 0
   return newExp
 }
