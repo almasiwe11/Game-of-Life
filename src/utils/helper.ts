@@ -144,6 +144,14 @@ function findFirstMarkedDay(state: WritableDraft<Calendar>) {
   return firstDay
 }
 
+function findFirstDayOfMonth(state: WritableDraft<Calendar>, date: Date) {
+  const thisMonth = state.currentHabit!.markedDays.find((month) =>
+    isSameMonth(parseJSON(month.month), date)
+  )
+  const firsDayOfMonth = thisMonth!.marked[0]
+  return firsDayOfMonth
+}
+
 function calcMonthExp(state: WritableDraft<Calendar>, date: Date, exp: number) {
   const month = state.currentHabit!.markedDays.find((month) =>
     isSameMonth(parseJSON(month.month), date)

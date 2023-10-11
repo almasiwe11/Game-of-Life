@@ -7,10 +7,10 @@ import {
   Tooltip,
   Legend,
 } from "recharts"
-import { MarkedDaysOfMonth } from "../../Types/CalendarType"
+import { MarkedDaysOfMonth, MarkedHabit } from "../../Types/CalendarType"
 
 type Props = {
-  markedMonth: MarkedDaysOfMonth[]
+  dataArr: MarkedDaysOfMonth[] | MarkedHabit[]
   xaxis: string
   yaxis: string
   color: string
@@ -19,7 +19,7 @@ type Props = {
 }
 
 export default function LineGraph({
-  markedMonth,
+  dataArr,
   xaxis,
   yaxis,
   color,
@@ -27,7 +27,7 @@ export default function LineGraph({
   minValue = "auto",
 }: Props) {
   return (
-    <LineChart data={markedMonth} width={370} height={400}>
+    <LineChart data={dataArr} width={370} height={400}>
       <Line type="monotone" dataKey={yaxis} stroke={color} name={name} />
 
       <CartesianGrid stroke="rgb(64,64,64)" />

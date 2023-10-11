@@ -1,3 +1,5 @@
+import { MarkedDaysOfMonth, MarkedHabit } from "./CalendarType"
+
 type HabitTypesTypes = "moodchecker" | "yes-no" | "goal"
 
 type HabitFormTypes = {
@@ -10,6 +12,9 @@ type HabitFormTypes = {
   totalExp: number
   firstMarkedDate: string | undefined
 }
+
+type ScopeTypes = "month" | "year" | "years"
+type DataArrTypes = MarkedDaysOfMonth[] | MarkedHabit[]
 
 enum Mood {
   Skipped,
@@ -26,5 +31,5 @@ enum Mood {
   Extraordinary = 13,
 }
 
-export type { HabitFormTypes, HabitTypesTypes }
+export type { HabitFormTypes, HabitTypesTypes, ScopeTypes, DataArrTypes }
 export { Mood }

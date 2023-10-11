@@ -21,6 +21,7 @@ type MarkedHabit = {
   marked: MarkedDaysOfMonth[]
   totalMonth: number
   levelMonth: number
+  monthName: string
 }
 
 type MarkedDaysOfMonth = {
