@@ -20,6 +20,7 @@ import {
 } from "../Types/CalendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
+  calcMonthExp,
   calculateTotalSelfExp,
   findLastDay,
   getFromStorage,
@@ -27,6 +28,7 @@ import {
   updateStorage,
 } from "../utils/helper"
 import { AddMarkDay } from "../Types/calendarSliceTypes"
+import { calculateLevel } from "../utils/helperLevel"
 
 const allHabits = getFromStorage()
 
@@ -120,19 +122,28 @@ const calendarSlice = createSlice({
 
       const dayOrder = Number(format(date, "d"))
 
+      const totalSelfExp = calculateTotalSelfExp(
+        date,
+        expMarkedDay,
+        state,
+        mood
+      )
+
       const markedDay: MarkedDaysOfMonth = {
         date: JSON.stringify(date),
         day: dayOrder,
         week: getISOWeek(date),
         expEarned: action.payload.exp,
-        totalExp: calculateTotalSelfExp(date, expMarkedDay, state, mood),
+        totalExp: totalSelfExp,
         mood: action.payload.mood,
-        level: 1,
+        level: calculateLevel(totalSelfExp).level,
       }
-
+      const monthTotal = calcMonthExp(state, date, totalSelfExp)
       const markedMonth: MarkedHabit = {
         month: JSON.stringify(startOfMonth(date)),
         marked: [markedDay],
+        totalMonth: monthTotal,
+        levelMonth: calculateLevel(monthTotal).level,
       }
 
       const exists = state.currentHabit!.markedDays.find((month) =>

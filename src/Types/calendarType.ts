@@ -19,6 +19,8 @@ type HabitTab = HabitFormTypes & {
 type MarkedHabit = {
   month: string
   marked: MarkedDaysOfMonth[]
+  totalMonth: number
+  levelMonth: number
 }
 
 type MarkedDaysOfMonth = {

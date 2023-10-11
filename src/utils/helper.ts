@@ -10,6 +10,7 @@ import {
   sub,
 } from "date-fns"
 import { Mood } from "../Types/HabitTypes"
+import { calculateLevel } from "./helperLevel"
 
 function updateStorage(allHabits: HabitTab[]) {
   localStorage.setItem("allHabits", JSON.stringify(allHabits))
@@ -29,31 +30,31 @@ function calculateTotalSelfExp(
   state: WritableDraft<Calendar>,
   mood: Mood
 ) {
+  let totalSelfExp = 666
   const theOnlyDay = state.currentHabit!.markedDays.length === 0
-
   if (theOnlyDay) {
+    updateMonthStats(state, date, markedDayExp)
     return markedDayExp
   }
-
   const firstMarkedDate = findFirstMarkedDay(state)
   const newFirstDay =
     isBefore(date, parseJSON(firstMarkedDate.date)) ||
     isSameDay(date, parseJSON(firstMarkedDate.date))
 
   if (newFirstDay) {
-    rippleUpdateNextDays(state, date, markedDayExp)
-    return mood === Mood.Skipped ? 0 : markedDayExp
-  }
-
-  if (!newFirstDay) {
+    totalSelfExp = mood === Mood.Skipped ? 0 : markedDayExp
+    rippleUpdateNextDays(state, date, totalSelfExp, mood)
+  } else if (!newFirstDay) {
     const prevMarkedDay = findPrevDay(state, date)
     const correctExp = getRightExp(prevMarkedDay.totalExp, markedDayExp, mood)
     const newTotalExp = correctExp
-    rippleUpdateNextDays(state, date, newTotalExp)
-    return newTotalExp
+    rippleUpdateNextDays(state, date, newTotalExp, mood)
+    totalSelfExp = newTotalExp
   }
 
-  return 666
+  updateMonthStats(state, date, totalSelfExp)
+
+  return totalSelfExp
 }
 
 function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
@@ -65,30 +66,40 @@ function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
   return prevDay
 }
 
+function updateMonthStats(
+  state: WritableDraft<Calendar>,
+  date: Date,
+  totalSelfExp: number
+) {
+  const thisMonth = state.currentHabit!.markedDays.find((month) =>
+    isSameMonth(parseJSON(month.month), date)
+  )
+  if (thisMonth) {
+    const totalMonth = calcMonthExp(state, date, totalSelfExp)
+    thisMonth.totalMonth = calcMonthExp(state, date, totalSelfExp)
+    thisMonth.levelMonth = calculateLevel(totalMonth).level
+  }
+}
+
 function rippleUpdateNextDays(
   state: WritableDraft<Calendar>,
   date: Date,
-  newTotalExp: number
+  newTotalExp: number,
+  mood: Mood
 ) {
   const lastMarkedDate = parseJSON(findLastDay(state).date)
   if (isSameDay(date, lastMarkedDate) || isAfter(date, lastMarkedDate)) return
   let nextDay = findNextMarkedDay(state, date)
   let newExpTotal = newTotalExp
+  let prevMood = mood
   while (nextDay) {
-    const correctXp = getRightExp(newExpTotal, nextDay.expEarned, nextDay.mood)
+    const correctXp = getRightExp(newExpTotal, nextDay.expEarned, prevMood)
     nextDay.totalExp = correctXp
+    nextDay.level = calculateLevel(correctXp).level
     newExpTotal = nextDay.totalExp
+    prevMood = nextDay.mood
     nextDay = findNextMarkedDay(state, parseJSON(nextDay.date))
   }
-}
-
-function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
-  const isMarked = state
-    .currentHabit!.markedDays.find((day) =>
-      isSameMonth(parseJSON(day.month), observed)
-    )
-    ?.marked.find((day) => isSameDay(parseJSON(day.date), observed))
-  return isMarked
 }
 
 function getRightExp(total: number, self: number, mood: Mood) {
@@ -98,6 +109,15 @@ function getRightExp(total: number, self: number, mood: Mood) {
   }
 
   return sum
+}
+
+function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
+  const isMarked = state
+    .currentHabit!.markedDays.find((day) =>
+      isSameMonth(parseJSON(day.month), observed)
+    )
+    ?.marked.find((day) => isSameDay(parseJSON(day.date), observed))
+  return isMarked
 }
 
 function findLastDay(state: WritableDraft<Calendar>) {
@@ -124,7 +144,24 @@ function findFirstMarkedDay(state: WritableDraft<Calendar>) {
   return firstDay
 }
 
+function calcMonthExp(state: WritableDraft<Calendar>, date: Date, exp: number) {
+  const month = state.currentHabit!.markedDays.find((month) =>
+    isSameMonth(parseJSON(month.month), date)
+  )
+  if (month?.marked.length === 0 || month?.marked === undefined) return exp
+  const lastMonthDay = month.marked[month.marked.length - 1]
+  if (
+    isAfter(date, parseJSON(lastMonthDay.date)) ||
+    isSameDay(date, parseJSON(lastMonthDay.date))
+  ) {
+    return exp
+  } else {
+    return lastMonthDay.totalExp
+  }
+}
+
 export {
+  calcMonthExp,
   updateStorage,
   getFromStorage,
   initalCurrentHabbit,

@@ -4,7 +4,7 @@ import { RootState } from "../../../RootState"
 import { format, parseJSON } from "date-fns"
 import LevelTracker from "./LevelTracker"
 
-export default function Header() {
+export default function CalendarHeader() {
   const calendar = useSelector((state: RootState) => state.calendar)
   const { today: todayState, currentHabit } = calendar
   const today = format(parseJSON(todayState), "MMMM yyyy")
