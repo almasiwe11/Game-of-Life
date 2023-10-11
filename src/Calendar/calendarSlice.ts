@@ -27,7 +27,6 @@ import {
   updateStorage,
 } from "../utils/helper"
 import { AddMarkDay } from "../Types/calendarSliceTypes"
-import { calculateLevel } from "../utils/helperLevel"
 
 const allHabits = getFromStorage()
 
@@ -110,6 +109,7 @@ const calendarSlice = createSlice({
     addMarkDay(state, action: PayloadAction<AddMarkDay>) {
       const date = parseJSON(action.payload.day)
       const expMarkedDay = action.payload.exp
+      const mood = action.payload.mood
 
       if (
         state.currentHabit!.firstMarkedDate === undefined ||
@@ -125,7 +125,7 @@ const calendarSlice = createSlice({
         day: dayOrder,
         week: getISOWeek(date),
         expEarned: action.payload.exp,
-        totalExp: calculateTotalSelfExp(date, expMarkedDay, state),
+        totalExp: calculateTotalSelfExp(date, expMarkedDay, state, mood),
         mood: action.payload.mood,
         level: 1,
       }
