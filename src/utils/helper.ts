@@ -1,6 +1,14 @@
 import { WritableDraft } from "immer/dist/internal.js"
 import { Calendar, HabitTab } from "../Types/CalendarType"
-import { add, isAfter, isSameDay, isSameMonth, parseJSON, sub } from "date-fns"
+import {
+  add,
+  isAfter,
+  isBefore,
+  isSameDay,
+  isSameMonth,
+  parseJSON,
+  sub,
+} from "date-fns"
 
 function updateStorage(allHabits: HabitTab[]) {
   localStorage.setItem("allHabits", JSON.stringify(allHabits))
@@ -19,11 +27,30 @@ function calculateTotalSelfExp(
   markedDayExp: number,
   state: WritableDraft<Calendar>
 ) {
+  const firstMarkedDate = findFirstMarkedDay(state)
+  const newFirstDay =
+    isBefore(date, parseJSON(firstMarkedDate.date)) ||
+    isSameDay(date, parseJSON(firstMarkedDate.date))
   const tomorrow = add(new Date(), { days: 1 })
-  const prevMarkedDay = findPrevDay(state, date)
-  const prevMarkedDate = parseJSON(prevMarkedDay.date)
+  const theOnlyDay = state.currentHabit!.markedDays.length === 0
+  const updateDay = isAlreadyMarked(state, date)
 
-  return prevMarkedDay.totalExp + markedDayExp
+  if (newFirstDay) {
+    return markedDayExp
+  }
+
+  if (theOnlyDay) {
+    return markedDayExp
+  }
+
+  if (!newFirstDay) {
+    const prevMarkedDay = findPrevDay(state, date)
+    const prevMarkedDate = parseJSON(prevMarkedDay.date)
+    const newTotalExp = prevMarkedDay.totalExp + markedDayExp
+    // const nextMarkedDay = findNextMarkedDay(state, date)
+    // console.log(nextMarkedDay.date)
+    return newTotalExp
+  }
 }
 
 function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
@@ -51,7 +78,22 @@ function findLastDay(state: WritableDraft<Calendar>) {
   return lastDay
 }
 
-function findNextMarkedDay(state: WritableDraft<Calendar>, date: Date) {}
+function findNextMarkedDay(state: WritableDraft<Calendar>, date: Date) {
+  let observedDay = add(date, { days: 1 })
+  while (!isAlreadyMarked(state, observedDay)) {
+    console.log("searching")
+    observedDay = add(observedDay, { days: 1 })
+  }
+  const prevDay = isAlreadyMarked(state, observedDay)!
+  return prevDay
+}
+
+function findFirstMarkedDay(state: WritableDraft<Calendar>) {
+  const allMonth = state.currentHabit!.markedDays
+  const firstMonth = allMonth[0]
+  const firstDay = firstMonth.marked[0]
+  return firstDay
+}
 
 export {
   updateStorage,
