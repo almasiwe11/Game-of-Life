@@ -20,7 +20,7 @@ import {
 } from "../Types/CalendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
-  calcSelfExp,
+  calculateTotalSelfExp,
   findLastDay,
   getFromStorage,
   initalCurrentHabbit,
@@ -109,6 +109,7 @@ const calendarSlice = createSlice({
 
     addMarkDay(state, action: PayloadAction<AddMarkDay>) {
       const date = parseJSON(action.payload.day)
+      const expMarkedDay = action.payload.exp
 
       if (
         state.currentHabit!.firstMarkedDate === undefined ||
@@ -118,20 +119,15 @@ const calendarSlice = createSlice({
       }
 
       const dayOrder = Number(format(date, "d"))
-      const totalSelfExp = calcSelfExp(
-        state,
-        date,
-        action.payload.exp,
-        dayOrder
-      )
+
       const markedDay: MarkedDaysOfMonth = {
         date: JSON.stringify(date),
         day: dayOrder,
         week: getISOWeek(date),
         expEarned: action.payload.exp,
-        totalExp: totalSelfExp >= 0 ? totalSelfExp : 0,
+        totalExp: calculateTotalSelfExp(date, expMarkedDay, state),
         mood: action.payload.mood,
-        level: calculateLevel(totalSelfExp).level,
+        level: 1,
       }
 
       const markedMonth: MarkedHabit = {
