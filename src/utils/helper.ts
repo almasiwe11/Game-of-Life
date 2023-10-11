@@ -1,6 +1,15 @@
 import { WritableDraft } from "immer/dist/internal.js"
 import { Calendar, HabitTab } from "../Types/CalendarType"
-import { isAfter, isSameDay, isSameMonth, parseJSON, sub } from "date-fns"
+import {
+  add,
+  isAfter,
+  isBefore,
+  isSameDay,
+  isSameMonth,
+  parseJSON,
+  sub,
+} from "date-fns"
+import { Mood } from "../Types/HabitTypes"
 
 function updateStorage(allHabits: HabitTab[]) {
   localStorage.setItem("allHabits", JSON.stringify(allHabits))
@@ -14,93 +23,37 @@ function initalCurrentHabbit() {
   return getFromStorage().length > 0 ? getFromStorage()[0] : null
 }
 
-function updateFutureCells(
-  state: WritableDraft<Calendar>,
-  oldExp: number,
+function calculateTotalSelfExp(
+  date: Date,
   markedDayExp: number,
-  oldMarkedDayExp: number
-) {
-  const skipped = markedDayExp === -Number(state.currentHabit!.skippedPenalty)
-  const adjust = markedDayExp - oldMarkedDayExp
-
-  const newExp = oldExp + adjust
-  if (newExp < 0) return 0
-  return newExp
-}
-
-function calcSelfExp(
   state: WritableDraft<Calendar>,
-  date: Date,
-  expMarked: number,
-  dayOrder: number
+  mood: Mood
 ) {
-  //if day is not marked
+  const theOnlyDay = state.currentHabit!.markedDays.length === 0
 
-  const theFirstDay = state.currentHabit!.markedDays.length === 0
-  const isToday = isSameDay(date, new Date())
-  const latestDay = isLastDay(state, date, dayOrder)
-
-  const updateExp = state.selectedDayIsMarked
-    ? state.selectedDayIsMarked!.expEarned
-    : 0
-
-  state.currentHabit!.markedDays.map((month) =>
-    month.marked.map((day) =>
-      isAfter(parseJSON(day.date), date)
-        ? (day.totalExp = updateFutureCells(
-            state,
-            day.totalExp,
-            expMarked,
-            updateExp
-          ))
-        : day
-    )
-  )
-
-  if (theFirstDay || isToday) {
-    if (state.selectedDayIsMarked)
-      return state.currentHabit!.totalExp - updateExp + expMarked
-    return state.currentHabit!.totalExp + expMarked
-  } else if (latestDay) {
-    if (state.selectedDayIsMarked) return calcFromPrev(state, date, expMarked)
-    return state.currentHabit!.totalExp + expMarked
-  } else if (
-    isAfter(parseJSON(state.currentHabit!.firstMarkedDate!), date) ||
-    isSameDay(parseJSON(state.currentHabit!.firstMarkedDate!), date)
-  ) {
-    // is before the first marked day
-    return expMarked
-  } else {
-    //between
-    return calcFromPrev(state, date, expMarked)
+  if (theOnlyDay) {
+    return markedDayExp
   }
-}
 
-function calcFromPrev(
-  state: WritableDraft<Calendar>,
-  date: Date,
-  expMarked: number
-) {
-  const prevDay = findPrevDay(state, date)
-  return prevDay.totalExp + expMarked
-}
+  const firstMarkedDate = findFirstMarkedDay(state)
+  const newFirstDay =
+    isBefore(date, parseJSON(firstMarkedDate.date)) ||
+    isSameDay(date, parseJSON(firstMarkedDate.date))
 
-function isLastDay(
-  state: WritableDraft<Calendar>,
-  date: Date,
-  dayOrder: number
-) {
-  const notTheLastDay = state.currentHabit!.markedDays.find((month) =>
-    isAfter(parseJSON(month.month), date)
-  )
-  if (notTheLastDay) return false
-  const thisMonth = state.currentHabit!.markedDays.find((month) =>
-    isSameMonth(parseJSON(month.month), date)
-  )
+  if (newFirstDay) {
+    rippleUpdateNextDays(state, date, markedDayExp)
+    return mood === Mood.Skipped ? 0 : markedDayExp
+  }
 
-  const notLastInMonth = thisMonth?.marked.find((day) => day.day > dayOrder)
-  if (notLastInMonth) return false
-  return true
+  if (!newFirstDay) {
+    const prevMarkedDay = findPrevDay(state, date)
+    const correctExp = getRightExp(prevMarkedDay.totalExp, markedDayExp, mood)
+    const newTotalExp = correctExp
+    rippleUpdateNextDays(state, date, newTotalExp)
+    return newTotalExp
+  }
+
+  return 666
 }
 
 function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
@@ -112,6 +65,23 @@ function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
   return prevDay
 }
 
+function rippleUpdateNextDays(
+  state: WritableDraft<Calendar>,
+  date: Date,
+  newTotalExp: number
+) {
+  const lastMarkedDate = parseJSON(findLastDay(state).date)
+  if (isSameDay(date, lastMarkedDate) || isAfter(date, lastMarkedDate)) return
+  let nextDay = findNextMarkedDay(state, date)
+  let newExpTotal = newTotalExp
+  while (nextDay) {
+    const correctXp = getRightExp(newExpTotal, nextDay.expEarned, nextDay.mood)
+    nextDay.totalExp = correctXp
+    newExpTotal = nextDay.totalExp
+    nextDay = findNextMarkedDay(state, parseJSON(nextDay.date))
+  }
+}
+
 function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
   const isMarked = state
     .currentHabit!.markedDays.find((day) =>
@@ -121,6 +91,15 @@ function isAlreadyMarked(state: WritableDraft<Calendar>, observed: Date) {
   return isMarked
 }
 
+function getRightExp(total: number, self: number, mood: Mood) {
+  const sum = total + self
+  if (mood === Mood.Skipped) {
+    return -self > total ? 0 : sum
+  }
+
+  return sum
+}
+
 function findLastDay(state: WritableDraft<Calendar>) {
   const allMonth = state.currentHabit!.markedDays
   const lastMonth = allMonth[allMonth.length - 1]
@@ -128,18 +107,27 @@ function findLastDay(state: WritableDraft<Calendar>) {
   return lastDay
 }
 
+function findNextMarkedDay(state: WritableDraft<Calendar>, date: Date) {
+  if (isSameDay(date, parseJSON(findLastDay(state).date))) return undefined
+  let observedDay = add(date, { days: 1 })
+  while (!isAlreadyMarked(state, observedDay)) {
+    observedDay = add(observedDay, { days: 1 })
+  }
+  const prevDay = isAlreadyMarked(state, observedDay)!
+  return prevDay
+}
+
+function findFirstMarkedDay(state: WritableDraft<Calendar>) {
+  const allMonth = state.currentHabit!.markedDays
+  const firstMonth = allMonth[0]
+  const firstDay = firstMonth.marked[0]
+  return firstDay
+}
+
 export {
   updateStorage,
   getFromStorage,
   initalCurrentHabbit,
-  calcSelfExp,
   findLastDay,
+  calculateTotalSelfExp,
 }
-
-// if marked rating is === skippedRating
-// check if the skull is the first day
-// if it's the first day than don't substract anything out of future cells
-
-// else
-// get the prevDay total rating
-// if its less than 0 than we should substract the prevRating instead of skippedRating
