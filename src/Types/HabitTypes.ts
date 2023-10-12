@@ -1,4 +1,4 @@
-import { MarkedDaysOfMonth, MarkedHabit } from "./calendarType"
+import { MarkedDaysOfMonth, MarkedHabit } from "./CalendarType"
 
 type HabitTypesTypes = "moodchecker" | "yes-no" | "goal"
 

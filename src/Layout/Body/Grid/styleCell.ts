@@ -1,7 +1,7 @@
 import { IconType } from "react-icons"
 import { Mood } from "../../../Types/HabitTypes"
 import { moodIcons } from "../../../Icons/Icons"
-import { MarkedDaysOfMonth } from "../../../Types/calendarType"
+import { MarkedDaysOfMonth } from "../../../Types/CalendarType"
 
 function styleCell(isMarked: MarkedDaysOfMonth | undefined) {
   let Icon!: IconType

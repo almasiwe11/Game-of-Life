@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { HabitTab } from "../../../Types/calendarType"
+import { HabitTab } from "../../../Types/CalendarType"
 import { updateCurrentHabit } from "../../../Calendar/calendarSlice"
 import { RootState } from "../../../RootState"
 

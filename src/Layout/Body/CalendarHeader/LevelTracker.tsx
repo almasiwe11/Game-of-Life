@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import styled, { keyframes } from "styled-components"
-import { HabitTab } from "../../../Types/calendarType"
+import { HabitTab } from "../../../Types/CalendarType"
 import { calculateLevel } from "../../../utils/helperLevel"
 import { useDispatch, useSelector } from "react-redux"
 import { adjustGoal, adjustPenalty } from "../../../Calendar/calendarSlice"

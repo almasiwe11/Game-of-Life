@@ -17,7 +17,7 @@ import {
   HabitTab,
   MarkedDaysOfMonth,
   MarkedHabit,
-} from "../Types/calendarType"
+} from "../Types/CalendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
   calculateTotalSelfExp,

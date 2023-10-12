@@ -9,7 +9,7 @@ import {
   GraphKeys,
   MappedMarkedHabit,
   MarkedDaysOfMonth,
-} from "../../Types/calendarType"
+} from "../../Types/CalendarType"
 import { calcMonthExp, calcMonthExpGain } from "../../utils/helper"
 import { calculateLevel } from "../../utils/helperLevel"
 
