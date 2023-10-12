@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import { HabitTypesTypes } from "../../Types/HabitTypes"
 import { RootState } from "../../RootState"
-import { HabitTab } from "../../Types/CalendarType"
+import { HabitTab } from "../../Types/CalendarTypes"
 
 function useFormValidation() {
   const { allHabits } = useSelector((state: RootState) => state.calendar)

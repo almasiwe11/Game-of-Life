@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../RootState"
 import DatePicker from "react-datepicker"
 import TodayHabit from "./TodayHabit"
-import { HabitTab } from "../../Types/CalendarType"
+import { HabitTab } from "../../Types/CalendarTypes"
 
 export default function Today() {
   const { allHabits } = useSelector((state: RootState) => state.calendar)

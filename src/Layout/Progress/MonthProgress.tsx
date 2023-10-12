@@ -2,7 +2,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../RootState"
 import { isSameMonth, parseJSON } from "date-fns"
 import Graphs from "./Graphs"
-import { MarkedHabit } from "../../Types/CalendarType"
+import { MarkedHabit } from "../../Types/CalendarTypes"
 
 export default function MonthProgress() {
   const { currentHabit, today } = useSelector(

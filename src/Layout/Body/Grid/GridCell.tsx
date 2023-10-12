@@ -5,7 +5,7 @@ import { RootState } from "../../../RootState"
 import { isSameDay, isSameMonth, parseJSON } from "date-fns"
 import { Mood } from "../../../Types/HabitTypes"
 import { styleCell } from "./styleCell"
-import { MarkedDaysOfMonth, MarkedHabit } from "../../../Types/CalendarType"
+import { MarkedDaysOfMonth, MarkedHabit } from "../../../Types/CalendarTypes"
 
 type PropTypes = {
   date: Date
