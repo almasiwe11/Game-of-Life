@@ -5,6 +5,7 @@ import { RootState } from "../../../RootState"
 import { isSameDay, isSameMonth, parseJSON } from "date-fns"
 import { Mood } from "../../../Types/HabitTypes"
 import { styleCell } from "./styleCell"
+import { MarkedDaysOfMonth, MarkedHabit } from "../../../Types/CalendarType"
 
 type PropTypes = {
   date: Date
@@ -21,8 +22,10 @@ export default function Cell({ date }: PropTypes) {
     dispatch(openMarkDay(JSON.stringify(date)))
   }
   const isMarked = habit.markedDays
-    .find((day) => isSameMonth(parseJSON(day.month), date))
-    ?.marked.find((day) => isSameDay(parseJSON(day.date), date))
+    .find((day: MarkedHabit) => isSameMonth(parseJSON(day.month), date))
+    ?.marked.find((day: MarkedDaysOfMonth) =>
+      isSameDay(parseJSON(day.date), date)
+    )
 
   const { bg, Icon } = styleCell(isMarked)
 

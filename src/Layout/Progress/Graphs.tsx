@@ -9,6 +9,7 @@ import {
   GraphKeys,
   MappedMarkedHabit,
   MarkedDaysOfMonth,
+  MarkedHabit,
 } from "../../Types/CalendarType"
 import { calcMonthExp, calcMonthExpGain } from "../../utils/helper"
 import { calculateLevel } from "../../utils/helperLevel"
@@ -21,7 +22,7 @@ export default function Graphs({ markedMonth }: Props) {
   const { currentHabit, today } = useSelector(
     (state: RootState) => state.calendar
   )
-  const thisYear = currentHabit!.markedDays.filter((month) =>
+  const thisYear = currentHabit!.markedDays.filter((month: MarkedHabit) =>
     isSameYear(parseJSON(month.month), parseJSON(today))
   )
   const [scope, setScope] = useState<ScopeTypes>("month")
@@ -33,15 +34,17 @@ export default function Graphs({ markedMonth }: Props) {
   let yAxisExpEarned: GraphKeys = "expEarned"
 
   if (scope === "year") {
-    const mappedThisYear: MappedMarkedHabit[] = thisYear.map((month) => {
-      const totalMonth = calcMonthExp(month)
-      return {
-        ...month,
-        totalMonth: totalMonth,
-        monthGained: calcMonthExpGain(month, totalMonth),
-        levelMonth: calculateLevel(totalMonth).level,
+    const mappedThisYear: MappedMarkedHabit[] = thisYear.map(
+      (month: MarkedHabit) => {
+        const totalMonth = calcMonthExp(month)
+        return {
+          ...month,
+          totalMonth: totalMonth,
+          monthGained: calcMonthExpGain(month, totalMonth),
+          levelMonth: calculateLevel(totalMonth).level,
+        }
       }
-    })
+    )
 
     dataArr = mappedThisYear
     xAxis = "monthName"

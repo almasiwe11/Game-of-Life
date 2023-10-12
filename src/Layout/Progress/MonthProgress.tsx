@@ -2,12 +2,13 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../RootState"
 import { isSameMonth, parseJSON } from "date-fns"
 import Graphs from "./Graphs"
+import { MarkedHabit } from "../../Types/CalendarType"
 
 export default function MonthProgress() {
   const { currentHabit, today } = useSelector(
     (state: RootState) => state.calendar
   )
-  const markedMonth = currentHabit?.markedDays.find((day) =>
+  const markedMonth = currentHabit?.markedDays.find((day: MarkedHabit) =>
     isSameMonth(parseJSON(day.month), parseJSON(today))
   )?.marked
 

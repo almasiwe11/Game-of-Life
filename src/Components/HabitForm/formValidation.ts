@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux"
 import { HabitTypesTypes } from "../../Types/HabitTypes"
 import { RootState } from "../../RootState"
+import { HabitTab } from "../../Types/CalendarType"
 
 function useFormValidation() {
   const { allHabits } = useSelector((state: RootState) => state.calendar)
@@ -8,7 +9,7 @@ function useFormValidation() {
     name: {
       required: "Name is required",
       validate: (value: string) => {
-        if (allHabits.some((habit) => habit.name === value)) {
+        if (allHabits.some((habit: HabitTab) => habit.name === value)) {
           return "The habit already exist, chose a different name"
         }
       },

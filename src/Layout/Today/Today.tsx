@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../RootState"
 import DatePicker from "react-datepicker"
 import TodayHabit from "./TodayHabit"
+import { HabitTab } from "../../Types/CalendarType"
 
 export default function Today() {
   const { allHabits } = useSelector((state: RootState) => state.calendar)
@@ -21,7 +22,7 @@ export default function Today() {
           }}
           maxDate={new Date()}
         />
-        {allHabits.map((habit) => (
+        {allHabits.map((habit: HabitTab) => (
           <TodayHabit key={habit.name} habit={habit} observedDate={date} />
         ))}
       </ul>
