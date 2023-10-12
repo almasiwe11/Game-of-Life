@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../RootState"
 import {
   add,
-  getISOWeek,
   isSameDay,
   isSameISOWeek,
   isSameWeek,
@@ -27,7 +26,6 @@ export default function usePrevWeeksCheck() {
     while (
       !isSameISOWeek(observedWeek, sub(parseJSON(habitStartDate), { weeks: 1 }))
     ) {
-      const observedISOWeek = getISOWeek(observedWeek)
       let markedDaysOfWeek: Date[] = []
       const markDays = currentHabit!.markedDays
       for (let i = 0; i < markDays.length; i++) {
