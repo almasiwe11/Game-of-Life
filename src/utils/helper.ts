@@ -1,5 +1,5 @@
 import { WritableDraft } from "immer/dist/internal.js"
-import { Calendar, HabitTab, MarkedHabit } from "../Types/CalendarType"
+import { Calendar, HabitTab, MarkedHabit } from "../Types/calendarType"
 import {
   add,
   isAfter,
@@ -74,7 +74,6 @@ function rippleUpdateNextDays(
   newTotalExp: number,
   mood: Mood
 ) {
-  console.log("ripple")
   const lastMarkedDate = parseJSON(findLastDay(state).date)
   if (isSameDay(date, lastMarkedDate) || isAfter(date, lastMarkedDate)) return
   let nextDay = findNextMarkedDay(state, date)

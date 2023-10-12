@@ -10,14 +10,15 @@ import { addMarkDay, updateTotal } from "../../Calendar/calendarSlice"
 import { Mood } from "../../Types/HabitTypes"
 
 export default function MarkDay() {
-  const [mood, setMood] = useState(1)
   const dispatch = useDispatch()
   const { currentHabit, selectedDay } = useSelector(
     (state: RootState) => state.calendar
   )
+  const [mood, setMood] = useState(currentHabit!.type === "goal" ? 0 : 1)
   const habit = currentHabit!
 
   function handleDayMarking() {
+    if (mood < 0) return
     let exp
     if (mood === Mood.Skipped) {
       exp = -habit.skippedPenalty
