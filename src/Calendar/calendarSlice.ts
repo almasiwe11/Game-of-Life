@@ -138,13 +138,11 @@ const calendarSlice = createSlice({
         mood: action.payload.mood,
         level: calculateLevel(totalSelfExp).level,
       }
-      const monthTotal = calcMonthExp(state, date, totalSelfExp)
+
       const markedMonth: MarkedHabit = {
         month: JSON.stringify(startOfMonth(date)),
         monthName: format(startOfMonth(date), "MMMM"),
         marked: [markedDay],
-        totalMonth: monthTotal,
-        levelMonth: calculateLevel(monthTotal).level,
       }
 
       const exists = state.currentHabit!.markedDays.find((month) =>

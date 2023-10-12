@@ -19,9 +19,13 @@ type HabitTab = HabitFormTypes & {
 type MarkedHabit = {
   month: string
   marked: MarkedDaysOfMonth[]
+  monthName: string
+}
+
+type MappedMarkedHabit = MarkedHabit & {
+  monthGained: number
   totalMonth: number
   levelMonth: number
-  monthName: string
 }
 
 type MarkedDaysOfMonth = {
@@ -35,6 +39,11 @@ type MarkedDaysOfMonth = {
   level: number
 }
 
+type GraphKeys =
+  | keyof MarkedHabit
+  | keyof MappedMarkedHabit
+  | keyof MarkedDaysOfMonth
+
 type DeleteActions = "try-delete" | "no-delete" | "delete"
 
 export type {
@@ -43,4 +52,6 @@ export type {
   DeleteActions,
   MarkedDaysOfMonth,
   MarkedHabit,
+  MappedMarkedHabit,
+  GraphKeys,
 }

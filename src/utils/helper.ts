@@ -1,5 +1,5 @@
 import { WritableDraft } from "immer/dist/internal.js"
-import { Calendar, HabitTab } from "../Types/CalendarType"
+import { Calendar, HabitTab, MarkedHabit } from "../Types/CalendarType"
 import {
   add,
   isAfter,
@@ -33,7 +33,6 @@ function calculateTotalSelfExp(
   let totalSelfExp = 666
   const theOnlyDay = state.currentHabit!.markedDays.length === 0
   if (theOnlyDay) {
-    updateMonthStats(state, date, markedDayExp)
     return markedDayExp
   }
   const firstMarkedDate = findFirstMarkedDay(state)
@@ -52,8 +51,6 @@ function calculateTotalSelfExp(
     totalSelfExp = newTotalExp
   }
 
-  updateMonthStats(state, date, totalSelfExp)
-
   return totalSelfExp
 }
 
@@ -64,21 +61,6 @@ function findPrevDay(state: WritableDraft<Calendar>, date: Date) {
   }
   const prevDay = isAlreadyMarked(state, observedDay)!
   return prevDay
-}
-
-function updateMonthStats(
-  state: WritableDraft<Calendar>,
-  date: Date,
-  totalSelfExp: number
-) {
-  const thisMonth = state.currentHabit!.markedDays.find((month) =>
-    isSameMonth(parseJSON(month.month), date)
-  )
-  if (thisMonth) {
-    const totalMonth = calcMonthExp(state, date, totalSelfExp)
-    thisMonth.totalMonth = calcMonthExp(state, date, totalSelfExp)
-    thisMonth.levelMonth = calculateLevel(totalMonth).level
-  }
 }
 
 function rippleUpdateNextDays(
@@ -144,28 +126,15 @@ function findFirstMarkedDay(state: WritableDraft<Calendar>) {
   return firstDay
 }
 
-function findFirstDayOfMonth(state: WritableDraft<Calendar>, date: Date) {
-  const thisMonth = state.currentHabit!.markedDays.find((month) =>
-    isSameMonth(parseJSON(month.month), date)
-  )
+function calcMonthExpGain(thisMonth: MarkedHabit, totalMonthExp: number) {
   const firsDayOfMonth = thisMonth!.marked[0]
-  return firsDayOfMonth
+
+  return totalMonthExp - firsDayOfMonth.totalExp + firsDayOfMonth.expEarned
 }
 
-function calcMonthExp(state: WritableDraft<Calendar>, date: Date, exp: number) {
-  const month = state.currentHabit!.markedDays.find((month) =>
-    isSameMonth(parseJSON(month.month), date)
-  )
-  if (month?.marked.length === 0 || month?.marked === undefined) return exp
-  const lastMonthDay = month.marked[month.marked.length - 1]
-  if (
-    isAfter(date, parseJSON(lastMonthDay.date)) ||
-    isSameDay(date, parseJSON(lastMonthDay.date))
-  ) {
-    return exp
-  } else {
-    return lastMonthDay.totalExp
-  }
+function calcMonthExp(thisMonth: WritableDraft<MarkedHabit>) {
+  const lastMonthDay = thisMonth.marked[thisMonth.marked.length - 1]
+  return lastMonthDay.totalExp
 }
 
 export {
@@ -175,4 +144,5 @@ export {
   initalCurrentHabbit,
   findLastDay,
   calculateTotalSelfExp,
+  calcMonthExpGain,
 }
