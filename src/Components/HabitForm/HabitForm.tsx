@@ -6,11 +6,11 @@ import { createHabit } from "../../Calendar/calendarSlice"
 import Input from "./Input"
 import { SiJordan } from "react-icons/si"
 import Select from "./Select"
-import "react-datepicker/dist/react-datepicker.css"
 import StartDate from "./StartDate"
 import Errors from "./Errors"
 import { HabitFormTypes } from "../../Types/HabitTypes"
 import useFormValidation from "./formValidation"
+import "react-datepicker/dist/react-datepicker.css"
 
 export default function HabitForm() {
   const dispatch = useDispatch()

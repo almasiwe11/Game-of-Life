@@ -2,25 +2,27 @@ import { useDispatch } from "react-redux"
 import { HabitTab } from "../../Types/CalendarType"
 import LevelTracker from "../Body/CalendarHeader/LevelTracker"
 import { openMarkDay, updateCurrentHabit } from "../../Calendar/calendarSlice"
-import { isSameDay, isSameMonth, parseJSON } from "date-fns"
+import { isAfter, isSameDay, isSameMonth, parseJSON } from "date-fns"
 import { styleCell } from "../Body/Grid/styleCell"
 import { Mood } from "../../Types/HabitTypes"
 
 type Props = {
   habit: HabitTab
+  observedDate: Date
 }
 
-export default function TodayHabit({ habit }: Props) {
+export default function TodayHabit({ habit, observedDate }: Props) {
   const dispatch = useDispatch()
-  const date = new Date()
   function handleClick() {
     dispatch(updateCurrentHabit(habit.name))
-    dispatch(openMarkDay(JSON.stringify(date)))
+    dispatch(openMarkDay(JSON.stringify(observedDate)))
   }
 
+  if (isAfter(parseJSON(habit.startDate), observedDate)) return
+
   const isMarked = habit.markedDays
-    .find((day) => isSameMonth(parseJSON(day.month), date))
-    ?.marked.find((day) => isSameDay(parseJSON(day.date), date))
+    .find((day) => isSameMonth(parseJSON(day.month), observedDate))
+    ?.marked.find((day) => isSameDay(parseJSON(day.date), observedDate))
 
   const { bg, Icon } = styleCell(isMarked)
 
