@@ -27,7 +27,7 @@ export default function MarkDay() {
       exp = mood * 10
     }
     dispatch(addMarkDay({ day: JSON.stringify(selectedDay), mood, exp }))
-    dispatch(updateTotal(exp))
+    dispatch(updateTotal())
   }
 
   return (

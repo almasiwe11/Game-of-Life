@@ -20,7 +20,15 @@ export default function HabitForm() {
   const formValidation = useFormValidation()
 
   const handleHabitCreation: SubmitHandler<FieldValues> = (values) => {
-    const { name, type, timesPerWeek, skippedPenalty, startDate } = values
+    const {
+      name,
+      type,
+      timesPerWeek,
+      skippedPenalty,
+      startDate,
+      penaltyIncrement,
+      goalIncrement,
+    } = values
     const newVal: HabitFormTypes = {
       name,
       type,
@@ -30,6 +38,8 @@ export default function HabitForm() {
       skippedPenalty,
       startDate: JSON.stringify(startDate),
       firstMarkedDate: undefined,
+      penaltyIncrement,
+      goalIncrement,
     }
     dispatch(createHabit(newVal))
   }
@@ -95,7 +105,29 @@ export default function HabitForm() {
             type="number"
             formValidation={formValidation}
           />
+
+          <Input
+            name="penaltyIncrement"
+            type="number"
+            placeholder="increment"
+            register={register}
+            label="Penalty Increment"
+            formValidation={formValidation}
+          />
         </div>
+
+        {habitType === "goal" && (
+          <div className="w-1/4">
+            <Input
+              name="goalIncrement"
+              type="number"
+              placeholder="goal-increment"
+              register={register}
+              label="Goal Increment"
+              formValidation={formValidation}
+            />
+          </div>
+        )}
 
         <Button text="Create Habit" type="submit" className="self-center" />
 

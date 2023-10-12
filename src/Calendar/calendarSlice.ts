@@ -17,7 +17,7 @@ import {
   HabitTab,
   MarkedDaysOfMonth,
   MarkedHabit,
-} from "../Types/CalendarType"
+} from "../Types/calendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
   calculateTotalSelfExp,
@@ -186,15 +186,28 @@ const calendarSlice = createSlice({
       state.overlay = false
     },
 
+    adjustPenalty(state, action) {
+      const increase = action.payload === "increase"
+      const penaltyIncrement = Number(state.currentHabit!.penaltyIncrement)
+      const adjust = increase ? penaltyIncrement : -penaltyIncrement
+      state.currentHabit!.skippedPenalty =
+        Number(state.currentHabit!.skippedPenalty) + adjust
+      calendarSlice.caseReducers.updateAllHabits(state)
+    },
+
+    adjustGoal(state, action) {
+      const increase = action.payload === "increase"
+      const goalIncrement = Number(state.currentHabit!.goalIncrement)
+      const adjust = increase ? goalIncrement : -goalIncrement
+      state.currentHabit!.goal = Number(state.currentHabit!.goal) + adjust
+      calendarSlice.caseReducers.updateAllHabits(state)
+    },
+
     updateAllHabits(state) {
       state.allHabits = state.allHabits.map((habit) =>
         habit.name === state.currentHabit!.name ? state.currentHabit! : habit
       )
       updateStorage(state.allHabits)
-    },
-
-    calcTotalExp() {
-      console.log("calculation")
     },
 
     updateTotal(state) {
@@ -207,7 +220,6 @@ const calendarSlice = createSlice({
 
 export const {
   addMonth,
-  calcTotalExp,
   updateTotal,
   subMonth,
   newHabit,
@@ -216,6 +228,8 @@ export const {
   deleteHabit,
   openMarkDay,
   addMarkDay,
+  adjustGoal,
+  adjustPenalty,
 } = calendarSlice.actions
 
 export default calendarSlice.reducer

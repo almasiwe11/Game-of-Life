@@ -1,4 +1,4 @@
-import { MarkedDaysOfMonth, MarkedHabit } from "./CalendarType"
+import { MarkedDaysOfMonth, MarkedHabit } from "./calendarType"
 
 type HabitTypesTypes = "moodchecker" | "yes-no" | "goal"
 
@@ -7,6 +7,8 @@ type HabitFormTypes = {
   type: HabitTypesTypes
   timesPerWeek: number
   goal?: number
+  goalIncrement: number
+  penaltyIncrement: number
   startDate: string
   skippedPenalty: number
   totalExp: number

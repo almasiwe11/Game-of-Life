@@ -22,6 +22,7 @@ export default function StartDate({ control }: Props) {
           <DatePicker
             {...field}
             selected={startDate}
+            maxDate={new Date()}
             className="p-1.5 px-3 border-2 border-dark rounded-lg w-full focus:outline-brand"
             onChange={(date) => {
               setStartDate(date!)

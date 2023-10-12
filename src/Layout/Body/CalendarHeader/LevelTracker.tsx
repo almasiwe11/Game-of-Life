@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react"
 import styled, { keyframes } from "styled-components"
-import { HabitTab } from "../../../Types/CalendarType"
+import { HabitTab } from "../../../Types/calendarType"
 import { calculateLevel } from "../../../utils/helperLevel"
+import { useDispatch, useSelector } from "react-redux"
+import { adjustGoal, adjustPenalty } from "../../../Calendar/calendarSlice"
+import { RootState } from "../../../RootState"
 
 const levelUpAnimation = (width: number, prevxp: number) => keyframes`
   0%{
@@ -86,16 +89,38 @@ export default function LevelTracker({ habit }: Props) {
   const prevLevelRef = useRef(Infinity)
   const prevXpRef = useRef(1)
   const prevTab = useRef("")
+  const dispatch = useDispatch()
+  const { currentHabit } = useSelector((state: RootState) => state.calendar)
+  const thisHabitType = currentHabit!.type
+
+  const levelUp = level > prevLevelRef.current
+  const levelDown =
+    level < prevLevelRef.current && prevLevelRef.current !== Infinity
 
   useEffect(() => {
     prevLevelRef.current = level
     prevTab.current = habit.name
     prevXpRef.current = xp
-  }, [level, xp, habit.name])
 
-  const levelUp = level > prevLevelRef.current
-  const levelDown =
-    level < prevLevelRef.current && prevLevelRef.current !== Infinity
+    if (levelUp) {
+      dispatch(adjustPenalty("increase"))
+      thisHabitType === "goal" && dispatch(adjustGoal("increase"))
+    }
+
+    if (levelDown) {
+      dispatch(adjustPenalty("decrease"))
+      thisHabitType === "goal" && dispatch(adjustGoal("decrease"))
+    }
+  }, [
+    level,
+    xp,
+    habit.name,
+    levelUp,
+    levelDown,
+    dispatch,
+    thisHabitType,
+    currentHabit,
+  ])
 
   const prevXpLevelUp = (prevXpRef.current * 100) / (xpPerLevel - 200)
   const prevXpLevelDown = (prevXpRef.current * 100) / (xpPerLevel + 200)

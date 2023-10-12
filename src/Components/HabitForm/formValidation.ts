@@ -27,6 +27,26 @@ function useFormValidation() {
     },
     type: { required: true },
     timesPerWeek: { required: true },
+    penaltyIncrement: {
+      required: "Skipped Penalty",
+      min: {
+        value: 0,
+        message: "Must be a least 0",
+      },
+    },
+    goalIncrement: {
+      validate: (value: number | "", { type }: { type: HabitTypesTypes }) => {
+        if (value === "" && type === "goal") {
+          return "Goal increment is required"
+        }
+
+        if (Number(value) < 0 && type === "goal") {
+          return "Should be at least 0 "
+        }
+
+        return true
+      },
+    },
   }
 
   return formValidation

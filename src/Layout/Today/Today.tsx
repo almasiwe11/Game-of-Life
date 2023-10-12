@@ -15,7 +15,7 @@ export default function Today() {
       <ul className="flex flex-col mt-8 gap-4">
         <DatePicker
           selected={date}
-          className="p-1.5 px-3 border-2 border-dark rounded-lg text-black  focus:outline-brand"
+          className="p-1.5 px-3 border-2 cursor-pointer border-dark rounded-lg text-black  focus:outline-brand"
           onChange={(date) => {
             setDate(date!)
           }}
