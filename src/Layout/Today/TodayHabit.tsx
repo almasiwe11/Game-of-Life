@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux"
-import { HabitTab } from "../../Types/CalendarType"
+import { HabitTab } from "../../Types/calendarType"
 import LevelTracker from "../Body/CalendarHeader/LevelTracker"
 import { openMarkDay, updateCurrentHabit } from "../../Calendar/calendarSlice"
 import { isAfter, isSameDay, isSameMonth, parseJSON } from "date-fns"
