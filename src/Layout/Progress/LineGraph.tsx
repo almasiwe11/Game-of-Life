@@ -7,7 +7,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts"
-import { MarkedDaysOfMonth, MarkedHabit } from "../../Types/CalendarType"
+import { MarkedDaysOfMonth, MarkedHabit } from "../../Types/CalendarTypes"
 
 type Props = {
   dataArr: MarkedDaysOfMonth[] | MarkedHabit[]

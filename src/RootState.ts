@@ -1,4 +1,4 @@
-import { Calendar } from "./Types/CalendarType"
+import { Calendar } from "./Types/CalendarTypes"
 
 type RootState = {
   calendar: Calendar

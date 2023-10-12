@@ -10,7 +10,7 @@ import {
   MappedMarkedHabit,
   MarkedDaysOfMonth,
   MarkedHabit,
-} from "../../Types/CalendarType"
+} from "../../Types/CalendarTypes"
 import { calcMonthExp, calcMonthExpGain } from "../../utils/helper"
 import { calculateLevel } from "../../utils/helperLevel"
 

@@ -3,7 +3,7 @@ import {
   HabitTab,
   MarkedDaysOfMonth,
   MarkedHabit,
-} from "../../Types/CalendarType"
+} from "../../Types/CalendarTypes"
 import LevelTracker from "../Body/CalendarHeader/LevelTracker"
 import { openMarkDay, updateCurrentHabit } from "../../Calendar/calendarSlice"
 import { isAfter, isSameDay, isSameMonth, parseJSON } from "date-fns"

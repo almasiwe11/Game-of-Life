@@ -1,5 +1,5 @@
 import { WritableDraft } from "immer/dist/internal.js"
-import { Calendar, HabitTab, MarkedHabit } from "../Types/CalendarType"
+import { Calendar, HabitTab, MarkedHabit } from "../Types/CalendarTypes"
 import {
   add,
   isAfter,
