@@ -74,7 +74,7 @@ export default function Graphs({ markedMonth }: Props) {
           minValue={1}
         ></LineGraph>
         <LineGraph
-          name="Experience Earned"
+          name="Experience Individual"
           dataArr={dataArr}
           xaxis={xAxis}
           yaxis={yAxisExpEarned}

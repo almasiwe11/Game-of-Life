@@ -11,7 +11,7 @@ export default function Today() {
   const [date, setDate] = useState(new Date())
   const today = format(date, "d MMMM")
   return (
-    <div className=" bg-dark text-white px-10 py-6 ">
+    <div className=" bg-dark text-white px-10 py-6 overflow-y-auto ">
       <div className="text-center font-bold text-3xl">{today}</div>
       <ul className="flex flex-col mt-8 gap-4">
         <DatePicker
