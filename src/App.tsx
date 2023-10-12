@@ -9,11 +9,15 @@ import DeleteHabit from "./Components/DeleteHabit"
 import MarkDay from "./Components/MarkDay/MarkDay"
 import Today from "./Layout/Today/Today"
 import Progress from "./Layout/Progress/Progress"
+import usePrevWeeksCheck from "./Hooks/usePrevWeeksCheck"
 
 function App() {
   const { overlay, newHabit, deleteWindow, markDay } = useSelector(
     (state: RootState) => state.calendar
   )
+
+  usePrevWeeksCheck()
+
   return (
     <div className="">
       <BrowserRouter>
