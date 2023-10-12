@@ -24,14 +24,14 @@ export default function Scope({ setScope, scope }: Props) {
       >
         Year
       </button>
-      <button
+      {/*     <button
         className={`${
           scope === "years" && "bg-gray-light text-dark"
         }  rounded-xl p-1 px-2.5`}
         onClick={() => setScope("years")}
       >
         Years
-      </button>
+      </button> */}
     </div>
   )
 }

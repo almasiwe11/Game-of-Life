@@ -45,7 +45,12 @@ function calculateTotalSelfExp(
     rippleUpdateNextDays(state, date, totalSelfExp, mood)
   } else if (!newFirstDay) {
     const prevMarkedDay = findPrevDay(state, date)
-    const correctExp = getRightExp(prevMarkedDay.totalExp, markedDayExp, mood)
+    const correctExp = getRightExp(
+      prevMarkedDay.totalExp,
+      markedDayExp,
+      mood,
+      mood
+    )
     const newTotalExp = correctExp
     rippleUpdateNextDays(state, date, newTotalExp, mood)
     totalSelfExp = newTotalExp
@@ -69,13 +74,19 @@ function rippleUpdateNextDays(
   newTotalExp: number,
   mood: Mood
 ) {
+  console.log("ripple")
   const lastMarkedDate = parseJSON(findLastDay(state).date)
   if (isSameDay(date, lastMarkedDate) || isAfter(date, lastMarkedDate)) return
   let nextDay = findNextMarkedDay(state, date)
   let newExpTotal = newTotalExp
   let prevMood = mood
   while (nextDay) {
-    const correctXp = getRightExp(newExpTotal, nextDay.expEarned, prevMood)
+    const correctXp = getRightExp(
+      newExpTotal,
+      nextDay.expEarned,
+      prevMood,
+      nextDay.mood
+    )
     nextDay.totalExp = correctXp
     nextDay.level = calculateLevel(correctXp).level
     newExpTotal = nextDay.totalExp
@@ -84,9 +95,17 @@ function rippleUpdateNextDays(
   }
 }
 
-function getRightExp(total: number, self: number, mood: Mood) {
+function getRightExp(
+  total: number,
+  self: number,
+  prevMood: Mood,
+  selfMood: Mood
+) {
   const sum = total + self
-  if (mood === Mood.Skipped) {
+  if (prevMood === Mood.Skipped) {
+    return -self > total ? 0 : sum
+  }
+  if (selfMood === Mood.Skipped) {
     return -self > total ? 0 : sum
   }
 

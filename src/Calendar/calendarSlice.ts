@@ -20,7 +20,6 @@ import {
 } from "../Types/CalendarType"
 import { HabitFormTypes } from "../Types/HabitTypes"
 import {
-  calcMonthExp,
   calculateTotalSelfExp,
   findLastDay,
   getFromStorage,
