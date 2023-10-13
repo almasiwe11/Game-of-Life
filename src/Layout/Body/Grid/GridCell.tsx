@@ -44,7 +44,7 @@ export default function Cell({ date }: PropTypes) {
       </span>
       {isMarked ? (
         <>
-          <span className="absolute top-1 left-1">{isMarked.totalExp}</span>
+          {/* <span className="absolute top-1 left-1">{isMarked.totalExp}</span> */}
           <Icon
             className={`${
               isMarked!.mood >= Mood.Extraordinary ? "w-16 h-16" : "h-10 w-10"
