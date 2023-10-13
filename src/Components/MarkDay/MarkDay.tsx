@@ -6,7 +6,7 @@ import MarkMoodChecker from "./MarkMoodChecker"
 import MarkGoal from "./MarkGoal"
 import MarkYesNo from "./MarkYesNo"
 import { useState } from "react"
-import { addMarkDay, updateTotal } from "../../Calendar/calendarSlice"
+import { addMarkDay } from "../../Calendar/calendarSlice"
 import { Mood } from "../../Types/HabitTypes"
 
 export default function MarkDay() {
@@ -28,7 +28,6 @@ export default function MarkDay() {
       exp = mood * 10
     }
     dispatch(addMarkDay({ day: JSON.stringify(selectedDay), mood, exp }))
-    dispatch(updateTotal())
   }
 
   return (

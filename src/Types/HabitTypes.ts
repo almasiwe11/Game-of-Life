@@ -33,5 +33,16 @@ enum Mood {
   Extraordinary = 13,
 }
 
-export type { HabitFormTypes, HabitTypesTypes, ScopeTypes, DataArrTypes }
+type observeLevelChange = {
+  newLevel: number
+  oldLevel: number
+}
+
+export type {
+  HabitFormTypes,
+  HabitTypesTypes,
+  ScopeTypes,
+  DataArrTypes,
+  observeLevelChange,
+}
 export { Mood }

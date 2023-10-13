@@ -18,7 +18,7 @@ import {
   MarkedDaysOfMonth,
   MarkedHabit,
 } from "../Types/CalendarTypes"
-import { HabitFormTypes } from "../Types/HabitTypes"
+import { HabitFormTypes, observeLevelChange } from "../Types/HabitTypes"
 import {
   calculateTotalSelfExp,
   findLastDay,
@@ -111,6 +111,7 @@ const calendarSlice = createSlice({
       const date = parseJSON(action.payload.day)
       const expMarkedDay = action.payload.exp
       const mood = action.payload.mood
+      const oldLevel = calculateLevel(state.currentHabit!.totalExp).level
 
       if (
         state.currentHabit!.firstMarkedDate === undefined ||
@@ -180,10 +181,46 @@ const calendarSlice = createSlice({
           isAfter(parseJSON(a.month), parseJSON(b.month)) ? 1 : -1
         )
       }
-
+      calendarSlice.caseReducers.updateTotal(state)
       calendarSlice.caseReducers.updateAllHabits(state)
+      const newLevel = calculateLevel(state.currentHabit!.totalExp).level
+      calendarSlice.caseReducers.observeLevelChange(state, {
+        payload: {
+          newLevel,
+          oldLevel,
+        },
+        type: "",
+      })
+
       state.markDay = false
       state.overlay = false
+    },
+
+    observeLevelChange(state, action: PayloadAction<observeLevelChange>) {
+      const { newLevel, oldLevel } = action.payload
+      if (newLevel > oldLevel) {
+        calendarSlice.caseReducers.adjustPenalty(state, {
+          payload: "increase",
+          type: "",
+        })
+        if (state.currentHabit!.type === "goal")
+          calendarSlice.caseReducers.adjustGoal(state, {
+            payload: "increase",
+            type: "",
+          })
+      }
+
+      if (newLevel < oldLevel) {
+        calendarSlice.caseReducers.adjustPenalty(state, {
+          payload: "decrease",
+          type: "",
+        })
+        if (state.currentHabit!.type === "goal")
+          calendarSlice.caseReducers.adjustGoal(state, {
+            payload: "decrease",
+            type: "",
+          })
+      }
     },
 
     adjustPenalty(state, action) {
