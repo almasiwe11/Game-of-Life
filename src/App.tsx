@@ -1,15 +1,18 @@
+import { lazy, Suspense } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { useSelector } from "react-redux"
-import Body from "./Layout/Body/Body"
 import { RootState } from "./RootState"
 import HabitForm from "./Components/HabitForm/HabitForm"
 import Overlay from "./Components/Overlay"
-import AppLayout from "./Layout/AppLayout"
 import DeleteHabit from "./Components/DeleteHabit"
 import MarkDay from "./Components/MarkDay/MarkDay"
-import Today from "./Layout/Today/Today"
-import Progress from "./Layout/Progress/Progress"
 import usePrevWeeksCheck from "./Hooks/usePrevWeeksCheck"
+import Fallback from "./Components/Fallback"
+
+const Progress = lazy(() => import("./Layout/Progress/Progress"))
+const Today = lazy(() => import("./Layout/Today/Today"))
+const Body = lazy(() => import("./Layout/Body/Body"))
+const AppLayout = lazy(() => import("./Layout/AppLayout"))
 
 function App() {
   const { overlay, newHabit, deleteWindow, markDay } = useSelector(
@@ -21,13 +24,15 @@ function App() {
   return (
     <div className="">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Body />}></Route>
-            <Route path="today" element={<Today />}></Route>
-            <Route path="progress" element={<Progress />}></Route>
-          </Route>
-        </Routes>
+        <Suspense fallback={<Fallback />}>
+          <Routes>
+            <Route path="/" element={<AppLayout />}>
+              <Route index element={<Body />}></Route>
+              <Route path="today" element={<Today />}></Route>
+              <Route path="progress" element={<Progress />}></Route>
+            </Route>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
       {/*  */}
       {newHabit && <HabitForm />}
